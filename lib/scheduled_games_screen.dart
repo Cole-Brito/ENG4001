@@ -5,8 +5,6 @@ import '../data/mock_game_store.dart';
 import '../models/game.dart';
 
 class ScheduledGamesScreen extends StatelessWidget {
-  const ScheduledGamesScreen({super.key});
-
   @override
   Widget build(BuildContext context) {
     final List<Game> games = MockGameStore.games;
