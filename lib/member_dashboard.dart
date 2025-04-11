@@ -9,6 +9,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../data/mock_game_store.dart';
+import 'login_screen.dart';
 //import '../models/game.dart';
 
 class MemberDashboard extends StatelessWidget {
@@ -16,8 +17,26 @@ class MemberDashboard extends StatelessWidget {
   Widget build(BuildContext context) {
     final games = MockGameStore.games;
 
+    //Logout button on the top bar
+    void _logout(BuildContext context) {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => LoginScreen()),
+        (route) => false,
+      );
+    }
+
     return Scaffold(
-      appBar: AppBar(title: Text('Member Dashboard')),
+      appBar: AppBar(
+        title: Text('Member Dashboard'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: () => _logout(context), //Logout button on the top bar
+            tooltip: 'Logout',
+          ),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child:

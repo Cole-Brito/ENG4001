@@ -9,14 +9,33 @@
 import 'package:flutter/material.dart';
 import 'create_game_screen.dart';
 import 'scheduled_games_screen.dart';
+import 'login_screen.dart';
 
 class AdminDashboard extends StatelessWidget {
   const AdminDashboard({super.key});
 
+  //Logout button on the top bar
+  void _logout(BuildContext context) {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => LoginScreen()),
+      (route) => false,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Admin Dashboard')),
+      appBar: AppBar(
+        title: Text('Admin Dashboard'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: () => _logout(context), //Logout button on the top bar
+            tooltip: 'Logout',
+          ),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
