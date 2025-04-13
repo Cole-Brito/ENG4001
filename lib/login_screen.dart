@@ -7,6 +7,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/admin_dashboard.dart';
 import 'package:flutter_application_2/member_dashboard.dart';
+import 'package:flutter_application_2/models/user.dart';
 import 'mock_users.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -26,23 +27,26 @@ class _LoginScreenState extends State<LoginScreen> {
     final username = _usernameController.text.trim();
     final password = _passwordController.text.trim();
 
-    final user = mockUsers.firstWhere(
+    final userMap = mockUsers.firstWhere(
       (u) => u['username'] == username && u['password'] == password,
       orElse: () => {},
     );
 
-    if (user.isNotEmpty) {
-      final role = user['role'];
+    if (userMap.isNotEmpty) {
+      final role = userMap['role'];
 
       if (role == 'admin') {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => AdminDashboard()),
+          MaterialPageRoute(builder: (context) => const AdminDashboard()),
         );
       } else if (role == 'member') {
+        // Converting map into a User object
+        final user = User(username: userMap['username']!, isAdmin: false);
+
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => MemberDashboard()),
+          MaterialPageRoute(builder: (context) => MemberDashboard(user: user)),
         );
       } else {
         _showError('Invalid role');

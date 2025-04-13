@@ -11,6 +11,11 @@ at some point, this is fine for our demo (probably)
 -Cole
 */
 
+/*
+Most of this class will become automated later down the line when we can have 
+members sign up and rsvp for games remotely 
+*/
+
 class CreateGameScreen extends StatefulWidget {
   const CreateGameScreen({super.key});
 
@@ -52,6 +57,9 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
       return;
     }
 
+    // Rules for a formats avaliblity
+    //TODO: Move this to a diffrent file and import it here when theres more
+    //formats to take care of
     if (_selectedFormat == 'Badminton') {
       if (courts >= 2 && players >= 12) {
         final newGame = Game(
@@ -108,22 +116,25 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
                     return DropdownMenuItem(value: format, child: Text(format));
                   }).toList(),
             ),
-            TextField(
-              controller: _courtsController,
-              decoration: InputDecoration(labelText: 'Courts Available'),
-              keyboardType: TextInputType.number,
-            ),
-            TextField(
-              controller: _playersController,
-              decoration: InputDecoration(labelText: 'Players Scheduled'),
-              keyboardType: TextInputType.number,
-            ),
+            // Date selection box
             SizedBox(height: 12),
             Text('Scheduled Day:'),
             TextButton.icon(
               icon: Icon(Icons.calendar_today),
               label: Text(formattedDate),
               onPressed: _pickDate,
+            ),
+            // Court Avaliblity box
+            TextField(
+              controller: _courtsController,
+              decoration: InputDecoration(labelText: 'Courts Available'),
+              keyboardType: TextInputType.number,
+            ),
+            // Player attendance box
+            TextField(
+              controller: _playersController,
+              decoration: InputDecoration(labelText: 'Players Scheduled'),
+              keyboardType: TextInputType.number,
             ),
             SizedBox(height: 16),
             ElevatedButton(onPressed: _createGame, child: Text('Create Game')),
