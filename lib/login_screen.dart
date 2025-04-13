@@ -7,6 +7,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/admin_dashboard.dart';
 import 'package:flutter_application_2/member_dashboard.dart';
+import 'package:flutter_application_2/scheduled_games_screen.dart';
 import 'mock_users.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -52,6 +53,13 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  //Guest Login handler
+  void _guestLogin() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ScheduledGamesScreen()),
+    );
+  }
   void _showError(String message) {
     ScaffoldMessenger.of(
       context,
@@ -78,6 +86,17 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             SizedBox(height: 16),
             ElevatedButton(onPressed: _login, child: Text('Login')),
+            
+            // Guest Login Button
+            SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: _guestLogin,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.grey[300],
+                  foregroundColor: Colors.black,
+                ),
+                child: Text('Guest Login'),
+              ),
           ],
         ),
       ),
