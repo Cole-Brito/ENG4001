@@ -11,8 +11,18 @@ class ScheduledGamesScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(title: Text('Scheduled Games')),
-      body:
-          games.isEmpty
+      body: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Welcome, Guest!',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 16),
+            Expanded(
+              child: games.isEmpty
               ? Center(child: Text('No games scheduled yet.'))
               : ListView.builder(
                 itemCount: games.length,
@@ -33,6 +43,10 @@ class ScheduledGamesScreen extends StatelessWidget {
                   );
                 },
               ),
+              ),
+          ],
+        ),
+      ),
     );
   }
 }
