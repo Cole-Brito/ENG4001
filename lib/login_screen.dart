@@ -64,7 +64,7 @@ class _LoginScreenState extends State<LoginScreen> {
       MaterialPageRoute(builder: (context) => ScheduledGamesScreen()),
     );
   }
-
+  
   void _showError(String message) {
     ScaffoldMessenger.of(
       context,
