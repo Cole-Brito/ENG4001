@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_2/admin_dashboard.dart';
 import 'package:flutter_application_2/member_dashboard.dart';
 import 'package:flutter_application_2/models/user.dart';
+import 'package:flutter_application_2/scheduled_games_screen.dart';
 import 'data/mock_users.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -56,6 +57,14 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  // Guest Login -- Can only see the sechduled games for now
+  void _guestLogin() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ScheduledGamesScreen()),
+    );
+  }
+
   void _showError(String message) {
     ScaffoldMessenger.of(
       context,
@@ -82,6 +91,8 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             SizedBox(height: 16),
             ElevatedButton(onPressed: _login, child: Text('Login')),
+            SizedBox(height: 16),
+            ElevatedButton(onPressed: _guestLogin, child: Text('Guest Login')),
           ],
         ),
       ),
