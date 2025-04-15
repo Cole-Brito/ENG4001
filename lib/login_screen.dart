@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_2/admin_dashboard.dart';
 import 'package:flutter_application_2/member_dashboard.dart';
 import 'package:flutter_application_2/models/user.dart';
-import 'mock_users.dart';
+import 'data/mock_users.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});

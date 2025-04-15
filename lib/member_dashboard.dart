@@ -24,9 +24,14 @@ class MemberDashboard extends StatefulWidget {
 }
 
 class _MemberDashboardState extends State<MemberDashboard> {
+  //Method for signing up for games
+  //takes a "game" obj as the game the member is signing up for
   void _rsvp(Game game) {
     setState(() {
       widget.user.addRsvp(game.date);
+      if (!game.queue.any((u) => u.username == widget.user.username)) {
+        game.queue.add(widget.user);
+      }
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
