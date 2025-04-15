@@ -5,7 +5,7 @@ import '../models/game.dart';
 import '../data/mock_game_store.dart'; // This is the mock database
 
 /*
-TODO: we need to implement a restful api to interface with our postgreDB
+TODO: we need to implement a restful api to interface with our DB
 at some point, this is fine for our demo (probably)
 
 -Cole
@@ -24,13 +24,14 @@ class CreateGameScreen extends StatefulWidget {
 }
 
 class _CreateGameScreenState extends State<CreateGameScreen> {
-  String _selectedFormat = 'Badminton';
+  String _selectedFormat = 'Badminton'; // Defulat to badminton for now
   final _courtsController = TextEditingController();
   final _playersController = TextEditingController();
   DateTime? _selectedDate;
   String _message = '';
 
   // Date picker for selecting a game day
+  // TODO: Also select a time of day !!
   void _pickDate() async {
     final picked = await showDatePicker(
       context: context,

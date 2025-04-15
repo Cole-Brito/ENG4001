@@ -39,6 +39,7 @@ class _MemberDashboardState extends State<MemberDashboard> {
     );
   }
 
+  //Logout function
   void _logout() {
     Navigator.pushAndRemoveUntil(
       context,
@@ -117,7 +118,10 @@ class _MemberDashboardState extends State<MemberDashboard> {
                           final dateFormatted = DateFormat(
                             'EEE, MMM d, yyyy',
                           ).format(game.date);
-
+                          //Might be worth it to change this to a card
+                          //that can be tapped, which will then bring up
+                          //a list of options
+                          // https://api.flutter.dev/flutter/material/Card-class.html
                           return Card(
                             margin: EdgeInsets.symmetric(vertical: 8),
                             child: ListTile(

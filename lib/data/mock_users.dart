@@ -5,11 +5,8 @@ final mockUsers = [
   {'username': 'admin1', 'password': 'adminpass', 'role': 'admin'},
   {'username': 'member1', 'password': 'memberpass', 'role': 'member'},
   {'username': 'member2', 'password': '123456', 'role': 'member'},
-  {
-    'username': 'bob',
-    'password': 'bob',
-    'role': 'bob',
-  }, // This guy is for role testing :)
+  // bob is for role testing :)
+  {'username': 'bob', 'password': 'bob', 'role': 'bob'},
   {'username': 'player1', 'password': 'p1', 'role': 'member'},
   {'username': 'player2', 'password': 'p2', 'role': 'member'},
   {'username': 'player3', 'password': 'p3', 'role': 'member'},
