@@ -14,7 +14,7 @@ import 'login_screen.dart';
 class AdminDashboard extends StatelessWidget {
   const AdminDashboard({super.key});
 
-  //Logout button on the top bar
+  //Logout function
   void _logout(BuildContext context) {
     Navigator.pushAndRemoveUntil(
       context,

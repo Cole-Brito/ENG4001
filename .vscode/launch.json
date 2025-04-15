@@ -5,16 +5,27 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Dart: Attach to Process",
+            "name": "ROSS RACKET SPORTS",
+            "cwd": "ROSS RACKET SPORTS",
+            "request": "launch",
             "type": "dart",
-            "request": "attach"
+            "program": "lib/main.dart"
         },
         {
-            "name": "Dart",
-            "type": "dart",
+            "name": "ROSS RACKET SPORTS (profile mode)",
+            "cwd": "ROSS RACKET SPORTS",
             "request": "launch",
-            "program": "bin/main.dart"
+            "type": "dart",
+            "flutterMode": "profile",
+            "program": "lib/main.dart"
+        },
+        {
+            "name": "ROSS RACKET SPORTS (release mode)",
+            "cwd": "ROSS RACKET SPORTS",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release",
+            "program": "lib/main.dart"
         }
-
     ]
 }

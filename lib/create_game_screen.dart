@@ -5,10 +5,15 @@ import '../models/game.dart';
 import '../data/mock_game_store.dart'; // This is the mock database
 
 /*
-TODO: we need to implement a restful api to interface with our postgreDB
+TODO: we need to implement a restful api to interface with our DB
 at some point, this is fine for our demo (probably)
 
 -Cole
+*/
+
+/*
+Most of this class will become automated later down the line when we can have 
+members sign up and rsvp for games remotely 
 */
 
 class CreateGameScreen extends StatefulWidget {
@@ -19,13 +24,14 @@ class CreateGameScreen extends StatefulWidget {
 }
 
 class _CreateGameScreenState extends State<CreateGameScreen> {
-  String _selectedFormat = 'Badminton';
+  String _selectedFormat = 'Badminton'; // Defulat to badminton for now
   final _courtsController = TextEditingController();
   final _playersController = TextEditingController();
   DateTime? _selectedDate;
   String _message = '';
 
   // Date picker for selecting a game day
+  // TODO: Also select a time of day !!
   void _pickDate() async {
     final picked = await showDatePicker(
       context: context,
@@ -52,6 +58,9 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
       return;
     }
 
+    // Rules for a formats avaliblity
+    //TODO: Move this to a diffrent file and import it here when theres more
+    //formats to take care of
     if (_selectedFormat == 'Badminton') {
       if (courts >= 2 && players >= 12) {
         final newGame = Game(
@@ -108,22 +117,25 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
                     return DropdownMenuItem(value: format, child: Text(format));
                   }).toList(),
             ),
-            TextField(
-              controller: _courtsController,
-              decoration: InputDecoration(labelText: 'Courts Available'),
-              keyboardType: TextInputType.number,
-            ),
-            TextField(
-              controller: _playersController,
-              decoration: InputDecoration(labelText: 'Players Scheduled'),
-              keyboardType: TextInputType.number,
-            ),
+            // Date selection box
             SizedBox(height: 12),
             Text('Scheduled Day:'),
             TextButton.icon(
               icon: Icon(Icons.calendar_today),
               label: Text(formattedDate),
               onPressed: _pickDate,
+            ),
+            // Court Avaliblity box
+            TextField(
+              controller: _courtsController,
+              decoration: InputDecoration(labelText: 'Courts Available'),
+              keyboardType: TextInputType.number,
+            ),
+            // Player attendance box
+            TextField(
+              controller: _playersController,
+              decoration: InputDecoration(labelText: 'Players Scheduled'),
+              keyboardType: TextInputType.number,
             ),
             SizedBox(height: 16),
             ElevatedButton(onPressed: _createGame, child: Text('Create Game')),
