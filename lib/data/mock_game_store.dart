@@ -2,6 +2,7 @@ import '../models/game.dart';
 import '../models/user.dart';
 
 class MockGameStore {
+  //Test game
   static final List<Game> _games = [testGame];
 
   // A list of fake users for testing
