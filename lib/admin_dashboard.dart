@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'create_game_screen.dart';
 import 'scheduled_games_screen.dart';
 import 'login_screen.dart';
+import 'leaderboard_screen.dart'; 
 
 class AdminDashboard extends StatelessWidget {
   const AdminDashboard({super.key});
@@ -63,6 +64,16 @@ class AdminDashboard extends StatelessWidget {
                   ),
                 );
               },
+            ),
+
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LeaderboardScreen()),
+                );
+              },
+              child: Text('View Leaderboard'),
             ),
           ],
         ),
