@@ -5,6 +5,8 @@ import '../data/mock_game_store.dart';
 import '../models/game.dart';
 
 class ScheduledGamesScreen extends StatelessWidget {
+  const ScheduledGamesScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     final List<Game> games = MockGameStore.games;
@@ -22,28 +24,29 @@ class ScheduledGamesScreen extends StatelessWidget {
             ),
             SizedBox(height: 16),
             Expanded(
-              child: games.isEmpty
-              ? Center(child: Text('No games scheduled yet.'))
-              : ListView.builder(
-                itemCount: games.length,
-                itemBuilder: (context, index) {
-                  final game = games[index];
-                  final dateFormatted = DateFormat(
-                    'EEE, MMM d, yyyy',
-                  ).format(game.date);
-                  return Card(
-                    margin: EdgeInsets.all(12),
-                    child: ListTile(
-                      title: Text('${game.format} Game'),
-                      subtitle: Text(
-                        'Date: $dateFormatted\n'
-                        'Courts: ${game.courts} | Players: ${game.players}',
+              child:
+                  games.isEmpty
+                      ? Center(child: Text('No games scheduled yet.'))
+                      : ListView.builder(
+                        itemCount: games.length,
+                        itemBuilder: (context, index) {
+                          final game = games[index];
+                          final dateFormatted = DateFormat(
+                            'EEE, MMM d, yyyy',
+                          ).format(game.date);
+                          return Card(
+                            margin: EdgeInsets.all(12),
+                            child: ListTile(
+                              title: Text('${game.format} Game'),
+                              subtitle: Text(
+                                'Date: $dateFormatted\n'
+                                'Courts: ${game.courts} | Players: ${game.players}',
+                              ),
+                            ),
+                          );
+                        },
                       ),
-                    ),
-                  );
-                },
-              ),
-              ),
+            ),
           ],
         ),
       ),
