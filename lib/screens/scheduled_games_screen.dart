@@ -1,8 +1,8 @@
 // lib/scheduled_games_screen.dart
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../data/mock_game_store.dart';
-import '../models/game.dart';
+import '../../data/mock_game_store.dart';
+import '../../models/game.dart';
 
 class ScheduledGamesScreen extends StatelessWidget {
   const ScheduledGamesScreen({super.key});

@@ -5,11 +5,11 @@
 */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/admin_dashboard.dart';
-import 'package:flutter_application_2/member_dashboard.dart';
+import 'package:flutter_application_2/screens/admin_dashboard.dart';
+import 'package:flutter_application_2/screens/member_dashboard.dart';
 import 'package:flutter_application_2/models/user.dart';
-import 'package:flutter_application_2/scheduled_games_screen.dart';
-import 'data/mock_users.dart';
+import 'package:flutter_application_2/screens/scheduled_games_screen.dart';
+import '../data/mock_users.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -64,7 +64,7 @@ class _LoginScreenState extends State<LoginScreen> {
       MaterialPageRoute(builder: (context) => ScheduledGamesScreen()),
     );
   }
-  
+
   void _showError(String message) {
     ScaffoldMessenger.of(
       context,

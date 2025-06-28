@@ -1,8 +1,8 @@
 // lib/screens/game_play_screen.dart
 
 import 'package:flutter/material.dart';
-import '../models/game.dart';
-import '../models/user.dart';
+import '../../models/game.dart';
+import '../../models/user.dart';
 
 class GamePlayScreen extends StatefulWidget {
   final Game game;

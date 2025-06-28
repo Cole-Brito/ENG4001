@@ -7,11 +7,11 @@
 // lib/screens/member_dashboard.dart
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../data/mock_game_store.dart';
+import '../../data/mock_game_store.dart';
 import 'login_screen.dart';
-import '../models/game.dart';
-import '../models/user.dart';
-import '../game_play_screen.dart';
+import '../../models/game.dart';
+import '../../models/user.dart';
+import 'game_play_screen.dart';
 import 'leaderboard_screen.dart';
 
 class MemberDashboard extends StatefulWidget {
@@ -51,15 +51,16 @@ class _MemberDashboardState extends State<MemberDashboard> {
     final username = widget.user.username;
     final today = DateTime.now();
 
-    List<Game> todayGames = games
-        .where(
-          (g) =>
-              g.date.year == today.year &&
-              g.date.month == today.month &&
-              g.date.day == today.day &&
-              widget.user.hasRsvped(g.date),
-        )
-        .toList();
+    List<Game> todayGames =
+        games
+            .where(
+              (g) =>
+                  g.date.year == today.year &&
+                  g.date.month == today.month &&
+                  g.date.day == today.day &&
+                  widget.user.hasRsvped(g.date),
+            )
+            .toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -87,10 +88,11 @@ class _MemberDashboardState extends State<MemberDashboard> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => GamePlayScreen(
-                            game: todayGame,
-                            currentUser: widget.user,
-                          ),
+                          builder:
+                              (context) => GamePlayScreen(
+                                game: todayGame,
+                                currentUser: widget.user,
+                              ),
                         ),
                       );
                     },
@@ -102,7 +104,8 @@ class _MemberDashboardState extends State<MemberDashboard> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => LeaderboardScreen()),
+                          builder: (context) => LeaderboardScreen(),
+                        ),
                       );
                     },
                     child: Text('View Leaderboard'),
@@ -112,15 +115,15 @@ class _MemberDashboardState extends State<MemberDashboard> {
             else
               Column(
                 children: [
-                  Text(
-                      "No game scheduled for today or you haven't RSVP'd."),
+                  Text("No game scheduled for today or you haven't RSVP'd."),
                   SizedBox(height: 10),
                   ElevatedButton(
                     onPressed: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => LeaderboardScreen()),
+                          builder: (context) => LeaderboardScreen(),
+                        ),
                       );
                     },
                     child: Text('View Leaderboard'),
@@ -132,35 +135,34 @@ class _MemberDashboardState extends State<MemberDashboard> {
 
             // List of available games to RSVP
             Expanded(
-              child: games.isEmpty
-                  ? Center(child: Text('No scheduled games available.'))
-                  : ListView.builder(
-                      itemCount: games.length,
-                      itemBuilder: (context, index) {
-                        final game = games[index];
-                        final hasRsvped = widget.user.hasRsvped(game.date);
-                        final dateFormatted = DateFormat(
-                          'EEE, MMM d, yyyy',
-                        ).format(game.date);
+              child:
+                  games.isEmpty
+                      ? Center(child: Text('No scheduled games available.'))
+                      : ListView.builder(
+                        itemCount: games.length,
+                        itemBuilder: (context, index) {
+                          final game = games[index];
+                          final hasRsvped = widget.user.hasRsvped(game.date);
+                          final dateFormatted = DateFormat(
+                            'EEE, MMM d, yyyy',
+                          ).format(game.date);
 
-                        return Card(
-                          margin: EdgeInsets.symmetric(vertical: 8),
-                          child: ListTile(
-                            title: Text('${game.format} Game'),
-                            subtitle: Text(
-                              'Date: $dateFormatted\n'
-                              'Courts: ${game.courts} | Players: ${game.players}',
+                          return Card(
+                            margin: EdgeInsets.symmetric(vertical: 8),
+                            child: ListTile(
+                              title: Text('${game.format} Game'),
+                              subtitle: Text(
+                                'Date: $dateFormatted\n'
+                                'Courts: ${game.courts} | Players: ${game.players}',
+                              ),
+                              trailing: ElevatedButton(
+                                onPressed: hasRsvped ? null : () => _rsvp(game),
+                                child: Text(hasRsvped ? 'Signed Up' : 'RSVP'),
+                              ),
                             ),
-                            trailing: ElevatedButton(
-                              onPressed:
-                                  hasRsvped ? null : () => _rsvp(game),
-                              child:
-                                  Text(hasRsvped ? 'Signed Up' : 'RSVP'),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
+                          );
+                        },
+                      ),
             ),
           ],
         ),
