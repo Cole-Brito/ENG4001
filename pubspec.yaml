@@ -21,6 +21,9 @@ flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
   image_path: "assets/icons/ROS_Logo.png"
+  adaptive_icon_foreground: "assets/icons/ROS_Logo_foreground.png"
+  adaptive_icon_background: "#ffffff" # hexcode for background color
+
   min_sdk_android: 21 # android min sdk min:16, default 21
   web:
     generate: true
