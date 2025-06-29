@@ -1,4 +1,4 @@
-name: flutter_application_2
+name: flutter_application
 description: "A new Flutter project."
 publish_to: 'none'
 version: 0.1.0
@@ -10,6 +10,11 @@ dependencies:
   flutter:
     sdk: flutter
   intl: ^0.20.2
+
+  cupertino_icons: ^1.0.8
+
+  google_fonts: ^6.2.1
+
 
 dev_dependencies:
   flutter_test:
@@ -40,3 +45,13 @@ flutter_launcher_icons:
     
 flutter:
   uses-material-design: true
+
+  fonts:
+    - family: BebasNeue
+      fonts:
+        - asset: assets/fonts/BebasNeue-Regular.ttf
+        - asset: assets/fonts/Bebas Neue Cyrillic.ttf
+    - family: GlacialIndifference
+      fonts:
+        - asset: assets/fonts/GlacialIndifference-Regular.otf
+  
