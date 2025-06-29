@@ -174,7 +174,11 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
               const SizedBox(height: 20),
               const Text(
                 'Pick 3 players to form a group:',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'BebasNeue',
+                ),
               ),
               Wrap(
                 spacing: 8,

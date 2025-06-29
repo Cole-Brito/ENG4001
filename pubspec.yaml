@@ -50,7 +50,9 @@ flutter:
     - family: BebasNeue
       fonts:
         - asset: assets/fonts/BebasNeue-Regular.ttf
-        - asset: assets/fonts/Bebas Neue Cyrillic.ttf
+    - family: Bebasneuecyrillic
+      fonts:
+        - asset: assets/fonts/bebasneuecyrillic.ttf
     - family: GlacialIndifference
       fonts:
         - asset: assets/fonts/GlacialIndifference-Regular.otf
