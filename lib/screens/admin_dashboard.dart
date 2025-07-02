@@ -15,12 +15,13 @@ import 'leaderboard_screen.dart';
 class AdminDashboard extends StatelessWidget {
   const AdminDashboard({super.key});
 
-  //Logout function
   void _logout(BuildContext context) {
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (context) => LoginScreen()),
-      (route) => false,
+      MaterialPageRoute<void>(
+        builder: (BuildContext context) => const LoginScreen(),
+      ),
+      (Route<dynamic> route) => false,
     );
   }
 
@@ -28,11 +29,17 @@ class AdminDashboard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Admin Dashboard'),
-        actions: [
+        title: const Text(
+          'Admin Dashboard',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        foregroundColor: Theme.of(context).colorScheme.onPrimary,
+        elevation: 4,
+        actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.logout),
-            onPressed: () => _logout(context), //Logout button on the top bar
+            icon: const Icon(Icons.logout),
+            onPressed: () => _logout(context),
             tooltip: 'Logout',
           ),
         ],
@@ -40,42 +47,115 @@ class AdminDashboard extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            //Button for creating a game
-            ElevatedButton(
-              child: Text('Create Game'),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => CreateGameScreen()),
-                );
-              },
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              'Welcome, Admin!',
+              style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
             ),
-            //Button for viewing schduled games
-            SizedBox(height: 16),
-            ElevatedButton(
-              child: Text('View Scheduled Games'),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ScheduledGamesScreen(),
+            const SizedBox(height: 32),
+            Expanded(
+              child: GridView.count(
+                crossAxisCount: MediaQuery.of(context).size.width > 600 ? 3 : 2,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+                children: <Widget>[
+                  _AdminDashboardActionCard(
+                    icon: Icons.event_note,
+                    title: 'Create New Game',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute<void>(
+                          builder:
+                              (BuildContext context) =>
+                                  const CreateGameScreen(),
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
-
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => LeaderboardScreen()),
-                );
-              },
-              child: Text('View Leaderboard'),
+                  _AdminDashboardActionCard(
+                    icon: Icons.calendar_month,
+                    title: 'View Scheduled Games',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute<void>(
+                          builder:
+                              (BuildContext context) =>
+                                  const ScheduledGamesScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  _AdminDashboardActionCard(
+                    icon: Icons.leaderboard,
+                    title: 'View Leaderboard',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute<void>(
+                          builder:
+                              (BuildContext context) =>
+                                  const LeaderboardScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _AdminDashboardActionCard extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final VoidCallback onTap;
+
+  const _AdminDashboardActionCard({
+    required this.icon,
+    required this.title,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 6,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Icon(
+                icon,
+                size: 50,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
