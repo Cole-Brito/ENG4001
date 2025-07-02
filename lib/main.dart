@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'login_screen.dart';
+import 'screens/login_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -13,8 +13,20 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Game Manager',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(primarySwatch: Colors.indigo),
-      home: LoginScreen(),
+      theme: ThemeData(
+        useMaterial3: true,
+        colorSchemeSeed: Color(0xFF10138A),
+        brightness: Brightness.light,
+        appBarTheme: const AppBarTheme(centerTitle: true),
+      ),
+      darkTheme: ThemeData(
+        useMaterial3: true,
+        colorSchemeSeed: Color(0xFF10138A),
+        brightness: Brightness.dark,
+        appBarTheme: const AppBarTheme(centerTitle: true),
+      ),
+      themeMode: ThemeMode.system,
+      home: const LoginScreen(),
     );
   }
 }

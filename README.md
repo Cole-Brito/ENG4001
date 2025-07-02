@@ -1,3 +1,3 @@
-# flutter_application_2
+# ROS Mobile App
 
 A new Flutter project.
