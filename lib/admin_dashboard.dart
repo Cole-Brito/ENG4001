@@ -87,6 +87,23 @@ class AdminDashboard extends StatelessWidget {
                         );
                       },
                     ),
+                    // Button to edit game -- TODO: Change where the button navigates to!!
+                    const SizedBox(height: 12),
+                    ElevatedButton.icon(
+                      icon: const Icon(Icons.calendar_month),
+                      label: const Text('Edit Game'),
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(50),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const CreateSeasonScreen(),
+                          ),
+                        );
+                      },
+                    ),
                   ],
                 ),
               ),

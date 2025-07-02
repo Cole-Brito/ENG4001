@@ -16,6 +16,7 @@ class Game {
   final List<User> queue;
   final List<List<User>> matches;
   final List<List<User>> waitingGroups;
+  // This will be used if we can have a map of the courts -- i.e. the admin will be able to assgin the courts numbers
   // int = court number
   final Map<int, Match> activeMatches;
 
