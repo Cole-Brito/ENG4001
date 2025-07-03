@@ -1,5 +1,6 @@
 /*
 * Author: Cole Brito
+* UI Author : Bivin Job
 * ENG4001_020
 * Basic login screen and autherization of users logic
 */

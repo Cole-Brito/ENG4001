@@ -1,3 +1,10 @@
+/*
+* Author : Bivin Job
+* UI Author : Bivin Job
+* Match Info Dialog for selecting winners in a match
+* This dialog allows users to select winners from the players in a match.
+*/
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/models/user.dart';
 

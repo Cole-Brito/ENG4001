@@ -1,6 +1,7 @@
 /*
 * ROSS Game Managment Project
 * Author: Cole Brito
+* UI Author : Bivin Job
 * Member dashboard
 */
 
