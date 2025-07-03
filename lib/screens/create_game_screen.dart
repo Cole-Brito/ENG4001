@@ -1,8 +1,8 @@
 // create_game_screen.dart
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; //This is how im doing the dates
-import '../models/game.dart';
-import '../data/mock_game_store.dart'; // This is the mock database
+import '../../models/game.dart';
+import '../../data/mock_game_store.dart'; // This is the mock database
 
 /*
 TODO: we need to implement a restful api to interface with our DB
