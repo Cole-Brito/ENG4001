@@ -1,11 +1,11 @@
 // create_game_screen.dart
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; //This is how im doing the dates
+import 'package:intl/intl.dart'; // Used for formatting dates
 import '../../models/game.dart';
-import '../../data/mock_game_store.dart'; // This is the mock database
+import '../../data/mock_game_store.dart'; // Mock data store for demo
 
 /*
-TODO: we need to implement a restful api to interface with our DB
+TODO: we need to implement a restful API to interface with our DB
 at some point, this is fine for our demo (probably)
 
 -Cole
@@ -13,7 +13,9 @@ at some point, this is fine for our demo (probably)
 
 /*
 Most of this class will become automated later down the line when we can have 
-members sign up and rsvp for games remotely 
+members sign up and RSVP for games remotely 
+
+UI Improved by Bivin Job
 */
 
 class CreateGameScreen extends StatefulWidget {
@@ -24,14 +26,24 @@ class CreateGameScreen extends StatefulWidget {
 }
 
 class _CreateGameScreenState extends State<CreateGameScreen> {
-  String _selectedFormat = 'Badminton'; // Defulat to badminton for now
+  String _selectedFormat = 'Badminton'; // Default game format
   final _courtsController = TextEditingController();
   final _playersController = TextEditingController();
   DateTime? _selectedDate;
   String _message = '';
 
+  // Supported game formats for dropdown
+  final List<String> _gameFormats = ['Badminton', 'Tennis', 'Table Tennis'];
+
+  // Rules for each game format (minimum required resources)
+  final Map<String, Map<String, int>> formatRules = {
+    'Badminton': {'courts': 2, 'players': 12},
+    'Tennis': {'courts': 1, 'players': 4},
+    'Table Tennis': {'courts': 1, 'players': 2},
+  };
+
   // Date picker for selecting a game day
-  // TODO: Also select a time of day !!
+  // TODO: Also allow selecting a time of day in the future
   void _pickDate() async {
     final picked = await showDatePicker(
       context: context,
@@ -46,44 +58,45 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
     }
   }
 
+  // Game creation logic based on selected format and input validation
   void _createGame() {
     final courts = int.tryParse(_courtsController.text) ?? 0;
     final players = int.tryParse(_playersController.text) ?? 0;
 
     if (_selectedDate == null) {
-      setState(() => _message = '⚠️  Please select a date for the game.');
+      setState(() => _message = '⚠️ Please select a date for the game.');
       return;
     }
 
-    // Rules for a formats avaliblity
-    //TODO: Move this to a diffrent file and import it here when theres more
-    //formats to take care of
-    if (_selectedFormat == 'Badminton') {
-      if (courts >= 2 && players >= 12) {
-        final newGame = Game(
-          format: _selectedFormat,
-          courts: courts,
-          players: players,
-          date: _selectedDate!,
-        );
+    // Get required resources for selected format
+    final requiredCourts = formatRules[_selectedFormat]!['courts']!;
+    final requiredPlayers = formatRules[_selectedFormat]!['players']!;
 
-        MockGameStore.addGame(newGame);
+    // Validate input against required resources
+    if (courts >= requiredCourts && players >= requiredPlayers) {
+      final newGame = Game(
+        format: _selectedFormat,
+        courts: courts,
+        players: players,
+        date: _selectedDate!,
+      );
 
-        final formattedDate = DateFormat('yyyy-MM-dd').format(_selectedDate!);
-        setState(() {
-          _message =
-              '✅ Game created for $formattedDate\nCourts: $courts | Players: $players';
-          _courtsController.clear();
-          _playersController.clear();
-          _selectedDate = null;
-        });
-      } else {
-        setState(
-          () =>
-              _message =
-                  '⚠️  Not enough resources for Badminton.\nMinimum: 2 courts, 12 players.',
-        );
-      }
+      // Add new game to the mock store
+      MockGameStore.addGame(newGame);
+
+      final formattedDate = DateFormat('yyyy-MM-dd').format(_selectedDate!);
+      setState(() {
+        _message =
+            '✅ $_selectedFormat game created for $formattedDate\nCourts: $courts | Players: $players';
+        _courtsController.clear();
+        _playersController.clear();
+        _selectedDate = null;
+      });
+    } else {
+      setState(() {
+        _message =
+            '⚠️ Not enough resources for $_selectedFormat.\nMinimum: $requiredCourts courts, $requiredPlayers players.';
+      });
     }
   }
 
@@ -125,16 +138,19 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
                   DropdownButtonFormField<String>(
                     value: _selectedFormat,
                     decoration: const InputDecoration(
-                      prefixIcon: Icon(Icons.sports),
+                      prefixIcon: Icon(Icons.sports_esports),
                       labelText: 'Game Format',
                       border: OutlineInputBorder(),
                     ),
-                    items: const [
-                      DropdownMenuItem(
-                        value: 'Badminton',
-                        child: Text('Badminton'),
-                      ),
-                    ],
+                    items:
+                        _gameFormats
+                            .map(
+                              (format) => DropdownMenuItem(
+                                value: format,
+                                child: Text(format),
+                              ),
+                            )
+                            .toList(),
                     onChanged:
                         (value) => setState(() => _selectedFormat = value!),
                   ),
@@ -215,3 +231,5 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
     );
   }
 }
+// This screen allows users to create a new game by selecting the format, date, number of courts, and players.
+// It validates the input against predefined rules for each game format and provides feedback on success or failure

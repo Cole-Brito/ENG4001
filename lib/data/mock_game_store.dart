@@ -29,4 +29,24 @@ class MockGameStore {
     rsvps: List.from(testUsers),
     queue: List.from(testUsers),
   );
+
+  // A fake game for testing purposes
+  static final Game testGame2 = Game(
+    format: 'Tennis',
+    date: DateTime.now(),
+    courts: 2,
+    players: 12,
+    rsvps: List.from(testUsers),
+    queue: List.from(testUsers),
+  );
+
+  // A fake game for testing purposes
+  static final Game testGame3 = Game(
+    format: 'Table Tennis',
+    date: DateTime.now(),
+    courts: 1,
+    players: 4,
+    rsvps: List.from(testUsers),
+    queue: List.from(testUsers),
+  );
 }

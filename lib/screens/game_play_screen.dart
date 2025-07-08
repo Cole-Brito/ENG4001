@@ -218,7 +218,12 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                       setState(() => completeMatch(game, courtNum));
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.redAccent,
+                      backgroundColor: Colors.green.shade200,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      textStyle: const TextStyle(fontSize: 14),
+                      foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                     ),
                     icon: const Icon(Icons.check),
@@ -243,7 +248,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                         selected: isSelected,
                         selectedColor: Colors.indigoAccent.shade100,
                         checkmarkColor: Colors.white,
-                        backgroundColor: Colors.grey.shade200,
+                        backgroundColor: Colors.black,
                         onSelected: (selected) {
                           setState(() {
                             if (selected && selectedPlayers.length < 3) {
