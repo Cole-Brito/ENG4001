@@ -12,21 +12,50 @@ class ScheduledGamesScreen extends StatelessWidget {
     final List<Game> games = MockGameStore.games;
 
     return Scaffold(
-      appBar: AppBar(title: Text('Scheduled Games')),
-      body: Padding(
-        padding: const EdgeInsets.all(12.0),
+      appBar: AppBar(
+        title: const Text('Scheduled Games'),
+        backgroundColor: Colors.indigo.shade600,
+        elevation: 0,
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.white, Colors.indigo.shade50],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'Welcome, Guest!',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
+
+            // ── Game list or fallback ──
             Expanded(
               child:
                   games.isEmpty
-                      ? Center(child: Text('No games scheduled yet.'))
+                      ? Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: const [
+                            Icon(
+                              Icons.sports_esports_outlined,
+                              size: 80,
+                              color: Colors.grey,
+                            ),
+                            SizedBox(height: 16),
+                            Text(
+                              'No games scheduled yet.',
+                              style: TextStyle(fontSize: 18),
+                            ),
+                          ],
+                        ),
+                      )
                       : ListView.builder(
                         itemCount: games.length,
                         itemBuilder: (context, index) {
@@ -34,13 +63,37 @@ class ScheduledGamesScreen extends StatelessWidget {
                           final dateFormatted = DateFormat(
                             'EEE, MMM d, yyyy',
                           ).format(game.date);
+
                           return Card(
-                            margin: EdgeInsets.all(12),
+                            elevation: 4,
+                            margin: const EdgeInsets.symmetric(
+                              vertical: 8,
+                              horizontal: 4,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                             child: ListTile(
-                              title: Text('${game.format} Game'),
-                              subtitle: Text(
-                                'Date: $dateFormatted\n'
-                                'Courts: ${game.courts} | Players: ${game.players}',
+                              contentPadding: const EdgeInsets.all(16),
+                              leading: const Icon(
+                                Icons.event_available,
+                                color: Colors.indigo,
+                                size: 32,
+                              ),
+                              title: Text(
+                                '${game.format} Game',
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              subtitle: Padding(
+                                padding: const EdgeInsets.only(top: 4),
+                                child: Text(
+                                  '📅 $dateFormatted\n'
+                                  '🎾 Courts: ${game.courts}   👥 Players: ${game.players}',
+                                  style: const TextStyle(height: 1.4),
+                                ),
                               ),
                             ),
                           );
