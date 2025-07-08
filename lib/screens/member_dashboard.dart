@@ -40,7 +40,7 @@ class _MemberDashboardState extends State<MemberDashboard> {
   // RSVP logic (unchanged but message improved) // NEW
   void _rsvp(Game game) {
     setState(() {
-      widget.user.addRsvp(game.date);
+      widget.user.addRsvp(game);
       if (!game.queue.any((u) => u.username == widget.user.username)) {
         game.queue.add(widget.user);
       }
@@ -78,7 +78,7 @@ class _MemberDashboardState extends State<MemberDashboard> {
 
     if (confirm == true) {
       setState(() {
-        widget.user.removeRsvp(game.date); // <- must exist in User model
+        widget.user.removeRsvp(game); // <- must exist in User model
         game.queue.removeWhere(
           (u) => u.username == widget.user.username,
         ); // pull from queue
@@ -117,7 +117,7 @@ class _MemberDashboardState extends State<MemberDashboard> {
                   g.date.year == today.year &&
                   g.date.month == today.month &&
                   g.date.day == today.day &&
-                  widget.user.hasRsvped(g.date),
+                  widget.user.hasRsvped(g),
             )
             .toList();
 
@@ -221,7 +221,7 @@ class _MemberDashboardState extends State<MemberDashboard> {
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 const SizedBox(height: 15),
-                ElevatedButton.icon(
+                OutlinedButton.icon(
                   icon: const Icon(Icons.play_circle),
                   label: const Text('View Game In Progress'),
                   onPressed:
@@ -298,7 +298,7 @@ class _MemberDashboardState extends State<MemberDashboard> {
 
   // ---------- Upcoming game card ----------
   Widget _upcomingGameCard(Game game) {
-    final bool hasRsvped = widget.user.hasRsvped(game.date);
+    final bool hasRsvped = widget.user.hasRsvped(game);
     final String dateStr = DateFormat('EEE, MMM d, yyyy').format(game.date);
 
     return Card(
