@@ -37,7 +37,7 @@ class _MemberDashboardState extends State<MemberDashboard> {
     }
   }
 
-  // RSVP logic (unchanged)
+  // RSVP logic (unchanged but message improved) // NEW
   void _rsvp(Game game) {
     setState(() {
       widget.user.addRsvp(game.date);
@@ -46,14 +46,55 @@ class _MemberDashboardState extends State<MemberDashboard> {
       }
     });
 
+    final String dateStr = DateFormat('EEE, MMM d').format(game.date); // NEW
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('You have RSVP’d for the ${game.format} game!'),
+        content: Text('✅ Signed up for ${game.format} • $dateStr'),
         backgroundColor: Theme.of(context).colorScheme.secondary,
       ),
     );
   }
 
+  // Un-RSVP with confirmation dialog // NEW
+  void _unsign(Game game) async {
+    final bool? confirm = await showDialog<bool>(
+      context: context,
+      builder:
+          (_) => AlertDialog(
+            title: const Text('Cancel RSVP?'),
+            content: Text('Remove your RSVP for the ${game.format} game?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('No'),
+              ),
+              ElevatedButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: const Text('Yes'),
+              ),
+            ],
+          ),
+    );
+
+    if (confirm == true) {
+      setState(() {
+        widget.user.removeRsvp(game.date); // <- must exist in User model
+        game.queue.removeWhere(
+          (u) => u.username == widget.user.username,
+        ); // pull from queue
+      });
+
+      final String dateStr = DateFormat('EEE, MMM d').format(game.date);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('❌ Un-RSVP’d from ${game.format} • $dateStr'),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        ),
+      );
+    }
+  }
+
+  // ---------------- existing helpers ----------------
   void _logout() {
     Navigator.pushAndRemoveUntil(
       context,
@@ -62,6 +103,7 @@ class _MemberDashboardState extends State<MemberDashboard> {
     );
   }
 
+  // ---------------- main build ----------------------
   @override
   Widget build(BuildContext context) {
     final List<Game> games = MockGameStore.games;
@@ -82,77 +124,77 @@ class _MemberDashboardState extends State<MemberDashboard> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Member Dashboard'),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Theme.of(context).colorScheme.onPrimary,
+        backgroundColor: Colors.indigo.shade600,
         actions: [
           IconButton(icon: const Icon(Icons.logout), onPressed: _logout),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Welcome, $username!',
-              style: Theme.of(
-                context,
-              ).textTheme.headlineSmall!.copyWith(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20),
 
-            // ── Today's Game Card (with banner) ──
-            if (todayGames.isNotEmpty)
-              _todayGameCard(todayGames.first)
-            else
-              _noGameTodayCard(),
+      // -------- Requirement 1: full-page scroll --------------
+      body: SingleChildScrollView(
+        // NEW
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // ---------- greeting ----------
+              Text(
+                'Welcome, $username!',
+                style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 20),
 
-            const SizedBox(height: 10),
-            Text(
-              'Upcoming Games:',
-              style: Theme.of(
-                context,
-              ).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
+              // ---------- Today’s games (0-n cards) ----------
+              if (todayGames.isNotEmpty)
+                ...todayGames.map(_todayGameCard) // NEW: show all
+              else
+                _noGameTodayCard(),
 
-            // ── Upcoming Games List (each with banner) ──
-            Expanded(
-              child:
-                  games.isEmpty
-                      ? Center(
-                        child: Text(
-                          'No scheduled games available.',
-                          style: Theme.of(
-                            context,
-                          ).textTheme.bodyLarge!.copyWith(color: Colors.grey),
-                        ),
-                      )
-                      : ListView.builder(
-                        itemCount: games.length,
-                        itemBuilder:
-                            (_, index) => _upcomingGameCard(games[index]),
-                      ),
-            ),
-          ],
+              const SizedBox(height: 10),
+              Text(
+                'Upcoming Games:',
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
+
+              // ---------- Upcoming list (still scrolls but shrinkWrap) ----------
+              games.isEmpty
+                  ? Center(
+                    child: Text(
+                      'No scheduled games available.',
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodyLarge!.copyWith(color: Colors.grey),
+                    ),
+                  )
+                  : ListView.builder(
+                    physics:
+                        const NeverScrollableScrollPhysics(), // list inside scroll
+                    shrinkWrap: true,
+                    itemCount: games.length,
+                    itemBuilder: (_, i) => _upcomingGameCard(games[i]),
+                  ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  // ---------- Widgets ----------
-
-  /// Card for today's RSVP'd game
+  // ---------- Card for each game happening today ----------
   Widget _todayGameCard(Game game) {
-    final dateFormatted = DateFormat('EEE, MMM d, yyyy').format(game.date);
-
+    final dateFormatted = DateFormat('EEE, MMM d').format(game.date);
     return Card(
       elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       margin: const EdgeInsets.only(bottom: 20),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Column(
         children: [
-          // Banner image
           ClipRRect(
             borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
             child: Image.asset(
@@ -162,7 +204,6 @@ class _MemberDashboardState extends State<MemberDashboard> {
               fit: BoxFit.cover,
             ),
           ),
-          // Details & actions
           Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
@@ -170,19 +211,18 @@ class _MemberDashboardState extends State<MemberDashboard> {
               children: [
                 Text(
                   "Today's Game",
-                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  'You have RSVP’d for $dateFormatted\nGame: ${game.format}',
+                  'You have RSVP’d for $dateFormatted • ${game.format}',
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 const SizedBox(height: 15),
                 ElevatedButton.icon(
-                  icon: const Icon(Icons.sports_soccer_rounded),
+                  icon: const Icon(Icons.play_circle),
                   label: const Text('View Game In Progress'),
                   onPressed:
                       () => Navigator.push(
@@ -216,19 +256,19 @@ class _MemberDashboardState extends State<MemberDashboard> {
     );
   }
 
-  /// Card shown when there is no game today
+  // ---------- Card when no game today ----------
   Widget _noGameTodayCard() {
     return Card(
       elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       margin: const EdgeInsets.only(bottom: 20),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "No Game Today",
+              'No Game Today',
               style: Theme.of(
                 context,
               ).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
@@ -256,10 +296,10 @@ class _MemberDashboardState extends State<MemberDashboard> {
     );
   }
 
-  /// Card for each upcoming game with banner + RSVP
+  // ---------- Upcoming game card ----------
   Widget _upcomingGameCard(Game game) {
-    final hasRsvped = widget.user.hasRsvped(game.date);
-    final dateFormatted = DateFormat('EEE, MMM d, yyyy').format(game.date);
+    final bool hasRsvped = widget.user.hasRsvped(game.date);
+    final String dateStr = DateFormat('EEE, MMM d, yyyy').format(game.date);
 
     return Card(
       elevation: 2,
@@ -286,7 +326,7 @@ class _MemberDashboardState extends State<MemberDashboard> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '${game.format} on $dateFormatted',
+                        '${game.format} • $dateStr',
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       const SizedBox(height: 4),
@@ -298,8 +338,16 @@ class _MemberDashboardState extends State<MemberDashboard> {
                   ),
                 ),
                 ElevatedButton(
-                  onPressed: hasRsvped ? null : () => _rsvp(game),
-                  child: Text(hasRsvped ? 'Signed Up' : 'RSVP'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor:
+                        hasRsvped
+                            ? Colors.redAccent
+                            : Theme.of(context).colorScheme.primary,
+                    foregroundColor: Colors.white, // Ensure text is visible
+                  ),
+                  onPressed:
+                      hasRsvped ? () => _unsign(game) : () => _rsvp(game),
+                  child: Text(hasRsvped ? 'Un-RSVP' : 'RSVP'),
                 ),
               ],
             ),
