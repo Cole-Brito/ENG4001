@@ -1,28 +1,25 @@
+// lib/screens/leaderboard_screen.dart
+
 /*
 * UI Author : Bivin Job
 */
 
 import 'package:flutter/material.dart';
-import '../data/mock_users.dart';
+import '../../models/game.dart'; // Source of leaderboard points
 
-class LeaderboardScreen extends StatelessWidget {
+class LeaderboardScreen extends StatefulWidget {
   const LeaderboardScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // Filter members only and ensure 'gamesPlayed' is treated as an int
-    final List<Map<String, dynamic>> memberUsers =
-        mockUsers
-            .where((Map<String, dynamic> user) => user['role'] == 'member')
-            .toList();
+  State<LeaderboardScreen> createState() => _LeaderboardScreenState();
+}
 
-    // Sort members by gamesPlayed DESCENDING
-    memberUsers.sort(
-      (Map<String, dynamic> a, Map<String, dynamic> b) =>
-          ((b['gamesPlayed'] as int?) ?? 0).compareTo(
-            ((a['gamesPlayed'] as int?) ?? 0),
-          ),
-    );
+class _LeaderboardScreenState extends State<LeaderboardScreen> {
+  @override
+  Widget build(BuildContext context) {
+    final List<MapEntry<String, int>> scoreEntries =
+        Game.leaderboard.entries.toList()
+          ..sort((a, b) => b.value.compareTo(a.value)); // DESC
 
     return Scaffold(
       appBar: AppBar(
@@ -32,10 +29,10 @@ class LeaderboardScreen extends StatelessWidget {
         elevation: 4,
       ),
       body:
-          memberUsers.isEmpty
+          scoreEntries.isEmpty
               ? Center(
                 child: Text(
-                  'No members found for the leaderboard.',
+                  'No points recorded yet.',
                   style: Theme.of(context).textTheme.titleMedium!.copyWith(
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
@@ -43,11 +40,11 @@ class LeaderboardScreen extends StatelessWidget {
               )
               : Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
+                children: [
                   Padding(
-                    padding: const EdgeInsets.all(20.0),
+                    padding: const EdgeInsets.all(20),
                     child: Text(
-                      'Top Players by Games Played',
+                      'Top Players by Points',
                       style: Theme.of(
                         context,
                       ).textTheme.headlineSmall!.copyWith(
@@ -58,29 +55,27 @@ class LeaderboardScreen extends StatelessWidget {
                   ),
                   Expanded(
                     child: ListView.builder(
-                      itemCount: memberUsers.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        final Map<String, dynamic> user = memberUsers[index];
-                        final String username = user['username'] as String;
-                        final int gamesPlayed =
-                            (user['gamesPlayed'] as int?) ?? 0;
-                        final int rank = index + 1;
+                      itemCount: scoreEntries.length,
+                      itemBuilder: (_, index) {
+                        final entry = scoreEntries[index];
+                        final username = entry.key;
+                        final points = entry.value;
+                        final matches = Game.gamesPlayed[username] ?? 0;
+                        final rank = index + 1;
 
                         IconData leadingIcon;
                         Color iconColor;
                         if (rank == 1) {
-                          leadingIcon = Icons.emoji_events; // Gold trophy
+                          leadingIcon = Icons.emoji_events;
                           iconColor = Colors.amber.shade700;
                         } else if (rank == 2) {
-                          leadingIcon = Icons.emoji_events; // Silver trophy
+                          leadingIcon = Icons.emoji_events;
                           iconColor = Colors.blueGrey.shade400;
                         } else if (rank == 3) {
-                          leadingIcon = Icons.emoji_events; // Bronze trophy
+                          leadingIcon = Icons.emoji_events;
                           iconColor = Colors.brown.shade400;
                         } else {
-                          leadingIcon =
-                              Icons
-                                  .format_list_numbered; // Number icon for others
+                          leadingIcon = Icons.format_list_numbered;
                           iconColor =
                               Theme.of(context).colorScheme.onSurfaceVariant;
                         }
@@ -95,7 +90,7 @@ class LeaderboardScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(15),
                           ),
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            padding: const EdgeInsets.symmetric(vertical: 8),
                             child: ListTile(
                               leading: CircleAvatar(
                                 backgroundColor:
@@ -117,24 +112,12 @@ class LeaderboardScreen extends StatelessWidget {
                               ),
                               title: Text(
                                 username,
-                                style: Theme.of(
-                                  context,
-                                ).textTheme.titleLarge!.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color:
-                                      Theme.of(context).colorScheme.onSurface,
-                                ),
+                                style: Theme.of(context).textTheme.titleLarge!
+                                    .copyWith(fontWeight: FontWeight.bold),
                               ),
                               subtitle: Text(
-                                '$gamesPlayed Games Played',
-                                style: Theme.of(
-                                  context,
-                                ).textTheme.bodyMedium!.copyWith(
-                                  color:
-                                      Theme.of(
-                                        context,
-                                      ).colorScheme.onSurfaceVariant,
-                                ),
+                                '$points pts • $matches matches played',
+                                style: Theme.of(context).textTheme.bodyMedium,
                               ),
                               trailing: Icon(
                                 leadingIcon,

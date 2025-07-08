@@ -34,4 +34,6 @@ class Game {
        matches = matches ?? [],
        waitingGroups = waitingGroups ?? [],
        activeMatches = activeMatches ?? {};
+  static Map<String, int> leaderboard = {};
+  static Map<String, int> gamesPlayed = {};
 }
