@@ -64,4 +64,7 @@ flutter:
     - family: GlacialIndifference
       fonts:
         - asset: assets/fonts/GlacialIndifference-Regular.otf
+    - family: NotoSans
+      fonts:
+        - asset: assets/fonts/NotoSans-Regular.ttf
   
