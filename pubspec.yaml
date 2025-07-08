@@ -48,6 +48,12 @@ flutter_launcher_icons:
 flutter:
   uses-material-design: true
 
+  assets:
+    - assets/images/login_background.jpg
+    - assets/images/Badminton Court.png
+    - assets/images/Table Tennis.png
+    - assets/images/Tennis Court.png
+
   fonts:
     - family: BebasNeue
       fonts:
