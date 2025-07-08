@@ -1,15 +1,21 @@
-// lib/models/user.dart
 import 'game.dart';
 
 class User {
   final String username;
   final bool isAdmin;
 
-  // Changed from List<DateTime> to List<Game>
+  // RSVP list of full Game objects
   final List<Game> rsvps;
 
-  User({required this.username, required this.isAdmin, List<Game>? rsvps})
-    : rsvps = rsvps ?? [];
+  // Leaderboard scoring field
+  int gamesPlayed;
+
+  User({
+    required this.username,
+    required this.isAdmin,
+    List<Game>? rsvps,
+    this.gamesPlayed = 0, // Default value
+  }) : rsvps = rsvps ?? [];
 
   void addRsvp(Game game) {
     if (!rsvps.contains(game)) {
@@ -25,7 +31,7 @@ class User {
     return rsvps.contains(game);
   }
 
-  // Optionally check if RSVP exists by just date
+  // Check if RSVP exists by date
   bool hasRsvpedOnDate(DateTime date) {
     return rsvps.any(
       (g) =>
@@ -35,6 +41,7 @@ class User {
     );
   }
 
+  // Get all games RSVP’d on a specific date
   List<Game> rsvpedGamesOnDate(DateTime date) {
     return rsvps
         .where(

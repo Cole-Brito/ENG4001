@@ -30,14 +30,15 @@ class _LoginScreenState extends State<LoginScreen> {
     final String username = _usernameController.text.trim();
     final String password = _passwordController.text.trim();
 
-    final Map<String, String> userMap = mockUsers.firstWhere(
-      (Map<String, String> u) =>
+    final Map<String, Object> userMap = mockUsers.firstWhere(
+      (Map<String, Object> u) =>
           u['username'] == username && u['password'] == password,
-      orElse: () => <String, String>{},
+      orElse: () => <String, Object>{},
     );
 
     if (userMap.isNotEmpty) {
-      final String? role = userMap['role'];
+      final String role = userMap['role'] as String;
+      //final int gamesPlayed = userMap['gamesPlayed'] as int; ← delete this if unused
 
       if (role == 'admin') {
         Navigator.pushReplacement(
@@ -48,7 +49,10 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       } else if (role == 'member') {
         // Converting map into a User object
-        final User user = User(username: userMap['username']!, isAdmin: false);
+        final User user = User(
+          username: userMap['username'] as String,
+          isAdmin: (userMap['role'] as String) == 'admin',
+        );
 
         Navigator.pushReplacement(
           context,

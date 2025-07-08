@@ -48,14 +48,101 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     }
 
     // Complete an active match and return players to the queue
-    void completeMatch(Game game, int courtNumber) {
-      if (game.activeMatches.containsKey(courtNumber)) {
-        final finishedGroup = game.activeMatches.remove(courtNumber)!.players;
-        game.queue.addAll(finishedGroup);
-      }
+    void completeMatch(Game game, int courtNumber) async {
+      if (!game.activeMatches.containsKey(courtNumber)) return;
 
-      // Try to assign next waiting group
-      assignCourtsIfAvailable(game);
+      final finishedGroup = game.activeMatches.remove(courtNumber)!.players;
+
+      final winners = await showDialog<List<User>>(
+        context: context,
+        builder: (_) {
+          final List<User> selected = [];
+
+          return StatefulBuilder(
+            builder: (context, setDialogState) {
+              return AlertDialog(
+                title: const Text('🏆 Who Won the Match?'),
+                content: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children:
+                        finishedGroup.map((user) {
+                          final isSelected = selected.contains(user);
+                          return Card(
+                            elevation: isSelected ? 4 : 1,
+                            color:
+                                isSelected
+                                    ? Colors.green.shade100
+                                    : Colors.white,
+                            child: CheckboxListTile(
+                              title: Text(user.username),
+                              value: isSelected,
+                              onChanged: (checked) {
+                                setDialogState(() {
+                                  if (checked == true && selected.length < 2) {
+                                    selected.add(user);
+                                  } else {
+                                    selected.remove(user);
+                                  }
+                                });
+                              },
+                              controlAffinity: ListTileControlAffinity.leading,
+                              secondary: const Icon(Icons.check_circle_outline),
+                            ),
+                          );
+                        }).toList(),
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context, <User>[]),
+                    child: const Text('Cancel'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () => Navigator.pop(context, selected),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green.shade700,
+                    ),
+                    child: const Text('Confirm Winners'),
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      );
+
+      if (winners != null && winners.isNotEmpty) {
+        setState(() {
+          // Give 10 points to each winner
+          for (final user in winners) {
+            user.gamesPlayed += 10;
+
+            // Update the Game's leaderboard map
+            Game.leaderboard[user.username] =
+                (Game.leaderboard[user.username] ?? 0) + 10;
+
+            Game.gamesPlayed[user.username] =
+                (Game.gamesPlayed[user.username] ?? 0) + 1;
+          }
+
+          // Return players to queue
+          game.queue.addAll(finishedGroup);
+
+          // Try to assign next waiting group
+          assignCourtsIfAvailable(game);
+        });
+
+        // Optional: feedback message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              '🏆 ${winners.map((u) => u.username).join(', ')} awarded 10 points!',
+            ),
+            backgroundColor: Colors.green.shade600,
+          ),
+        );
+      }
     }
 
     // Form a group of 4 (current user + 3 others) and add to waiting
