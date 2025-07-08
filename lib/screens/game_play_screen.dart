@@ -105,7 +105,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
-              color: Colors.white,
+              color: Colors.grey,
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(
