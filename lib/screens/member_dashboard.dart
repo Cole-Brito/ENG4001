@@ -126,7 +126,59 @@ class _MemberDashboardState extends State<MemberDashboard> {
         title: const Text('Member Dashboard'),
         backgroundColor: Colors.indigo.shade600,
         actions: [
-          IconButton(icon: const Icon(Icons.logout), onPressed: _logout),
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.menu), // Menu icon on top-right
+            onSelected: (value) {
+              if (value == 'logout') {
+                _logout();
+              }
+              // The rest are placeholders
+            },
+            itemBuilder:
+                (BuildContext context) => [
+                  PopupMenuItem<String>(
+                    value: 'profile',
+                    child: Row(
+                      children: const [
+                        Icon(Icons.person, color: Colors.grey),
+                        SizedBox(width: 10),
+                        Text('Profile'),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem<String>(
+                    value: 'notifications',
+                    child: Row(
+                      children: const [
+                        Icon(Icons.notifications, color: Colors.grey),
+                        SizedBox(width: 10),
+                        Text('Notifications'),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem<String>(
+                    value: 'settings',
+                    child: Row(
+                      children: const [
+                        Icon(Icons.settings, color: Colors.grey),
+                        SizedBox(width: 10),
+                        Text('Settings'),
+                      ],
+                    ),
+                  ),
+                  const PopupMenuDivider(),
+                  PopupMenuItem<String>(
+                    value: 'logout',
+                    child: Row(
+                      children: const [
+                        Icon(Icons.logout, color: Colors.redAccent),
+                        SizedBox(width: 10),
+                        Text('Logout'),
+                      ],
+                    ),
+                  ),
+                ],
+          ),
         ],
       ),
 
