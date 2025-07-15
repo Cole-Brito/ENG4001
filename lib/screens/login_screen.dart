@@ -97,16 +97,22 @@ class _LoginScreenState extends State<LoginScreen> {
     final bool isSmallScreen = screenWidth < 600;
 
     return Scaffold(
+    backgroundColor: Theme.of(context).colorScheme.background,
+      /*
       appBar: AppBar(
-        title: const Text(
-          'ROS Login',
-          style: TextStyle(fontWeight: FontWeight.bold),
+        title: Text(
+          'ROS LOGIN',
+           style: const TextStyle(
+        fontFamily: 'Bebasneuecyrillic',
+        fontSize: 28,
+            ),
         ),
         centerTitle: true,
         backgroundColor: const Color(0xFF10138A), // ROS Blue
-        foregroundColor: Theme.of(context).colorScheme.onPrimary,
+        foregroundColor: Colors.white,
         elevation: 4,
       ),
+      */
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
@@ -115,6 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
               maxWidth: isSmallScreen ? double.infinity : 450,
             ),
             child: Card(
+              color: Theme.of(context).colorScheme.surface,
               elevation: 8,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
@@ -134,10 +141,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     Text(
                       'Welcome Back!',
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontFamily: 'BebasNeue',
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.onBackground,
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -153,10 +161,18 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(height: isSmallScreen ? 32 : 48),
                     TextField(
                       controller: _usernameController,
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
                       decoration: InputDecoration(
                         labelText: 'Username',
-                        labelStyle: TextStyle(color: Color(0xFF10138A),),
+                         labelStyle: TextStyle(
+                          color: Theme.of(context).colorScheme.onBackground,
+                        ),
                         hintText: 'Enter your username',
+                         hintStyle: TextStyle(
+                          color: Theme.of(context).colorScheme.onBackground.withOpacity(0.4),
+                        ),
                         prefixIcon: const Icon(Icons.person_outline),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -193,10 +209,18 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 16),
                     TextField(
                       controller: _passwordController,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
                       decoration: InputDecoration(
                         labelText: 'Password',
-                        labelStyle: TextStyle(color: Color(0xFF10138A),),
+                        labelStyle: TextStyle(
+                          color: Theme.of(context).colorScheme.onBackground,
+                          ),
                         hintText: 'Enter your password',
+                        hintStyle: TextStyle(
+                          color: Theme.of(context).colorScheme.onBackground.withOpacity(0.4),
+                        ),
                         prefixIcon: const Icon(Icons.lock_outline),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -240,9 +264,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14),
                         ),
-                        backgroundColor: const Color(0xFF10138A), // ROS Blue
-                        foregroundColor:
-                            Theme.of(context).colorScheme.onPrimary,
+                        backgroundColor: 
+                            const Color(0xFF10138A),
+                        foregroundColor: Colors.white,
                         elevation: 5,
                         textStyle: const TextStyle(
                           fontFamily: 'GlacialIndifference',
