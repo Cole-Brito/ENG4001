@@ -35,8 +35,8 @@ class AdminDashboard extends StatelessWidget {
           'Admin Dashboard',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Theme.of(context).colorScheme.onPrimary,
+        backgroundColor: Colors.indigo.shade600,
+        foregroundColor: Colors.indigo.shade50,
         elevation: 4,
         actions: <Widget>[
           IconButton(

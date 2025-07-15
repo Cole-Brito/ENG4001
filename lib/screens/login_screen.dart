@@ -108,8 +108,8 @@ class _LoginScreenState extends State<LoginScreen> {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Theme.of(context).colorScheme.onPrimary,
+        backgroundColor: Colors.indigo.shade600,
+        foregroundColor: Colors.indigo.shade50,
         elevation: 4,
       ),
       body: Stack(

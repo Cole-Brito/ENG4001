@@ -1,3 +1,11 @@
+/*
+*
+* Author: Cole Brito
+* UI Author : Bivin Job
+* Create Season Screen
+*
+*/
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../models/game.dart';

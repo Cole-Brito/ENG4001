@@ -110,7 +110,10 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create Game'),
+        title: const Text(
+          'Create Game',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Colors.indigo.shade600,
         elevation: 0,
       ),

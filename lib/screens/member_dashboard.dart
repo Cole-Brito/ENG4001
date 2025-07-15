@@ -279,7 +279,7 @@ class _MemberDashboardState extends State<MemberDashboard> {
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             const SizedBox(height: 15),
-            ElevatedButton.icon(
+            OutlinedButton.icon(
               icon: const Icon(Icons.leaderboard),
               label: const Text('View Leaderboard'),
               onPressed:
