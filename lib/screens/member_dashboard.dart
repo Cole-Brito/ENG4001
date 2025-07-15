@@ -12,6 +12,7 @@ import '../../models/game.dart';
 import '../../models/user.dart';
 import 'login_screen.dart';
 import 'game_play_screen.dart';
+import 'user_profile_screen.dart';
 import 'leaderboard_screen.dart';
 
 class MemberDashboard extends StatefulWidget {
@@ -131,8 +132,14 @@ class _MemberDashboardState extends State<MemberDashboard> {
             onSelected: (value) {
               if (value == 'logout') {
                 _logout();
+              } else if (value == 'profile') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => UserProfileScreen(user: widget.user),
+                  ),
+                );
               }
-              // The rest are placeholders
             },
             itemBuilder:
                 (BuildContext context) => [
