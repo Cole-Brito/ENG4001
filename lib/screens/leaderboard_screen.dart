@@ -11,6 +11,8 @@ class LeaderboardScreen extends StatelessWidget {
         mockUsers
             .where((Map<String, dynamic> user) => user['role'] == 'member')
             .toList();
+    final colorScheme = Theme.of(context).colorScheme;
+
 
     // Sort members by gamesPlayed DESCENDING
     memberUsers.sort(
@@ -22,9 +24,14 @@ class LeaderboardScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Leaderboard'),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Theme.of(context).colorScheme.onPrimary,
+        title: Text('Leaderboard',
+         style: const TextStyle(
+        fontFamily: 'Bebasneuecyrillic',
+        fontSize: 28,
+            ),
+        ),
+        backgroundColor: colorScheme.primary,
+        foregroundColor: Colors.white,
         elevation: 4,
       ),
       body:
