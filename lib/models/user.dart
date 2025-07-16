@@ -1,19 +1,55 @@
-// lib/models/user.dart
+import 'game.dart';
+
 class User {
   final String username;
   final bool isAdmin;
-  final List<DateTime> rsvps;
 
-  User({required this.username, required this.isAdmin, List<DateTime>? rsvps})
-    : rsvps = rsvps ?? [];
+  // RSVP list of full Game objects
+  final List<Game> rsvps;
 
-  void addRsvp(DateTime gameDate) {
-    if (!rsvps.contains(gameDate)) {
-      rsvps.add(gameDate);
+  // Leaderboard scoring field
+  int gamesPlayed;
+
+  User({
+    required this.username,
+    required this.isAdmin,
+    List<Game>? rsvps,
+    this.gamesPlayed = 0, // Default value
+  }) : rsvps = rsvps ?? [];
+
+  void addRsvp(Game game) {
+    if (!rsvps.contains(game)) {
+      rsvps.add(game);
     }
   }
 
-  bool hasRsvped(DateTime gameDate) {
-    return rsvps.contains(gameDate);
+  void removeRsvp(Game game) {
+    rsvps.remove(game);
+  }
+
+  bool hasRsvped(Game game) {
+    return rsvps.contains(game);
+  }
+
+  // Check if RSVP exists by date
+  bool hasRsvpedOnDate(DateTime date) {
+    return rsvps.any(
+      (g) =>
+          g.date.year == date.year &&
+          g.date.month == date.month &&
+          g.date.day == date.day,
+    );
+  }
+
+  // Get all games RSVP’d on a specific date
+  List<Game> rsvpedGamesOnDate(DateTime date) {
+    return rsvps
+        .where(
+          (g) =>
+              g.date.year == date.year &&
+              g.date.month == date.month &&
+              g.date.day == date.day,
+        )
+        .toList();
   }
 }

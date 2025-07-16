@@ -21,6 +21,8 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^6.0.0
   flutter_launcher_icons: ^0.14.4
+  # flutter_local_notifications: ^17.1.0
+  timezone: ^0.10.1
 
 flutter_launcher_icons:
   android: "launcher_icon"
@@ -46,6 +48,12 @@ flutter_launcher_icons:
 flutter:
   uses-material-design: true
 
+  assets:
+    - assets/images/login_background.jpg
+    - assets/images/Badminton Court.png
+    - assets/images/Table Tennis.png
+    - assets/images/Tennis Court.png
+
   fonts:
     - family: BebasNeue
       fonts:
@@ -56,4 +64,7 @@ flutter:
     - family: GlacialIndifference
       fonts:
         - asset: assets/fonts/GlacialIndifference-Regular.otf
+    - family: NotoSans
+      fonts:
+        - asset: assets/fonts/NotoSans-Regular.ttf
   
