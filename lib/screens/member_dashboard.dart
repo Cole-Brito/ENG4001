@@ -56,8 +56,6 @@ class _MemberDashboardState extends State<MemberDashboard> {
     final List<Game> games = MockGameStore.games;
     final String username = widget.user.username;
     final DateTime today = DateTime.now();
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
 
     List<Game> todayGames =
         games
@@ -72,14 +70,9 @@ class _MemberDashboardState extends State<MemberDashboard> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Member Dashboard', 
-         style: const TextStyle(
-        fontFamily: 'Bebasneuecyrillic',
-        fontSize: 28,
-            ),
-          ), 
-         backgroundColor: colorScheme.primary,
-         foregroundColor: Colors.white,
+        title: const Text('Member Dashboard'),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        foregroundColor: Theme.of(context).colorScheme.onPrimary,
         actions: <Widget>[
           IconButton(icon: const Icon(Icons.logout), onPressed: _logout),
         ],
@@ -91,10 +84,8 @@ class _MemberDashboardState extends State<MemberDashboard> {
           children: <Widget>[
             Text(
               'Welcome, $username!',
-                style: TextStyle(
-                        fontFamily: 'Bebasneuecyrillic',
-                        fontSize: 26,
-                        //fontWeight: FontWeight.bold,
+              style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                fontWeight: FontWeight.bold,
                 color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
@@ -115,11 +106,9 @@ class _MemberDashboardState extends State<MemberDashboard> {
                     children: <Widget>[
                       Text(
                         "Today's Game",
-                        style: TextStyle(
-                          fontFamily: 'BebasNeue',
-                          fontSize: 22,
-                          //fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.onSurface,
+                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
                       ),
                       const SizedBox(height: 10),
@@ -145,8 +134,10 @@ class _MemberDashboardState extends State<MemberDashboard> {
                         icon: const Icon(Icons.sports_soccer),
                         label: const Text('View Game In Progress'),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: colorScheme.primary,
-                          foregroundColor: Colors.white,
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primary,
+                          foregroundColor:
+                              Theme.of(context).colorScheme.onPrimary,
                           padding: const EdgeInsets.symmetric(vertical: 12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
@@ -168,13 +159,10 @@ class _MemberDashboardState extends State<MemberDashboard> {
                         icon: const Icon(Icons.leaderboard),
                         label: const Text('View Leaderboard'),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: Theme.of(context).brightness == Brightness.dark
-                              ? Colors.white
-                              : colorScheme.primary,
+                          foregroundColor:
+                              Theme.of(context).colorScheme.secondary,
                           side: BorderSide(
-                            color: Theme.of(context).brightness == Brightness.dark
-                                ? Colors.white
-                                : colorScheme.primary,
+                            color: Theme.of(context).colorScheme.secondary,
                           ),
                           padding: const EdgeInsets.symmetric(vertical: 12),
                           shape: RoundedRectangleBorder(
@@ -200,11 +188,9 @@ class _MemberDashboardState extends State<MemberDashboard> {
                     children: <Widget>[
                       Text(
                         "No Game Today",
-                       style: TextStyle(
-                        fontFamily: 'BebasNeue',
-                        fontSize: 22,
-                        //fontWeight: FontWeight.bold,
-                          color: Theme.of(context).colorScheme.onSurface,
+                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
                       ),
                       const SizedBox(height: 10),
@@ -227,8 +213,10 @@ class _MemberDashboardState extends State<MemberDashboard> {
                         icon: const Icon(Icons.leaderboard),
                         label: const Text('View Leaderboard'),
                         style: ElevatedButton.styleFrom(
-                         backgroundColor: colorScheme.primary,
-                          foregroundColor: Colors.white,
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primary,
+                          foregroundColor:
+                              Theme.of(context).colorScheme.onPrimary,
                           padding: const EdgeInsets.symmetric(vertical: 12),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
@@ -243,10 +231,8 @@ class _MemberDashboardState extends State<MemberDashboard> {
             const SizedBox(height: 10),
             Text(
               'Upcoming Games:',
-              style: TextStyle(
-                        fontFamily: 'Bebasneuecyrillic',
-                        fontSize: 26,
-                        //fontWeight: FontWeight.bold,
+              style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                fontWeight: FontWeight.bold,
                 color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
@@ -295,7 +281,7 @@ class _MemberDashboardState extends State<MemberDashboard> {
                               ),
                               title: Text(
                                 '${game.format} on $dateFormatted',
-                                style: Theme.of(context).textTheme.bodyLarge,
+                                style: Theme.of(context).textTheme.titleMedium,
                               ),
                               subtitle: Text(
                                 'Courts: ${game.courts} | Players: ${game.players}',
@@ -312,7 +298,15 @@ class _MemberDashboardState extends State<MemberDashboard> {
                                           : Theme.of(
                                             context,
                                           ).colorScheme.primary,
-                                  foregroundColor: Colors.white,
+                                  foregroundColor:
+                                      hasRsvped
+                                          ? Theme.of(context)
+                                              .colorScheme
+                                              .onPrimary
+                                              .withOpacity(0.5)
+                                          : Theme.of(
+                                            context,
+                                          ).colorScheme.onPrimary,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8),
                                   ),
