@@ -1,16 +1,19 @@
-/**
- * 
- * Author: Cole Brito
- * Serves as the main page for all admin user actions
- */
+/*
+*
+* Author: Cole Brito
+* UI Author : Bivin Job
+* Admin dashboard
+*
+*/
 
 // lib/screens/admin_dashboard.dart
 import 'package:flutter/material.dart';
-import 'edit_scheduled_game_screen.dart';
 import 'create_game_screen.dart';
 import 'scheduled_games_screen.dart';
 import 'login_screen.dart';
 import 'leaderboard_screen.dart';
+import 'create_season_screen.dart';
+import 'edit_scheduled_game_screen.dart';
 
 class AdminDashboard extends StatelessWidget {
   const AdminDashboard({super.key});
@@ -27,16 +30,14 @@ class AdminDashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text(
           'Admin Dashboard',
-          style: TextStyle(fontFamily: 'Bebasneuecyrillic', fontSize: 28),
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        backgroundColor: colorScheme.primary,
-        foregroundColor: Colors.white,
+        backgroundColor: Colors.indigo.shade600,
+        foregroundColor: Colors.indigo.shade50,
         elevation: 4,
         actions: <Widget>[
           IconButton(
@@ -53,9 +54,8 @@ class AdminDashboard extends StatelessWidget {
           children: <Widget>[
             Text(
               'Welcome, Admin!',
-              style: TextStyle(
-                fontFamily: 'Bebasneuecyrillic',
-                fontSize: 26,
+              style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                fontWeight: FontWeight.bold,
                 color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
@@ -88,7 +88,8 @@ class AdminDashboard extends StatelessWidget {
                         context,
                         MaterialPageRoute<void>(
                           builder:
-                              (BuildContext context) => ScheduledGamesScreen(),
+                              (BuildContext context) =>
+                                  const ScheduledGamesScreen(),
                         ),
                       );
                     },
@@ -117,6 +118,20 @@ class AdminDashboard extends StatelessWidget {
                           builder:
                               (BuildContext context) =>
                                   const LeaderboardScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  _AdminDashboardActionCard(
+                    icon: Icons.edit_calendar_outlined,
+                    title: 'Create Season',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute<void>(
+                          builder:
+                              (BuildContext context) =>
+                                  const CreateSeasonScreen(),
                         ),
                       );
                     },

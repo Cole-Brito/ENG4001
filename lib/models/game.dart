@@ -33,8 +33,6 @@ class Game {
        matches = matches ?? [],
        waitingGroups = waitingGroups ?? [],
        activeMatches = activeMatches ?? {};
-
-  /// Add this method:
   Game copyWith({
     String? format,
     DateTime? date,
@@ -58,4 +56,7 @@ class Game {
       activeMatches: activeMatches ?? this.activeMatches,
     );
   }
+
+  static Map<String, int> leaderboard = {};
+  static Map<String, int> gamesPlayed = {};
 }
