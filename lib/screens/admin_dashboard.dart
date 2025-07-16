@@ -27,19 +27,14 @@ class AdminDashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-        final colorScheme = Theme.of(context).colorScheme;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text(
           'Admin Dashboard',
-         style: TextStyle(
-        fontFamily: 'Bebasneuecyrillic',
-        fontSize: 28,
-            ),
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        backgroundColor: colorScheme.primary,
-        foregroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        foregroundColor: Theme.of(context).colorScheme.onPrimary,
         elevation: 4,
         actions: <Widget>[
           IconButton(
@@ -56,9 +51,8 @@ class AdminDashboard extends StatelessWidget {
           children: <Widget>[
             Text(
               'Welcome, Admin!',
-             style: TextStyle(
-                        fontFamily: 'Bebasneuecyrillic',
-                        fontSize: 26,
+              style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                fontWeight: FontWeight.bold,
                 color: Theme.of(context).colorScheme.onSurface,
               ),
             ),

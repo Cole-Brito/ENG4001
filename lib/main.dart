@@ -13,32 +13,18 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Game Manager',
       debugShowCheckedModeBanner: false,
-
-      // LIGHT THEME
       theme: ThemeData(
         useMaterial3: true,
-        fontFamily: 'GlacialIndifference',
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF10138A),
-          primary: const Color(0xFF10138A), // ROS Blue
-          brightness: Brightness.light,
-        ),
+        colorSchemeSeed: Color(0xFF10138A),
+        brightness: Brightness.light,
         appBarTheme: const AppBarTheme(centerTitle: true),
       ),
-
-      // DARK THEME
       darkTheme: ThemeData(
         useMaterial3: true,
-        fontFamily: 'GlacialIndifference',
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF10138A),
-          primary: const Color(0xFF10138A), // ROS Blue
-          brightness: Brightness.dark,
-        ),
-        
+        colorSchemeSeed: Color(0xFF10138A),
+        brightness: Brightness.dark,
         appBarTheme: const AppBarTheme(centerTitle: true),
       ),
-
       themeMode: ThemeMode.system,
       home: const LoginScreen(),
     );

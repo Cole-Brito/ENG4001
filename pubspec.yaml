@@ -46,9 +46,6 @@ flutter_launcher_icons:
 flutter:
   uses-material-design: true
 
-  assets:
-    - assets/icons/ROS_Logo.png
-
   fonts:
     - family: BebasNeue
       fonts:
