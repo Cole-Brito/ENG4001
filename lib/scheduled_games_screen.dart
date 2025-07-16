@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../data/mock_game_store.dart';
 import '../models/game.dart';
+import '../edit_scheduled_game_screen.dart';
 
 class ScheduledGamesScreen extends StatelessWidget {
   @override

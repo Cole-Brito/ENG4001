@@ -16,8 +16,6 @@ class Game {
   final List<User> queue;
   final List<List<User>> matches;
   final List<List<User>> waitingGroups;
-  // This will be used if we can have a map of the courts -- i.e. the admin will be able to assgin the courts numbers
-  // int = court number
   final Map<int, Match> activeMatches;
 
   Game({
@@ -35,4 +33,29 @@ class Game {
        matches = matches ?? [],
        waitingGroups = waitingGroups ?? [],
        activeMatches = activeMatches ?? {};
+
+  /// Add this method:
+  Game copyWith({
+    String? format,
+    DateTime? date,
+    int? courts,
+    int? players,
+    List<User>? rsvps,
+    List<User>? queue,
+    List<List<User>>? matches,
+    List<List<User>>? waitingGroups,
+    Map<int, Match>? activeMatches,
+  }) {
+    return Game(
+      format: format ?? this.format,
+      date: date ?? this.date,
+      courts: courts ?? this.courts,
+      players: players ?? this.players,
+      rsvps: rsvps ?? this.rsvps,
+      queue: queue ?? this.queue,
+      matches: matches ?? this.matches,
+      waitingGroups: waitingGroups ?? this.waitingGroups,
+      activeMatches: activeMatches ?? this.activeMatches,
+    );
+  }
 }

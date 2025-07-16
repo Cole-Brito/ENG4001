@@ -4,32 +4,41 @@
  * Serves as the main page for all admin user actions
  */
 
+// lib/screens/admin_dashboard.dart
 import 'package:flutter/material.dart';
+import 'edit_scheduled_game_screen.dart';
 import 'create_game_screen.dart';
-import 'create_season_screen.dart';
 import 'scheduled_games_screen.dart';
 import 'login_screen.dart';
+import 'leaderboard_screen.dart';
 
 class AdminDashboard extends StatelessWidget {
   const AdminDashboard({super.key});
 
-  //Logout function
   void _logout(BuildContext context) {
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (context) => const LoginScreen()),
-      (route) => false,
+      MaterialPageRoute<void>(
+        builder: (BuildContext context) => const LoginScreen(),
+      ),
+      (Route<dynamic> route) => false,
     );
   }
 
-  //--------------------- UI CODE BELOW ---------------------
-
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Admin Dashboard'),
-        actions: [
+        title: const Text(
+          'Admin Dashboard',
+          style: TextStyle(fontFamily: 'Bebasneuecyrillic', fontSize: 28),
+        ),
+        backgroundColor: colorScheme.primary,
+        foregroundColor: Colors.white,
+        elevation: 4,
+        actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () => _logout(context),
@@ -37,112 +46,132 @@ class AdminDashboard extends StatelessWidget {
           ),
         ],
       ),
-      body: SingleChildScrollView(
+      body: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const Text(
-              'Manage Games',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            Card(
-              elevation: 3,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 24,
-                  horizontal: 16,
-                ),
-                child: Column(
-                  children: [
-                    ElevatedButton.icon(
-                      icon: const Icon(Icons.sports_tennis),
-                      label: const Text('Create Single Game'),
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size.fromHeight(50),
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const CreateGameScreen(),
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 12),
-                    ElevatedButton.icon(
-                      icon: const Icon(Icons.calendar_month),
-                      label: const Text('Create Season'),
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size.fromHeight(50),
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const CreateSeasonScreen(),
-                          ),
-                        );
-                      },
-                    ),
-                    // Button to edit game -- TODO: Change where the button navigates to!!
-                    const SizedBox(height: 12),
-                    ElevatedButton.icon(
-                      icon: const Icon(Icons.calendar_month),
-                      label: const Text('Edit Game'),
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size.fromHeight(50),
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const CreateSeasonScreen(),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              'Welcome, Admin!',
+              style: TextStyle(
+                fontFamily: 'Bebasneuecyrillic',
+                fontSize: 26,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
             const SizedBox(height: 32),
-            const Text(
-              'Reports & Scheduling',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            Card(
-              elevation: 3,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 24,
-                  horizontal: 16,
-                ),
-                child: Column(
-                  children: [
-                    ElevatedButton.icon(
-                      icon: const Icon(Icons.schedule),
-                      label: const Text('View Scheduled Games'),
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size.fromHeight(50),
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ScheduledGamesScreen(),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
+            Expanded(
+              child: GridView.count(
+                crossAxisCount: MediaQuery.of(context).size.width > 600 ? 3 : 2,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+                children: <Widget>[
+                  _AdminDashboardActionCard(
+                    icon: Icons.event_note,
+                    title: 'Create New Game',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute<void>(
+                          builder:
+                              (BuildContext context) =>
+                                  const CreateGameScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  _AdminDashboardActionCard(
+                    icon: Icons.calendar_month,
+                    title: 'View Scheduled Games',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute<void>(
+                          builder:
+                              (BuildContext context) => ScheduledGamesScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  _AdminDashboardActionCard(
+                    icon: Icons.edit_calendar,
+                    title: 'Edit Scheduled Games',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute<void>(
+                          builder:
+                              (BuildContext context) =>
+                                  EditScheduledGameScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  _AdminDashboardActionCard(
+                    icon: Icons.leaderboard,
+                    title: 'View Leaderboard',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute<void>(
+                          builder:
+                              (BuildContext context) =>
+                                  const LeaderboardScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _AdminDashboardActionCard extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final VoidCallback onTap;
+
+  const _AdminDashboardActionCard({
+    required this.icon,
+    required this.title,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 6,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Icon(
+                icon,
+                size: 50,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
