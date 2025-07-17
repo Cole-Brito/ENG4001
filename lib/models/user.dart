@@ -52,4 +52,29 @@ class User {
         )
         .toList();
   }
+
+  // The following code will be used when we add the leader board feature and user profile screen
+  // Currently I cant be bothered to make it work
+  // - Cole :)
+
+  // get totalGamesPlayed(int games) {
+  //   this.gamesPlayed = games;
+  //   return gamesPlayed;
+  // }
+
+  // get totalGamesWon(int games) {
+  //   this.gamesWon = games;
+  //   if (games < 0) {
+  //     throw ArgumentError('Total games won cannot be negative');
+  //   }
+  //   return gamesWon;
+  // }
+
+  // set totalGamesPlayed(int value) {
+  //   // This setter is not used in the current implementation
+  // }
+
+  // set totalGamesWon(int value) {
+  //   // This setter is not used in the current implementation
+  // }
 }

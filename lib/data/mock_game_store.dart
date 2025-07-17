@@ -2,6 +2,15 @@ import '../models/game.dart';
 import '../models/user.dart';
 
 class MockGameStore {
+  // temp function to update a game, this will be moved later - Cole
+  static void updateGame(Game oldGame, Game updatedGame) {
+    final index = _games.indexOf(oldGame);
+    if (index != -1) {
+      _games[index] = updatedGame;
+    }
+  }
+
+  // A list of fake users for testing
   static final List<User> testUsers = List.generate(
     11,
     (i) => User(
