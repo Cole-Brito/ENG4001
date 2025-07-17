@@ -20,14 +20,16 @@ class MyApp extends StatelessWidget {
         fontFamily: 'GlacialIndifference',
         appBarTheme: const AppBarTheme(centerTitle: true),
       ),
-      darkTheme: ThemeData(
-        useMaterial3: true,
-        colorSchemeSeed: Color(0xFF10138A),
-        brightness: Brightness.dark,
-        fontFamily: 'GlacialIndifference',
-        appBarTheme: const AppBarTheme(centerTitle: true),
-      ),
-      themeMode: ThemeMode.system,
+      // Uncomment the following lines to enable dark theme
+
+      // darkTheme: ThemeData(
+      //   useMaterial3: true,
+      //   colorSchemeSeed: Color(0xFF10138A),
+      //   brightness: Brightness.dark,
+      //   fontFamily: 'GlacialIndifference',
+      //   appBarTheme: const AppBarTheme(centerTitle: true),
+      // ),
+      themeMode: ThemeMode.light,
       home: const LoginScreen(),
     );
   }
