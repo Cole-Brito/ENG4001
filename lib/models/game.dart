@@ -16,7 +16,6 @@ class Game {
   final List<User> queue;
   final List<List<User>> matches;
   final List<List<User>> waitingGroups;
-  // int = court number
   final Map<int, Match> activeMatches;
 
   Game({
@@ -34,6 +33,30 @@ class Game {
        matches = matches ?? [],
        waitingGroups = waitingGroups ?? [],
        activeMatches = activeMatches ?? {};
+  Game copyWith({
+    String? format,
+    DateTime? date,
+    int? courts,
+    int? players,
+    List<User>? rsvps,
+    List<User>? queue,
+    List<List<User>>? matches,
+    List<List<User>>? waitingGroups,
+    Map<int, Match>? activeMatches,
+  }) {
+    return Game(
+      format: format ?? this.format,
+      date: date ?? this.date,
+      courts: courts ?? this.courts,
+      players: players ?? this.players,
+      rsvps: rsvps ?? this.rsvps,
+      queue: queue ?? this.queue,
+      matches: matches ?? this.matches,
+      waitingGroups: waitingGroups ?? this.waitingGroups,
+      activeMatches: activeMatches ?? this.activeMatches,
+    );
+  }
+
   static Map<String, int> leaderboard = {};
   static Map<String, int> gamesPlayed = {};
 }

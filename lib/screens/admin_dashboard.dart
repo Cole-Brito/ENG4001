@@ -13,6 +13,7 @@ import 'scheduled_games_screen.dart';
 import 'login_screen.dart';
 import 'leaderboard_screen.dart';
 import 'create_season_screen.dart';
+import 'edit_scheduled_game_screen.dart';
 
 class AdminDashboard extends StatelessWidget {
   const AdminDashboard({super.key});
@@ -89,6 +90,20 @@ class AdminDashboard extends StatelessWidget {
                           builder:
                               (BuildContext context) =>
                                   const ScheduledGamesScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  _AdminDashboardActionCard(
+                    icon: Icons.edit_calendar,
+                    title: 'Edit Scheduled Games',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute<void>(
+                          builder:
+                              (BuildContext context) =>
+                                  EditScheduledGameScreen(),
                         ),
                       );
                     },
