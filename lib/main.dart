@@ -8,7 +8,9 @@ import 'screens/login_screen.dart';
 void main() async {
   // Added by Jean Luc
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  ); // Initialize Firebase connection to our flutter app
 
   runApp(const MyApp());
 }
