@@ -102,16 +102,15 @@ class _LoginScreenState extends State<LoginScreen> {
     final bool isSmallScreen = screenWidth < 600;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'ROS Login',
-          style: TextStyle(fontWeight: FontWeight.bold),
+      /*appBar: AppBar(
+        title: Text(
+          'ROS LOGIN',
+          style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold, color: Colors.white,),
         ),
         centerTitle: true,
-        backgroundColor: Colors.indigo.shade600,
-        foregroundColor: Colors.indigo.shade50,
+        backgroundColor: Color(0xFF10138A), // ROS Blue
         elevation: 4,
-      ),
+      ),*/
       body: Stack(
         children: [
           // 👇 Background Image
@@ -147,18 +146,16 @@ class _LoginScreenState extends State<LoginScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
-                        Icon(
-                          Icons.sports_tennis,
-                          size: isSmallScreen ? 90 : 130,
-                          color: Theme.of(context).colorScheme.primary,
+                        Image.asset(
+                          'assets/icons/ROS_Logo-new.png',
+                          height: isSmallScreen ? 60 : 100, 
+                          fit: BoxFit.contain,
                         ),
                         SizedBox(height: isSmallScreen ? 28 : 40),
                         Text(
                           'Welcome Back!',
                           textAlign: TextAlign.center,
-                          style: Theme.of(
-                            context,
-                          ).textTheme.headlineMedium!.copyWith(
+                          style: Theme.of(context).textTheme.titleLarge!.copyWith(
                             fontWeight: FontWeight.bold,
                             color: Theme.of(context).colorScheme.onSurface,
                           ),
@@ -169,7 +166,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           textAlign: TextAlign.center,
                           style: Theme.of(
                             context,
-                          ).textTheme.titleMedium!.copyWith(
+                          ).textTheme.bodyLarge!.copyWith(
                             color:
                                 Theme.of(context).colorScheme.onSurfaceVariant,
                           ),
@@ -179,9 +176,19 @@ class _LoginScreenState extends State<LoginScreen> {
                           controller: _usernameController,
                           decoration: InputDecoration(
                             labelText: 'Username',
+                            labelStyle: TextStyle(
+                              color: Theme.of(context).brightness == Brightness.dark
+                                  ? Colors.white
+                                  : Colors.black,
+                            ),
                             hintText: 'Enter your username',
-                            prefixIcon: const Icon(Icons.person_outline),
-                            border: OutlineInputBorder(
+                            prefixIcon: Icon(
+                                  Icons.person_outline,
+                                  color: Theme.of(context).brightness == Brightness.dark
+                                      ? Colors.white
+                                      : Colors.black,
+                                ), 
+                               border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide: BorderSide.none,
                             ),
@@ -219,9 +226,19 @@ class _LoginScreenState extends State<LoginScreen> {
                           controller: _passwordController,
                           decoration: InputDecoration(
                             labelText: 'Password',
+                            labelStyle: TextStyle(
+                              color: Theme.of(context).brightness == Brightness.dark
+                                  ? Colors.white
+                                  : Colors.black,
+                            ),
                             hintText: 'Enter your password',
-                            prefixIcon: const Icon(Icons.lock_outline),
-                            border: OutlineInputBorder(
+                            prefixIcon: Icon(
+                                  Icons.person_outline,
+                                  color: Theme.of(context).brightness == Brightness.dark
+                                      ? Colors.white
+                                      : Colors.black,
+                                ),
+                                border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide: BorderSide.none,
                             ),
@@ -269,8 +286,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             foregroundColor:
                                 Theme.of(context).colorScheme.onPrimary,
                             elevation: 5,
-                            textStyle: Theme.of(context).textTheme.titleLarge!
-                                .copyWith(fontWeight: FontWeight.bold),
+                             textStyle: Theme.of(context).textTheme.titleLarge!.copyWith(
+                              fontFamily: 'BebasNeue', // Optional for button text
+                            ),
                           ),
                           child: const Text('Login'),
                         ),
@@ -283,13 +301,15 @@ class _LoginScreenState extends State<LoginScreen> {
                               borderRadius: BorderRadius.circular(14),
                             ),
                             side: BorderSide(
-                              color: Theme.of(context).colorScheme.secondary,
-                              width: 1.5,
+                            color: Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white
+                                    : const Color(0xFF10138A), // ROS Blue                              width: 1.5,
                             ),
-                            foregroundColor:
-                                Theme.of(context).colorScheme.secondary,
-                            textStyle: Theme.of(context).textTheme.titleLarge!
-                                .copyWith(fontWeight: FontWeight.bold),
+                             foregroundColor: Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white
+                                    : const Color(0xFF10138A), // ROS Blue
+                            textStyle: Theme.of(context).textTheme.headlineSmall!
+                                .copyWith(),
                           ),
                           child: const Text('Continue as Guest'),
                         ),
@@ -307,7 +327,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           style: TextButton.styleFrom(
                             foregroundColor:
                                 Theme.of(context).colorScheme.tertiary,
-                            textStyle: Theme.of(context).textTheme.titleMedium!
+                            textStyle: Theme.of(context).textTheme.bodyLarge!
                                 .copyWith(decoration: TextDecoration.underline),
                           ),
                           child: const Text("Don't have an account? Sign Up"),

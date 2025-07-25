@@ -27,9 +27,13 @@ class ScheduledGamesScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Scheduled Games'),
-        backgroundColor: Colors.indigo.shade600,
+        automaticallyImplyLeading: true, // Enables the default back arrow
+        iconTheme: const IconThemeData(color: Colors.white), // Makes back arrow white
+      title: Text('Scheduled Games',
+          style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold, color: Colors.white,),
+        ),
         elevation: 0,
+        backgroundColor: Color(0xFF10138A), // ROS Blue
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -44,10 +48,9 @@ class ScheduledGamesScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // ── Greeting ──
-            const Text(
-              'Welcome, Guest!',
-              style: TextStyle(
-                fontSize: 30,
+            Text(
+              'Welcome',
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(
                 fontWeight: FontWeight.bold,
                 color: Colors.grey,
               ),
