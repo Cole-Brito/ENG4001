@@ -170,19 +170,16 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Game In Progress'),
-        backgroundColor: Colors.indigo.shade600,
+        title: Text('Game In Progress',
+        style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold, color: Colors.white,),
+      ),
+       iconTheme: const IconThemeData(color: Colors.white), //arrow color
+      backgroundColor:Color(0xFF10138A),
         elevation: 0,
       ),
       body: Container(
         // Background gradient for modern look
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.white, Colors.indigo.shade50],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
+      color: Theme.of(context).colorScheme.background,
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: [
@@ -235,6 +232,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
+                color: Theme.of(context).cardColor, // for light & dark themes
                 child: ListTile(
                   leading: CircleAvatar(
                     backgroundColor:
@@ -244,7 +242,12 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                       style: const TextStyle(color: Colors.white),
                     ),
                   ),
-                  title: Text(player.username),
+                  title: Text(
+                    player.username,
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
+                  ),
                   trailing:
                       isCurrent
                           ? const Icon(Icons.star, color: Colors.green)
@@ -283,13 +286,13 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                   "${duration.inMinutes} min${duration.inMinutes != 1 ? 's' : ''} ago";
 
               return Card(
-                color: Colors.indigo.shade100.withOpacity(0.2),
+                color: Colors.white.withOpacity(0.2),
                 elevation: 2,
                 margin: const EdgeInsets.symmetric(vertical: 6),
                 child: ListTile(
                   leading: const Icon(
                     Icons.sports_tennis,
-                    color: Colors.indigo,
+                    color: Color(0xFF10138A),
                     size: 28,
                   ),
                   title: Text('Court $courtNum'),
@@ -365,7 +368,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                   icon: const Icon(Icons.check_circle_outline),
                   label: const Text('Confirm Group'),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.indigo,
+                    backgroundColor: Color(0xFF10138A),
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 32,
@@ -402,16 +405,15 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   Widget _sectionHeader(IconData icon, String title) {
     return Row(
       children: [
-        Icon(icon, color: Colors.indigo.shade700),
-        const SizedBox(width: 8),
+        Icon(icon, color: Theme.of(context).colorScheme.onSurface),
+          const SizedBox(width: 8),
         Text(
-          title,
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Colors.black87,
-          ),
-        ),
+            title,
+            style: Theme.of(context).textTheme.titleMedium!.copyWith(
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
+         ),
       ],
     );
   }

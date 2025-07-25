@@ -78,7 +78,12 @@ class _EditScheduledGameScreenState extends State<EditScheduledGameScreen> {
     final games = MockGameStore.games;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Edit Scheduled Games')),
+      appBar: AppBar(title: Text('Edit Scheduled Games',style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold, color: Colors.white,),
+        ),
+        centerTitle: true,
+        backgroundColor: Color(0xFF10138A), // ROS Blue
+        elevation: 4,
+        ),
       body:
           games.isEmpty
               ? const Center(child: Text('No games scheduled yet.'))

@@ -110,11 +110,11 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Create Game',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold, color: Colors.white,),
         ),
-        backgroundColor: Colors.indigo.shade600,
+        backgroundColor: Color(0xFF10138A),
         elevation: 0,
       ),
       body: Container(
@@ -140,20 +140,28 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
                   // ── Format dropdown ──
                   DropdownButtonFormField<String>(
                     value: _selectedFormat,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       prefixIcon: Icon(Icons.sports_esports),
                       labelText: 'Game Format',
+                      labelStyle: TextStyle(
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white
+                          : Colors.black,
+                    ),
                       border: OutlineInputBorder(),
                     ),
                     items:
                         _gameFormats
-                            .map(
-                              (format) => DropdownMenuItem(
-                                value: format,
-                                child: Text(format),
-                              ),
-                            )
-                            .toList(),
+                        .map(
+                          (format) => DropdownMenuItem(
+                            value: format,
+                            child: Text(
+                              format,
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                          ),
+                        )
+                        .toList(),
                     onChanged:
                         (value) => setState(() => _selectedFormat = value!),
                   ),
@@ -165,6 +173,11 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
                     decoration: InputDecoration(
                       prefixIcon: const Icon(Icons.calendar_today),
                       labelText: 'Scheduled Day',
+                      labelStyle: TextStyle(
+                              color: Theme.of(context).brightness == Brightness.dark
+                                  ? Colors.white
+                                  : Colors.black,
+                            ),
                       hintText: formattedDate,
                       border: const OutlineInputBorder(),
                     ),
@@ -176,9 +189,14 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
                   TextField(
                     controller: _courtsController,
                     keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       prefixIcon: Icon(Icons.grid_view),
                       labelText: 'Courts Available',
+                      labelStyle: TextStyle(
+                              color: Theme.of(context).brightness == Brightness.dark
+                                  ? Colors.white
+                                  : Colors.black,
+                            ),
                       border: OutlineInputBorder(),
                     ),
                   ),
@@ -188,9 +206,14 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
                   TextField(
                     controller: _playersController,
                     keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       prefixIcon: Icon(Icons.people),
                       labelText: 'Players Scheduled',
+                      labelStyle: TextStyle(
+                              color: Theme.of(context).brightness == Brightness.dark
+                                  ? Colors.white
+                                  : Colors.black,
+                            ),
                       border: OutlineInputBorder(),
                     ),
                   ),
@@ -200,12 +223,18 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton.icon(
-                      icon: const Icon(Icons.check_circle_outline),
+                      icon: Icon(Icons.check_circle_outline,
+                      color: Colors.white,),
                       label: const Text('Create Game'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.indigo,
+                        backgroundColor:
+                                Theme.of(context).colorScheme.primary,
+                            foregroundColor:
+                                Theme.of(context).colorScheme.onPrimary,
+                            elevation: 5,
+                             textStyle: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                            ),
                         padding: const EdgeInsets.symmetric(vertical: 14),
-                        textStyle: const TextStyle(fontSize: 16),
                       ),
                       onPressed: _createGame,
                     ),

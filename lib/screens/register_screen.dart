@@ -12,9 +12,15 @@ class RegisterScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sign Up'),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Theme.of(context).colorScheme.onPrimary,
+        title: Text(
+          'SIGN UP',
+          style: Theme.of(context).textTheme.titleLarge!.copyWith(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        backgroundColor: Theme.of(context).colorScheme.primary,       // e.g., dark blue
+        foregroundColor: Theme.of(context).colorScheme.onPrimary,     // e.g., white for icons/back arrow
         elevation: 4,
       ),
       body: Center(
@@ -32,8 +38,7 @@ class RegisterScreen extends StatelessWidget {
               Text(
                 'Register for an account',
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                  fontWeight: FontWeight.bold,
+                style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                   color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
@@ -49,6 +54,11 @@ class RegisterScreen extends StatelessWidget {
               TextField(
                 decoration: InputDecoration(
                   labelText: 'New Username',
+                  labelStyle: TextStyle(
+                              color: Theme.of(context).brightness == Brightness.dark
+                                  ? Colors.white
+                                  : Colors.black,
+                            ),
                   hintText: 'Choose a unique username',
                   prefixIcon: const Icon(Icons.person_outline),
                   border: OutlineInputBorder(
@@ -87,6 +97,11 @@ class RegisterScreen extends StatelessWidget {
               TextField(
                 decoration: InputDecoration(
                   labelText: 'New Password',
+                  labelStyle: TextStyle(
+                              color: Theme.of(context).brightness == Brightness.dark
+                                  ? Colors.white
+                                  : Colors.black,
+                            ),
                   hintText: 'Create a strong password',
                   prefixIcon: const Icon(Icons.lock_outline),
                   border: OutlineInputBorder(
