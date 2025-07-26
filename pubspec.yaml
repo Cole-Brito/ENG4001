@@ -58,7 +58,8 @@ flutter:
     - assets/images/Badminton Court.png
     - assets/images/Table Tennis.png
     - assets/images/Tennis Court.png
-
+    - assets/icons/ROS_Logo-new.png
+    
   fonts:
     - family: BebasNeue
       fonts:

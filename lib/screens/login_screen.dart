@@ -3,21 +3,18 @@
 * UI Author : Bivin Job
 * Edited by: Jean Luc
 * ENG4001_020
-* Basic login screen and autherization of users logic
+* Basic login screen and authentication logic
 */
 
 import 'package:flutter/material.dart';
-// Added by Jean Luc: Firebase Auth import
-import 'package:firebase_auth/firebase_auth.dart'
-    as fb_auth; // Added by Jean Luc
-import 'package:cloud_firestore/cloud_firestore.dart'; // Added by Jean Luc - for Firestore access
+import 'package:firebase_auth/firebase_auth.dart' as fb_auth; // Jean Luc
+import 'package:cloud_firestore/cloud_firestore.dart'; // Jean Luc
 
 import 'admin_dashboard.dart';
 import 'member_dashboard.dart';
 import 'register_screen.dart';
 import 'scheduled_games_screen.dart';
 import '../models/user.dart';
-// Added by Jean Luc - Removed mock_users.dart → replaced with Firebase login logic
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -30,34 +27,28 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  // Login using Firebase Authentication and route based on Firestore role // Added by Jean Luc
+  // Login using Firebase Authentication and route based on Firestore role
   void _login() async {
     final String email = _usernameController.text.trim();
     final String password = _passwordController.text.trim();
 
     try {
-      // Added by Jean Luc - Authenticate with Firebase Auth
       final credential = await fb_auth.FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
 
-      // Added by Jean Luc - Fetch the user role from Firestore based on UID
       final userDoc =
           await FirebaseFirestore.instance
               .collection('users')
               .doc(credential.user!.uid)
               .get();
 
-      final isAdmin =
-          userDoc.data()?['isAdmin'] ??
-          false; // Added by Jean Luc - default to false if not found
+      final isAdmin = userDoc.data()?['isAdmin'] ?? false;
 
-      // Added by Jean Luc -Create app-level User object with role info
       final User user = User(
         username: credential.user!.email ?? 'Unknown',
         isAdmin: isAdmin,
       );
 
-      // Added by Jean Luc - Redirect user based on role
       final Widget dashboard =
           isAdmin ? AdminDashboard(user: user) : MemberDashboard(user: user);
 
@@ -102,16 +93,6 @@ class _LoginScreenState extends State<LoginScreen> {
     final bool isSmallScreen = screenWidth < 600;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'ROS Login',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.indigo.shade600,
-        foregroundColor: Colors.indigo.shade50,
-        elevation: 4,
-      ),
       body: Stack(
         children: [
           Positioned.fill(
@@ -143,10 +124,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
-                        Icon(
-                          Icons.sports_tennis,
-                          size: isSmallScreen ? 90 : 130,
-                          color: Theme.of(context).colorScheme.primary,
+                        Image.asset(
+                          'assets/icons/ROS_Logo-new.png',
+                          height: isSmallScreen ? 60 : 100,
+                          fit: BoxFit.contain,
                         ),
                         const SizedBox(height: 40),
                         Text(
@@ -154,7 +135,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           textAlign: TextAlign.center,
                           style: Theme.of(
                             context,
-                          ).textTheme.headlineMedium!.copyWith(
+                          ).textTheme.titleLarge!.copyWith(
                             fontWeight: FontWeight.bold,
                             color: Theme.of(context).colorScheme.onSurface,
                           ),
@@ -165,7 +146,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           textAlign: TextAlign.center,
                           style: Theme.of(
                             context,
-                          ).textTheme.titleMedium!.copyWith(
+                          ).textTheme.bodyLarge!.copyWith(
                             color:
                                 Theme.of(context).colorScheme.onSurfaceVariant,
                           ),
@@ -187,7 +168,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 color: Theme.of(
                                   context,
                                 ).colorScheme.outline.withOpacity(0.6),
-                                width: 1,
                               ),
                             ),
                             focusedBorder: OutlineInputBorder(
@@ -223,7 +203,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 color: Theme.of(
                                   context,
                                 ).colorScheme.outline.withOpacity(0.6),
-                                width: 1,
                               ),
                             ),
                             focusedBorder: OutlineInputBorder(
@@ -267,11 +246,16 @@ class _LoginScreenState extends State<LoginScreen> {
                               borderRadius: BorderRadius.circular(14),
                             ),
                             side: BorderSide(
-                              color: Theme.of(context).colorScheme.secondary,
-                              width: 1.5,
+                              color:
+                                  Theme.of(context).brightness ==
+                                          Brightness.dark
+                                      ? Colors.white
+                                      : const Color(0xFF10138A),
                             ),
                             foregroundColor:
-                                Theme.of(context).colorScheme.secondary,
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white
+                                    : const Color(0xFF10138A),
                           ),
                           child: const Text('Continue as Guest'),
                         ),
@@ -288,7 +272,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           style: TextButton.styleFrom(
                             foregroundColor:
                                 Theme.of(context).colorScheme.tertiary,
-                            textStyle: Theme.of(context).textTheme.titleMedium!
+                            textStyle: Theme.of(context).textTheme.bodyLarge!
                                 .copyWith(decoration: TextDecoration.underline),
                           ),
                           child: const Text("Don't have an account? Sign Up"),
