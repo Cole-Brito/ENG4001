@@ -13,8 +13,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   // Jean Luc - Email and password controllers
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
 
   void _register() async {
     final String email = _emailController.text.trim();
@@ -32,9 +31,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
         password: password,
       );
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Registration successful!')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Registration successful!')),
+      );
       Navigator.pop(context);
     } catch (e) {
       _showError('Registration failed: ${e.toString().split(']').last}');
@@ -84,8 +83,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 'Register for an account',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
               ),
               const SizedBox(height: 16),
               TextField(
@@ -101,9 +100,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide(
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.outline.withOpacity(0.6),
+                      color: Theme.of(context).colorScheme.outline.withOpacity(0.6),
                     ),
                   ),
                   focusedBorder: OutlineInputBorder(
@@ -114,13 +111,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                   filled: true,
-                  fillColor: Theme.of(
-                    context,
-                  ).colorScheme.surfaceVariant.withOpacity(0.2),
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 18.0,
-                    horizontal: 16.0,
-                  ),
+                  fillColor: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.2),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 18.0, horizontal: 16.0),
                 ),
                 keyboardType: TextInputType.emailAddress,
                 textInputAction: TextInputAction.next,
@@ -139,9 +131,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide(
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.outline.withOpacity(0.6),
+                      color: Theme.of(context).colorScheme.outline.withOpacity(0.6),
                     ),
                   ),
                   focusedBorder: OutlineInputBorder(
@@ -152,13 +142,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                   filled: true,
-                  fillColor: Theme.of(
-                    context,
-                  ).colorScheme.surfaceVariant.withOpacity(0.2),
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 18.0,
-                    horizontal: 16.0,
-                  ),
+                  fillColor: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.2),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 18.0, horizontal: 16.0),
+
                 ),
                 obscureText: true,
                 textInputAction: TextInputAction.next,
@@ -177,9 +163,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide(
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.outline.withOpacity(0.6),
+                      color: Theme.of(context).colorScheme.outline.withOpacity(0.6),
                     ),
                   ),
                   focusedBorder: OutlineInputBorder(
@@ -190,13 +174,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                   filled: true,
-                  fillColor: Theme.of(
-                    context,
-                  ).colorScheme.surfaceVariant.withOpacity(0.2),
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 18.0,
-                    horizontal: 16.0,
-                  ),
+                  fillColor: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.2),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 18.0, horizontal: 16.0),
                 ),
                 obscureText: true,
                 textInputAction: TextInputAction.done,

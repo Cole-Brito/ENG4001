@@ -76,9 +76,8 @@ class AdminDashboard extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute<void>(
-                          builder:
-                              (BuildContext context) =>
-                                  const CreateGameScreen(),
+                          builder: (BuildContext context) =>
+                              const CreateGameScreen(),
                         ),
                       );
                     },
@@ -90,9 +89,8 @@ class AdminDashboard extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute<void>(
-                          builder:
-                              (BuildContext context) =>
-                                  const ScheduledGamesScreen(),
+                          builder: (BuildContext context) =>
+                              const ScheduledGamesScreen(),
                         ),
                       );
                     },
@@ -104,9 +102,8 @@ class AdminDashboard extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute<void>(
-                          builder:
-                              (BuildContext context) =>
-                                  EditScheduledGameScreen(),
+                          builder: (BuildContext context) =>
+                              EditScheduledGameScreen(),
                         ),
                       );
                     },
@@ -118,9 +115,8 @@ class AdminDashboard extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute<void>(
-                          builder:
-                              (BuildContext context) =>
-                                  const LeaderboardScreen(),
+                          builder: (BuildContext context) =>
+                              const LeaderboardScreen(),
                         ),
                       );
                     },
@@ -132,9 +128,8 @@ class AdminDashboard extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute<void>(
-                          builder:
-                              (BuildContext context) =>
-                                  const CreateSeasonScreen(),
+                          builder: (BuildContext context) =>
+                              const CreateSeasonScreen(),
                         ),
                       );
                     },
