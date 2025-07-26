@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 // Added by Jean Luc
 import 'package:firebase_auth/firebase_auth.dart'
-    as fb_auth; // Importing Firebase Auth for user registration
+    as fb_auth; // Added by Jean Luc - Importing Firebase Auth for user registration
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});

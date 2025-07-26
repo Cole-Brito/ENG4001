@@ -2,6 +2,7 @@
  *
  * Author: Cole Brito
  * UI Author : Bivin Job
+ * Edited by: Jean Luc
  * Admin dashboard
  *
  */
@@ -17,8 +18,12 @@ import 'create_season_screen.dart';
 import 'edit_scheduled_game_screen.dart';
 
 class AdminDashboard extends StatelessWidget {
-  final User user; // Added by Jean Luc
-  const AdminDashboard({required this.user, super.key}); // Added by Jean Luc
+  final User
+  user; // Added by Jean Luc - variable to hold user information (Admin or Member)
+  const AdminDashboard({
+    required this.user,
+    super.key,
+  }); // Added by Jean Luc - constructor to accept user
 
   void _logout(BuildContext context) {
     Navigator.pushAndRemoveUntil(
@@ -35,7 +40,7 @@ class AdminDashboard extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Welcome, ${user.username}!', // Updated by Jean Luc
+          'Welcome, ${user.username}!', // Updated by Jean Luc - display username
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         backgroundColor: Colors.indigo.shade600,

@@ -1,15 +1,23 @@
+/*
+* Author: Cole Brito
+* UI Author : Bivin Job
+* Edited by: Jean Luc
+* ENG4001_020
+* Basic login screen and autherization of users logic
+*/
+
 import 'package:flutter/material.dart';
 // Added by Jean Luc: Firebase Auth import
 import 'package:firebase_auth/firebase_auth.dart'
     as fb_auth; // Added by Jean Luc
-import 'package:cloud_firestore/cloud_firestore.dart'; // Added by Jean Luc
+import 'package:cloud_firestore/cloud_firestore.dart'; // Added by Jean Luc - for Firestore access
 
 import 'admin_dashboard.dart';
 import 'member_dashboard.dart';
 import 'register_screen.dart';
 import 'scheduled_games_screen.dart';
 import '../models/user.dart';
-// Removed mock_users.dart → replaced with Firebase login logic // Added by Jean Luc
+// Added by Jean Luc - Removed mock_users.dart → replaced with Firebase login logic
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
