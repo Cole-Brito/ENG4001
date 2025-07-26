@@ -36,26 +36,28 @@ class _LoginScreenState extends State<LoginScreen> {
     final String password = _passwordController.text.trim();
 
     try {
-      // Authenticate with Firebase Auth // Added by Jean Luc
+      // Added by Jean Luc - Authenticate with Firebase Auth
       final credential = await fb_auth.FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
 
-      // Fetch the user role from Firestore based on UID // Added by Jean Luc
+      // Added by Jean Luc - Fetch the user role from Firestore based on UID
       final userDoc =
           await FirebaseFirestore.instance
               .collection('users')
               .doc(credential.user!.uid)
               .get();
 
-      final isAdmin = userDoc.data()?['isAdmin'] ?? false; // Added by Jean Luc
+      final isAdmin =
+          userDoc.data()?['isAdmin'] ??
+          false; // Added by Jean Luc - default to false if not found
 
-      // Create app-level User object with role info // Added by Jean Luc
+      // Added by Jean Luc -Create app-level User object with role info
       final User user = User(
         username: credential.user!.email ?? 'Unknown',
         isAdmin: isAdmin,
       );
 
-      // Redirect user based on role // Added by Jean Luc
+      // Added by Jean Luc - Redirect user based on role
       final Widget dashboard =
           isAdmin ? AdminDashboard(user: user) : MemberDashboard(user: user);
 
