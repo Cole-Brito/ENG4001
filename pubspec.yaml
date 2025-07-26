@@ -1,6 +1,6 @@
 name: flutter_application_2
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: 'none' # Remove this line if you plan to publish the package
 version: 0.1.0
 
 environment:
@@ -9,57 +9,58 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  intl: ^0.20.2
+  intl: ^0.20.2                                # Date/time formatting and localization
+  cupertino_icons: ^1.0.8                     # iOS style icons for Cupertino widgets
+  google_fonts: ^6.2.1                        # Custom Google Fonts
 
-  cupertino_icons: ^1.0.8
-
-  google_fonts: ^6.2.1
-  firebase_core: ^2.30.0
-  firebase_auth: ^4.17.3
-
+  # Firebase dependencies — Added by Jean Luc
+  firebase_core: ^2.30.0                      # Core Firebase SDK
+  firebase_auth: ^4.17.3                      # Firebase Authentication
+  cloud_firestore: ^4.17.3                    # Cloud Firestore (Firebase NoSQL DB)
 
 dev_dependencies:
   flutter_test:
-    sdk: flutter
-  flutter_lints: ^6.0.0
-  flutter_launcher_icons: ^0.14.4
-  # flutter_local_notifications: ^17.1.0
-  timezone: ^0.10.1
-  firebase_core: ^2.0.0
-  firebase_auth: ^4.0.0
-  cloud_firestore: ^4.0.0
+    sdk: flutter                              # Support for widget and integration testing
+  flutter_lints: ^6.0.0                       # Recommended lint rules for Flutter apps
+  flutter_launcher_icons: ^0.14.4             # Generates launcher icons for all platforms
+  # flutter_local_notifications: ^17.1.0      # (Optional) Local notifications support
+  timezone: ^0.10.1                           # For handling timezones with scheduling
 
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
   image_path: "assets/icons/ROS_Logo.png"
   adaptive_icon_foreground: "assets/icons/ROS_Logo_foreground.png"
-  adaptive_icon_background: "#ffffff" # hexcode for background color
+  adaptive_icon_background: "#ffffff"         # HEX code for adaptive background
 
-  min_sdk_android: 21 # android min sdk min:16, default 21
+  min_sdk_android: 21                         # Android min SDK (min:16, default: 21)
+
+  # Added by Jean Luc — Launcher icon settings for other platforms
   web:
     generate: true
     image_path: "assets/icons/ROS_Logo.png"
-    background_color: "#hexcode"
-    theme_color: "#hexcode"
+    background_color: "#10138A"              
+    theme_color: "#10138A"                   
   windows:
     generate: true
     image_path: "assets/icons/ROS_Logo.png"
-    icon_size: 48 # min:48, max:256, default: 48
+    icon_size: 48                             # Min: 48, Max: 256, Default: 48
   macos:
     generate: true
     image_path: "assets/icons/ROS_Logo.png"
-    
+
 flutter:
   uses-material-design: true
 
+  # Added/merged by Jean Luc — All background and sport images used in the app
   assets:
     - assets/images/login_background.jpg
     - assets/images/Badminton Court.png
     - assets/images/Table Tennis.png
     - assets/images/Tennis Court.png
-    - assets/icons/ROS_Logo-new.png
-    
+    - assets/icons/ROS_Logo-new.png          # Added alternative/new logo icon
+
+  # Fonts section includes multiple custom families
   fonts:
     - family: BebasNeue
       fonts:
@@ -73,6 +74,3 @@ flutter:
     - family: NotoSans
       fonts:
         - asset: assets/fonts/NotoSans-Regular.ttf
-
-
-  
