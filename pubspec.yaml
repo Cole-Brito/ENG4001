@@ -25,6 +25,9 @@ dev_dependencies:
   flutter_launcher_icons: ^0.14.4
   # flutter_local_notifications: ^17.1.0
   timezone: ^0.10.1
+  firebase_core: ^2.0.0
+  firebase_auth: ^4.0.0
+  cloud_firestore: ^4.0.0
 
 flutter_launcher_icons:
   android: "launcher_icon"
@@ -69,4 +72,6 @@ flutter:
     - family: NotoSans
       fonts:
         - asset: assets/fonts/NotoSans-Regular.ttf
+
+
   

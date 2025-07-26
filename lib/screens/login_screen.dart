@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 // Added by Jean Luc: Firebase Auth import
 import 'package:firebase_auth/firebase_auth.dart'
     as fb_auth; // Added by Jean Luc
+import 'package:cloud_firestore/cloud_firestore.dart'; // Added by Jean Luc
 
 import 'admin_dashboard.dart';
 import 'member_dashboard.dart';
@@ -21,26 +22,38 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  // Login using Firebase Authentication // Added by Jean Luc
+  // Login using Firebase Authentication and route based on Firestore role // Added by Jean Luc
   void _login() async {
-    final String email = _usernameController.text.trim(); // Used as email
+    final String email = _usernameController.text.trim();
     final String password = _passwordController.text.trim();
 
     try {
+      // Authenticate with Firebase Auth // Added by Jean Luc
       final credential = await fb_auth.FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
 
-      // You can later fetch user role from Firestore if needed
+      // Fetch the user role from Firestore based on UID // Added by Jean Luc
+      final userDoc =
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(credential.user!.uid)
+              .get();
+
+      final isAdmin = userDoc.data()?['isAdmin'] ?? false; // Added by Jean Luc
+
+      // Create app-level User object with role info // Added by Jean Luc
       final User user = User(
         username: credential.user!.email ?? 'Unknown',
-        isAdmin: false, // Replace with real role from Firestore if needed
+        isAdmin: isAdmin,
       );
+
+      // Redirect user based on role // Added by Jean Luc
+      final Widget dashboard =
+          isAdmin ? AdminDashboard(user: user) : MemberDashboard(user: user);
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute<void>(
-          builder: (BuildContext context) => MemberDashboard(user: user),
-        ),
+        MaterialPageRoute<void>(builder: (BuildContext context) => dashboard),
       );
     } catch (e) {
       _showError('Login failed: ${e.toString().split(']').last}');
@@ -151,8 +164,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         TextField(
                           controller: _usernameController,
                           decoration: InputDecoration(
-                            labelText:
-                                'Email', // Updated label // Added by Jean Luc
+                            labelText: 'Email',
                             hintText: 'Enter your email',
                             prefixIcon: const Icon(Icons.person_outline),
                             border: OutlineInputBorder(

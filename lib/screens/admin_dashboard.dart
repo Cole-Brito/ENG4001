@@ -1,13 +1,14 @@
 /*
-*
-* Author: Cole Brito
-* UI Author : Bivin Job
-* Admin dashboard
-*
-*/
+ *
+ * Author: Cole Brito
+ * UI Author : Bivin Job
+ * Admin dashboard
+ *
+ */
 
 // lib/screens/admin_dashboard.dart
 import 'package:flutter/material.dart';
+import '../models/user.dart'; // Added by Jean Luc
 import 'create_game_screen.dart';
 import 'scheduled_games_screen.dart';
 import 'login_screen.dart';
@@ -16,7 +17,8 @@ import 'create_season_screen.dart';
 import 'edit_scheduled_game_screen.dart';
 
 class AdminDashboard extends StatelessWidget {
-  const AdminDashboard({super.key});
+  final User user; // Added by Jean Luc
+  const AdminDashboard({required this.user, super.key}); // Added by Jean Luc
 
   void _logout(BuildContext context) {
     Navigator.pushAndRemoveUntil(
@@ -32,9 +34,9 @@ class AdminDashboard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Admin Dashboard',
-          style: TextStyle(fontWeight: FontWeight.bold),
+        title: Text(
+          'Welcome, ${user.username}!', // Updated by Jean Luc
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         backgroundColor: Colors.indigo.shade600,
         foregroundColor: Colors.indigo.shade50,
@@ -52,13 +54,6 @@ class AdminDashboard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text(
-              'Welcome, Admin!',
-              style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
-            ),
             const SizedBox(height: 32),
             Expanded(
               child: GridView.count(
