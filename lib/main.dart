@@ -1,8 +1,23 @@
+/*
+* ROSS Game Management Project
+* Author: Cole Brito
+* Edited by: Jean Luc
+* Main Class for the ROS Game Management App
+*/
+
 import 'package:flutter/material.dart';
+// Added by Jean Luc: Firebase initialization
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+
 import 'screens/login_screen.dart';
 
-void main() {
-  runApp(MyApp());
+void main() async {
+  // Added by Jean Luc - Ensure that our Flutter is initialized before using Firebase
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {

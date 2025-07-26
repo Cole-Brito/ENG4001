@@ -1,17 +1,20 @@
 /*
 * Author: Cole Brito
 * UI Author : Bivin Job
+* Edited by: Jean Luc
 * ENG4001_020
-* Basic login screen and autherization of users logic
+* Basic login screen and authentication logic
 */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/screens/admin_dashboard.dart';
-import 'package:flutter_application_2/screens/member_dashboard.dart';
-import 'package:flutter_application_2/models/user.dart';
-import 'package:flutter_application_2/screens/register_screen.dart';
-import 'package:flutter_application_2/screens/scheduled_games_screen.dart';
-import '../data/mock_users.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fb_auth; // Jean Luc
+import 'package:cloud_firestore/cloud_firestore.dart'; // Jean Luc
+
+import 'admin_dashboard.dart';
+import 'member_dashboard.dart';
+import 'register_screen.dart';
+import 'scheduled_games_screen.dart';
+import '../models/user.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -21,54 +24,42 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  //Text field editors
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  // Basic login logic and authorization logic
-  void _login() {
-    final String username = _usernameController.text.trim();
+  // Login using Firebase Authentication and route based on Firestore role
+  void _login() async {
+    final String email = _usernameController.text.trim();
     final String password = _passwordController.text.trim();
 
-    final Map<String, Object> userMap = mockUsers.firstWhere(
-      (Map<String, Object> u) =>
-          u['username'] == username && u['password'] == password,
-      orElse: () => <String, Object>{},
-    );
+    try {
+      final credential = await fb_auth.FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
 
-    if (userMap.isNotEmpty) {
-      final String role = userMap['role'] as String;
-      //final int gamesPlayed = userMap['gamesPlayed'] as int; ← delete this if unused
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(credential.user!.uid)
+          .get();
 
-      if (role == 'admin') {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute<void>(
-            builder: (BuildContext context) => const AdminDashboard(),
-          ),
-        );
-      } else if (role == 'member') {
-        // Converting map into a User object
-        final User user = User(
-          username: userMap['username'] as String,
-          isAdmin: (userMap['role'] as String) == 'admin',
-        );
+      final isAdmin = userDoc.data()?['isAdmin'] ?? false;
 
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute<void>(
-            builder: (BuildContext context) => MemberDashboard(user: user),
-          ),
-        );
-      } else {
-        _showError('Invalid role');
-      }
-    } else {
-      _showError('Invalid username or password');
+      final User user = User(
+        username: credential.user!.email ?? 'Unknown',
+        isAdmin: isAdmin,
+      );
+
+      final Widget dashboard =
+          isAdmin ? AdminDashboard(user: user) : MemberDashboard(user: user);
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute<void>(builder: (BuildContext context) => dashboard),
+      );
+    } catch (e) {
+      _showError('Login failed: ${e.toString().split(']').last}');
     }
   }
 
-  // Guest Login -- Can only see the scheduled games for now
   void _guestLogin() {
     Navigator.push(
       context,
@@ -95,41 +86,26 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  //--------------------- UI CODE BELOW ---------------------
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final bool isSmallScreen = screenWidth < 600;
 
     return Scaffold(
-      /*appBar: AppBar(
-        title: Text(
-          'ROS LOGIN',
-          style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold, color: Colors.white,),
-        ),
-        centerTitle: true,
-        backgroundColor: Color(0xFF10138A), // ROS Blue
-        elevation: 4,
-      ),*/
       body: Stack(
         children: [
-          // 👇 Background Image
           Positioned.fill(
             child: Image.asset(
               'assets/images/login_background.jpg',
               fit: BoxFit.cover,
             ),
           ),
-          // 👇 Semi-transparent overlay for readability
           Positioned.fill(
             child: Container(color: Colors.black.withOpacity(0.3)),
           ),
           Center(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 24.0,
-                vertical: 32.0,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
               child: ConstrainedBox(
                 constraints: BoxConstraints(
                   maxWidth: isSmallScreen ? double.infinity : 450,
@@ -142,63 +118,50 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Padding(
                     padding: const EdgeInsets.all(28.0),
                     child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
                         Image.asset(
                           'assets/icons/ROS_Logo-new.png',
-                          height: isSmallScreen ? 60 : 100, 
+                          height: isSmallScreen ? 60 : 100,
                           fit: BoxFit.contain,
                         ),
-                        SizedBox(height: isSmallScreen ? 28 : 40),
+                        const SizedBox(height: 40),
                         Text(
                           'Welcome Back!',
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).colorScheme.onSurface,
-                          ),
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).colorScheme.onSurface,
+                              ),
                         ),
                         const SizedBox(height: 8),
                         Text(
                           'Sign in to continue',
                           textAlign: TextAlign.center,
-                          style: Theme.of(
-                            context,
-                          ).textTheme.bodyLarge!.copyWith(
-                            color:
-                                Theme.of(context).colorScheme.onSurfaceVariant,
-                          ),
+                          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant,
+                              ),
                         ),
-                        SizedBox(height: isSmallScreen ? 32 : 48),
+                        const SizedBox(height: 48),
                         TextField(
                           controller: _usernameController,
                           decoration: InputDecoration(
-                            labelText: 'Username',
-                            labelStyle: TextStyle(
-                              color: Theme.of(context).brightness == Brightness.dark
-                                  ? Colors.white
-                                  : Colors.black,
-                            ),
-                            hintText: 'Enter your username',
-                            prefixIcon: Icon(
-                                  Icons.person_outline,
-                                  color: Theme.of(context).brightness == Brightness.dark
-                                      ? Colors.white
-                                      : Colors.black,
-                                ), 
-                               border: OutlineInputBorder(
+                            labelText: 'Email',
+                            hintText: 'Enter your email',
+                            prefixIcon: const Icon(Icons.person_outline),
+                            border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide: BorderSide.none,
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide: BorderSide(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.outline.withOpacity(0.6),
-                                width: 1,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .outline
+                                    .withOpacity(0.6),
                               ),
                             ),
                             focusedBorder: OutlineInputBorder(
@@ -213,12 +176,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                 .colorScheme
                                 .surfaceContainerHighest
                                 .withOpacity(0.2),
-                            contentPadding: const EdgeInsets.symmetric(
-                              vertical: 18.0,
-                              horizontal: 16.0,
-                            ),
                           ),
-                          keyboardType: TextInputType.text,
+                          keyboardType: TextInputType.emailAddress,
                           textInputAction: TextInputAction.next,
                         ),
                         const SizedBox(height: 16),
@@ -226,29 +185,19 @@ class _LoginScreenState extends State<LoginScreen> {
                           controller: _passwordController,
                           decoration: InputDecoration(
                             labelText: 'Password',
-                            labelStyle: TextStyle(
-                              color: Theme.of(context).brightness == Brightness.dark
-                                  ? Colors.white
-                                  : Colors.black,
-                            ),
                             hintText: 'Enter your password',
-                            prefixIcon: Icon(
-                                  Icons.person_outline,
-                                  color: Theme.of(context).brightness == Brightness.dark
-                                      ? Colors.white
-                                      : Colors.black,
-                                ),
-                                border: OutlineInputBorder(
+                            prefixIcon: const Icon(Icons.lock_outline),
+                            border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide: BorderSide.none,
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide: BorderSide(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.outline.withOpacity(0.6),
-                                width: 1,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .outline
+                                    .withOpacity(0.6),
                               ),
                             ),
                             focusedBorder: OutlineInputBorder(
@@ -263,13 +212,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                 .colorScheme
                                 .surfaceContainerHighest
                                 .withOpacity(0.2),
-                            contentPadding: const EdgeInsets.symmetric(
-                              vertical: 18.0,
-                              horizontal: 16.0,
-                            ),
                           ),
                           obscureText: true,
-                          keyboardType: TextInputType.visiblePassword,
                           textInputAction: TextInputAction.done,
                           onSubmitted: (_) => _login(),
                         ),
@@ -285,10 +229,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                 Theme.of(context).colorScheme.primary,
                             foregroundColor:
                                 Theme.of(context).colorScheme.onPrimary,
-                            elevation: 5,
-                             textStyle: Theme.of(context).textTheme.titleLarge!.copyWith(
-                              fontFamily: 'BebasNeue', // Optional for button text
-                            ),
                           ),
                           child: const Text('Login'),
                         ),
@@ -301,22 +241,20 @@ class _LoginScreenState extends State<LoginScreen> {
                               borderRadius: BorderRadius.circular(14),
                             ),
                             side: BorderSide(
-                            color: Theme.of(context).brightness == Brightness.dark
-                                    ? Colors.white
-                                    : const Color(0xFF10138A), // ROS Blue                              width: 1.5,
+                              color: Theme.of(context).brightness == Brightness.dark
+                                  ? Colors.white
+                                  : const Color(0xFF10138A),
                             ),
-                             foregroundColor: Theme.of(context).brightness == Brightness.dark
+                            foregroundColor:
+                                Theme.of(context).brightness == Brightness.dark
                                     ? Colors.white
-                                    : const Color(0xFF10138A), // ROS Blue
-                            textStyle: Theme.of(context).textTheme.headlineSmall!
-                                .copyWith(),
+                                    : const Color(0xFF10138A),
                           ),
                           child: const Text('Continue as Guest'),
                         ),
                         const SizedBox(height: 24),
                         TextButton(
                           onPressed: () {
-                            // Navigate to the RegisterScreen
                             Navigator.push(
                               context,
                               MaterialPageRoute(
