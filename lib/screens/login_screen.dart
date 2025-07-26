@@ -27,15 +27,17 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  // Login using Firebase Authentication and route based on Firestore role
+  // Jean Luc - Login using Firebase Authentication and route based on Firestore role
   void _login() async {
     final String email = _usernameController.text.trim();
     final String password = _passwordController.text.trim();
 
     try {
+      // Jean Luc - Authenticate with Firebase Auth
       final credential = await fb_auth.FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
 
+      // Jean Luc - Fetch the user role from Firestore based on UID
       final userDoc = await FirebaseFirestore.instance
           .collection('users')
           .doc(credential.user!.uid)
@@ -43,11 +45,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
       final isAdmin = userDoc.data()?['isAdmin'] ?? false;
 
+      // Jean Luc - Create app-level User object with role info
       final User user = User(
         username: credential.user!.email ?? 'Unknown',
         isAdmin: isAdmin,
       );
 
+      // Jean Luc - Redirect user based on role
       final Widget dashboard =
           isAdmin ? AdminDashboard(user: user) : MemberDashboard(user: user);
 
@@ -139,9 +143,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           'Sign in to continue',
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onSurfaceVariant,
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
                               ),
                         ),
                         const SizedBox(height: 48),
@@ -158,10 +160,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide: BorderSide(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .outline
-                                    .withOpacity(0.6),
+                                color: Theme.of(context).colorScheme.outline.withOpacity(0.6),
                               ),
                             ),
                             focusedBorder: OutlineInputBorder(
@@ -194,10 +193,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide: BorderSide(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .outline
-                                    .withOpacity(0.6),
+                                color: Theme.of(context).colorScheme.outline.withOpacity(0.6),
                               ),
                             ),
                             focusedBorder: OutlineInputBorder(
@@ -225,10 +221,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(14),
                             ),
-                            backgroundColor:
-                                Theme.of(context).colorScheme.primary,
-                            foregroundColor:
-                                Theme.of(context).colorScheme.onPrimary,
+                            backgroundColor: Theme.of(context).colorScheme.primary,
+                            foregroundColor: Theme.of(context).colorScheme.onPrimary,
                           ),
                           child: const Text('Login'),
                         ),
@@ -245,10 +239,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ? Colors.white
                                   : const Color(0xFF10138A),
                             ),
-                            foregroundColor:
-                                Theme.of(context).brightness == Brightness.dark
-                                    ? Colors.white
-                                    : const Color(0xFF10138A),
+                            foregroundColor: Theme.of(context).brightness == Brightness.dark
+                                ? Colors.white
+                                : const Color(0xFF10138A),
                           ),
                           child: const Text('Continue as Guest'),
                         ),
@@ -263,10 +256,10 @@ class _LoginScreenState extends State<LoginScreen> {
                             );
                           },
                           style: TextButton.styleFrom(
-                            foregroundColor:
-                                Theme.of(context).colorScheme.tertiary,
-                            textStyle: Theme.of(context).textTheme.bodyLarge!
-                                .copyWith(decoration: TextDecoration.underline),
+                            foregroundColor: Theme.of(context).colorScheme.tertiary,
+                            textStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                              decoration: TextDecoration.underline,
+                            ),
                           ),
                           child: const Text("Don't have an account? Sign Up"),
                         ),
