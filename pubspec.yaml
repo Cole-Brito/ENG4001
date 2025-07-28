@@ -14,6 +14,8 @@ dependencies:
   cupertino_icons: ^1.0.8
 
   google_fonts: ^6.2.1
+  firebase_core: ^2.30.0
+  firebase_auth: ^4.17.3
 
 
 dev_dependencies:
@@ -23,6 +25,9 @@ dev_dependencies:
   flutter_launcher_icons: ^0.14.4
   # flutter_local_notifications: ^17.1.0
   timezone: ^0.10.1
+  firebase_core: ^2.0.0
+  firebase_auth: ^4.0.0
+  cloud_firestore: ^4.0.0
 
 flutter_launcher_icons:
   android: "launcher_icon"
@@ -53,7 +58,8 @@ flutter:
     - assets/images/Badminton Court.png
     - assets/images/Table Tennis.png
     - assets/images/Tennis Court.png
-
+    - assets/icons/ROS_Logo-new.png
+    
   fonts:
     - family: BebasNeue
       fonts:
@@ -67,4 +73,6 @@ flutter:
     - family: NotoSans
       fonts:
         - asset: assets/fonts/NotoSans-Regular.ttf
+
+
   
