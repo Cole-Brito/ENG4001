@@ -10,6 +10,7 @@
 // lib/screens/admin_dashboard.dart
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../models/user.dart';
 import 'user_profile_screen.dart';
 import 'create_game_screen.dart';
 import 'login_screen.dart';
@@ -123,7 +124,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Welcome, ${user.username}!', // Merged: Jean Luc version
+          'Welcome, ${widget.user.username}!',
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
@@ -451,8 +452,8 @@ class _AdminDashboardActionCard extends StatelessWidget {
                   title,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
                 ),
               ],
             ),
