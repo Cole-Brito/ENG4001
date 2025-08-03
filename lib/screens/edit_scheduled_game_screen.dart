@@ -1,7 +1,7 @@
 // lib/screens/select_game_to_edit_screen.dart
 import 'package:flutter/material.dart';
-import '../data/mock_game_store.dart';
-import '../models/game.dart';
+import '../../data/mock_game_store.dart';
+import '../../models/game.dart';
 import 'package:intl/intl.dart';
 
 class EditScheduledGameScreen extends StatefulWidget {

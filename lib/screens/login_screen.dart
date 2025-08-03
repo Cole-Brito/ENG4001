@@ -37,13 +37,35 @@ class _LoginScreenState extends State<LoginScreen> {
       final credential = await fb_auth.FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
 
+    if (userMap.isNotEmpty) {
+      final String role = userMap['role'] as String;
+      //final int gamesPlayed = userMap['gamesPlayed'] as int;  delete this if unused
+
+      if (role == 'admin') {
+        final User user = User(
+          username: userMap['username'] as String,
+          isAdmin: (userMap['role'] as String) == 'admin',
+        );
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute<void>(
+            builder: (BuildContext context) => AdminDashboard(user: user),
+          ),
+        );
+      } else if (role == 'member') {
+        // Converting map into a User object
+        final User user = User(
+          username: userMap['username'] as String,
+          isAdmin: (userMap['role'] as String) == 'admin',
+        );
       // Jean Luc - Fetch the user role from Firestore based on UID
       final userDoc = await FirebaseFirestore.instance
           .collection('users')
           .doc(credential.user!.uid)
           .get();
 
-      final isAdmin = userDoc.data()?['isAdmin'] ?? false;
+      final isAdmin = userDoc.data()?['isAdmin'] ?? false
 
       // Jean Luc - Create app-level User object with role info
       final User user = User(

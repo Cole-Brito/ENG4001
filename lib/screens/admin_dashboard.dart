@@ -9,22 +9,24 @@
 
 // lib/screens/admin_dashboard.dart
 import 'package:flutter/material.dart';
-import '../models/user.dart'; // Added by Jean Luc
+import 'package:intl/intl.dart';
+import 'user_profile_screen.dart';
 import 'create_game_screen.dart';
-import 'scheduled_games_screen.dart';
 import 'login_screen.dart';
 import 'leaderboard_screen.dart';
 import 'create_season_screen.dart';
-import 'edit_scheduled_game_screen.dart';
+import '../../data/mock_game_store.dart';
+import '../../models/game.dart';
 
-class AdminDashboard extends StatelessWidget {
-  final User user; // Added by Jean Luc - variable to hold user information (Admin or Member)
+class AdminDashboard extends StatefulWidget {
+  final User user;
+  const AdminDashboard({super.key, required this.user});
 
-  const AdminDashboard({
-    required this.user,
-    super.key,
-  }); // Added by Jean Luc - constructor to accept user
+  @override
+  State<AdminDashboard> createState() => _AdminDashboardState();
+}
 
+class _AdminDashboardState extends State<AdminDashboard> {
   void _logout(BuildContext context) {
     Navigator.pushAndRemoveUntil(
       context,
@@ -35,8 +37,89 @@ class AdminDashboard extends StatelessWidget {
     );
   }
 
+  String _imageForFormat(String format) {
+    switch (format.toLowerCase()) {
+      case 'tennis':
+        return 'assets/images/Tennis Court.png';
+      case 'table tennis':
+        return 'assets/images/Table Tennis.png';
+      case 'badminton':
+      default:
+        return 'assets/images/Badminton Court.png';
+    }
+  }
+
+  void _showEditDialog(BuildContext context, Game game) {
+    final courtsController = TextEditingController(
+      text: game.courts.toString(),
+    );
+    final playersController = TextEditingController(
+      text: game.players.toString(),
+    );
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Edit ${game.format} Game'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Scheduled for ${DateFormat.yMMMd().format(game.date)}'),
+              const SizedBox(height: 12),
+              TextField(
+                controller: courtsController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: 'Courts',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: playersController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: 'Players',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                final newCourts = int.tryParse(courtsController.text);
+                final newPlayers = int.tryParse(playersController.text);
+
+                if (newCourts != null && newPlayers != null) {
+                  final updatedGame = game.copyWith(
+                    courts: newCourts,
+                    players: newPlayers,
+                  );
+
+                  MockGameStore.updateGame(game, updatedGame);
+
+                  setState(() {}); // Refresh UI after update
+                  Navigator.pop(context);
+                }
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final games = MockGameStore.games;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -46,11 +129,126 @@ class AdminDashboard extends StatelessWidget {
         centerTitle: true,
         backgroundColor: const Color(0xFF10138A), // ROS Blue
         elevation: 4,
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () => _logout(context),
-            tooltip: 'Logout',
+        actions: [
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.menu),
+            onSelected: (value) {
+              switch (value) {
+                case 'profile':
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => UserProfileScreen(user: widget.user),
+                    ),
+                  );
+                  break;
+                case 'notifications':
+                  // Add Functionality here when bivin pushes
+                  break;
+                case 'createGame':
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const CreateGameScreen()),
+                  );
+                  break;
+                case 'leaderboard':
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const LeaderboardScreen(),
+                    ),
+                  );
+                  break;
+                case 'season':
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const CreateSeasonScreen(),
+                    ),
+                  );
+                  break;
+                case 'settings':
+                  // Add Functionality here when bivin pushes
+                  break;
+                case 'logout':
+                  _logout(context);
+                  break;
+              }
+            },
+            itemBuilder:
+                (BuildContext context) => [
+                  PopupMenuItem<String>(
+                    value: 'profile',
+                    child: Row(
+                      children: const [
+                        Icon(Icons.person, color: Colors.grey),
+                        SizedBox(width: 10),
+                        Text('Profile'),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem<String>(
+                    value: 'notifications',
+                    child: Row(
+                      children: const [
+                        Icon(Icons.notifications, color: Colors.grey),
+                        SizedBox(width: 10),
+                        Text('Notifications'),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem<String>(
+                    value: 'createGame',
+                    child: Row(
+                      children: const [
+                        Icon(Icons.add_box, color: Colors.grey),
+                        SizedBox(width: 10),
+                        Text('Create Game'),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem<String>(
+                    value: 'leaderboard',
+                    child: Row(
+                      children: const [
+                        Icon(Icons.leaderboard, color: Colors.grey),
+                        SizedBox(width: 10),
+                        Text('Leaderboard'),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem<String>(
+                    value: 'season',
+                    child: Row(
+                      children: const [
+                        Icon(Icons.edit_calendar, color: Colors.grey),
+                        SizedBox(width: 10),
+                        Text('Create Season'),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem<String>(
+                    value: 'settings',
+                    child: Row(
+                      children: const [
+                        Icon(Icons.settings, color: Colors.grey),
+                        SizedBox(width: 10),
+                        Text('Settings'),
+                      ],
+                    ),
+                  ),
+                  const PopupMenuDivider(),
+                  PopupMenuItem<String>(
+                    value: 'logout',
+                    child: Row(
+                      children: const [
+                        Icon(Icons.logout, color: Colors.redAccent),
+                        SizedBox(width: 10),
+                        Text('Logout'),
+                      ],
+                    ),
+                  ),
+                ],
           ),
         ],
       ),
@@ -60,81 +258,153 @@ class AdminDashboard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             const SizedBox(height: 32),
+            GridView.count(
+              shrinkWrap: true,
+              crossAxisCount: MediaQuery.of(context).size.width > 600 ? 3 : 2,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
+              childAspectRatio: 1.2,
+              physics: const NeverScrollableScrollPhysics(),
+              children: <Widget>[
+                _AdminDashboardActionCard(
+                  icon: Icons.event_note,
+                  title: 'Create New Game',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute<void>(
+                        builder:
+                            (BuildContext context) => const CreateGameScreen(),
+                      ),
+                    );
+                  },
+                ),
+                _AdminDashboardActionCard(
+                  icon: Icons.leaderboard,
+                  title: 'View Leaderboard',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute<void>(
+                        builder:
+                            (BuildContext context) => const LeaderboardScreen(),
+                      ),
+                    );
+                  },
+                ),
+                _AdminDashboardActionCard(
+                  icon: Icons.edit_calendar_outlined,
+                  title: 'Create Season',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute<void>(
+                        builder:
+                            (BuildContext context) =>
+                                const CreateSeasonScreen(),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: 32),
+            Text(
+              'Scheduled Games',
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
             Expanded(
-              child: GridView.count(
-                shrinkWrap: true,
-                crossAxisCount: MediaQuery.of(context).size.width > 600 ? 5 : 2,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-                childAspectRatio: 1, // square cards
-                children: <Widget>[
-                  _AdminDashboardActionCard(
-                    icon: Icons.event_note,
-                    title: 'Create New Game',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute<void>(
-                          builder: (BuildContext context) =>
-                              const CreateGameScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                  _AdminDashboardActionCard(
-                    icon: Icons.calendar_month,
-                    title: 'View Scheduled Games',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute<void>(
-                          builder: (BuildContext context) =>
-                              const ScheduledGamesScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                  _AdminDashboardActionCard(
-                    icon: Icons.edit_calendar,
-                    title: 'Edit Scheduled Games',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute<void>(
-                          builder: (BuildContext context) =>
-                              EditScheduledGameScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                  _AdminDashboardActionCard(
-                    icon: Icons.leaderboard,
-                    title: 'View Leaderboard',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute<void>(
-                          builder: (BuildContext context) =>
-                              const LeaderboardScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                  _AdminDashboardActionCard(
-                    icon: Icons.edit_calendar_outlined,
-                    title: 'Create Season',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute<void>(
-                          builder: (BuildContext context) =>
-                              const CreateSeasonScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
+              child:
+                  games.isEmpty
+                      ? const Center(child: Text('No games scheduled yet.'))
+                      : ListView.builder(
+                        itemCount: games.length,
+                        itemBuilder: (context, index) {
+                          final game = games[index];
+                          final dateStr = DateFormat(
+                            'EEE, MMM d, yyyy',
+                          ).format(game.date);
+
+                          return Card(
+                            elevation: 2,
+                            margin: const EdgeInsets.symmetric(vertical: 8),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Column(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: const BorderRadius.vertical(
+                                    top: Radius.circular(12),
+                                  ),
+                                  child: Image.asset(
+                                    _imageForFormat(game.format),
+                                    height: 120,
+                                    width: double.infinity,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(16),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              '${game.format} • $dateStr',
+                                              style:
+                                                  Theme.of(
+                                                    context,
+                                                  ).textTheme.titleMedium,
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              'Courts: ${game.courts} | Players: ${game.players}',
+                                              style:
+                                                  Theme.of(
+                                                    context,
+                                                  ).textTheme.bodySmall,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Column(
+                                        children: [
+                                          ElevatedButton.icon(
+                                            icon: const Icon(
+                                              Icons.edit,
+                                              size: 16,
+                                            ),
+                                            label: const Text('Edit'),
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor:
+                                                  Colors.grey.shade700,
+                                              foregroundColor: Colors.white,
+                                            ),
+                                            onPressed:
+                                                () => _showEditDialog(
+                                                  context,
+                                                  game,
+                                                ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
             ),
           ],
         ),

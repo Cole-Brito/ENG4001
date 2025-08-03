@@ -208,7 +208,7 @@ class _MemberDashboardState extends State<MemberDashboard> {
         ],
       ),
 
-      // -------- Requirement 1: full-page scroll --------------
+      // -------- full-page scroll --------------
       body: SingleChildScrollView(
         // NEW
         child: Padding(
