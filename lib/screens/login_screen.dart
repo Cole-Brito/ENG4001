@@ -37,35 +37,14 @@ class _LoginScreenState extends State<LoginScreen> {
       final credential = await fb_auth.FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
 
-    if (userMap.isNotEmpty) {
-      final String role = userMap['role'] as String;
-      //final int gamesPlayed = userMap['gamesPlayed'] as int;  delete this if unused
-
-      if (role == 'admin') {
-        final User user = User(
-          username: userMap['username'] as String,
-          isAdmin: (userMap['role'] as String) == 'admin',
-        );
-
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute<void>(
-            builder: (BuildContext context) => AdminDashboard(user: user),
-          ),
-        );
-      } else if (role == 'member') {
-        // Converting map into a User object
-        final User user = User(
-          username: userMap['username'] as String,
-          isAdmin: (userMap['role'] as String) == 'admin',
-        );
       // Jean Luc - Fetch the user role from Firestore based on UID
-      final userDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(credential.user!.uid)
-          .get();
+      final userDoc =
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(credential.user!.uid)
+              .get();
 
-      final isAdmin = userDoc.data()?['isAdmin'] ?? false
+      final isAdmin = userDoc.data()?['isAdmin'] ?? false;
 
       // Jean Luc - Create app-level User object with role info
       final User user = User(
@@ -74,6 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
       );
 
       // Jean Luc - Redirect user based on role
+
       final Widget dashboard =
           isAdmin ? AdminDashboard(user: user) : MemberDashboard(user: user);
 
@@ -131,7 +111,10 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
           Center(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24.0,
+                vertical: 32.0,
+              ),
               child: ConstrainedBox(
                 constraints: BoxConstraints(
                   maxWidth: isSmallScreen ? double.infinity : 450,
@@ -155,18 +138,23 @@ class _LoginScreenState extends State<LoginScreen> {
                         Text(
                           'Welcome Back!',
                           textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context).colorScheme.onSurface,
-                              ),
+                          style: Theme.of(
+                            context,
+                          ).textTheme.titleLarge!.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ),
                         ),
                         const SizedBox(height: 8),
                         Text(
                           'Sign in to continue',
                           textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                                color: Theme.of(context).colorScheme.onSurfaceVariant,
-                              ),
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodyLarge!.copyWith(
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
                         ),
                         const SizedBox(height: 48),
                         TextField(
@@ -182,7 +170,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide: BorderSide(
-                                color: Theme.of(context).colorScheme.outline.withOpacity(0.6),
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.outline.withOpacity(0.6),
                               ),
                             ),
                             focusedBorder: OutlineInputBorder(
@@ -215,7 +205,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide: BorderSide(
-                                color: Theme.of(context).colorScheme.outline.withOpacity(0.6),
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.outline.withOpacity(0.6),
                               ),
                             ),
                             focusedBorder: OutlineInputBorder(
@@ -243,8 +235,10 @@ class _LoginScreenState extends State<LoginScreen> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(14),
                             ),
-                            backgroundColor: Theme.of(context).colorScheme.primary,
-                            foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                            backgroundColor:
+                                Theme.of(context).colorScheme.primary,
+                            foregroundColor:
+                                Theme.of(context).colorScheme.onPrimary,
                           ),
                           child: const Text('Login'),
                         ),
@@ -257,13 +251,16 @@ class _LoginScreenState extends State<LoginScreen> {
                               borderRadius: BorderRadius.circular(14),
                             ),
                             side: BorderSide(
-                              color: Theme.of(context).brightness == Brightness.dark
-                                  ? Colors.white
-                                  : const Color(0xFF10138A),
+                              color:
+                                  Theme.of(context).brightness ==
+                                          Brightness.dark
+                                      ? Colors.white
+                                      : const Color(0xFF10138A),
                             ),
-                            foregroundColor: Theme.of(context).brightness == Brightness.dark
-                                ? Colors.white
-                                : const Color(0xFF10138A),
+                            foregroundColor:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white
+                                    : const Color(0xFF10138A),
                           ),
                           child: const Text('Continue as Guest'),
                         ),
@@ -278,10 +275,10 @@ class _LoginScreenState extends State<LoginScreen> {
                             );
                           },
                           style: TextButton.styleFrom(
-                            foregroundColor: Theme.of(context).colorScheme.tertiary,
-                            textStyle: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                              decoration: TextDecoration.underline,
-                            ),
+                            foregroundColor:
+                                Theme.of(context).colorScheme.tertiary,
+                            textStyle: Theme.of(context).textTheme.bodyLarge!
+                                .copyWith(decoration: TextDecoration.underline),
                           ),
                           child: const Text("Don't have an account? Sign Up"),
                         ),
