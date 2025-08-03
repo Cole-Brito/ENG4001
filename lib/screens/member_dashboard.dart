@@ -50,9 +50,10 @@ class _MemberDashboardState extends State<MemberDashboard> {
     final String dateStr = DateFormat('EEE, MMM d').format(game.date); // NEW
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('✅ Signed up for ${game.format} • $dateStr'),
-        backgroundColor: Theme.of(context).colorScheme.secondary,
+        content: Text('✅ Signed up for ${game.format} • $dateStr', style: TextStyle(color: Colors.white),
       ),
+              backgroundColor: Theme.of(context).colorScheme.secondary,
+    ),
     );
   }
 
@@ -62,16 +63,28 @@ class _MemberDashboardState extends State<MemberDashboard> {
       context: context,
       builder:
           (_) => AlertDialog(
-            title: const Text('Cancel RSVP?'),
+            title: const Text('Cancel?'),
             content: Text('Remove your RSVP for the ${game.format} game?'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, false),
-                child: const Text('No'),
-              ),
+                child: Text('No',
+                    style: TextStyle(
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white
+                          : Colors.black,
+                    ),
+                  ),
+                ),
               ElevatedButton(
                 onPressed: () => Navigator.pop(context, true),
-                child: const Text('Yes'),
+                child: Text('Yes',
+                    style: TextStyle(
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white
+                          : Colors.black,
+                    ),
+                ),
               ),
             ],
           ),
@@ -124,11 +137,17 @@ class _MemberDashboardState extends State<MemberDashboard> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Member Dashboard'),
-        backgroundColor: Colors.indigo.shade600,
+        title: Text(
+          'MEMBER DASHBOARD',
+          style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold, color: Colors.white,),
+        ),
+        centerTitle: true,
+        backgroundColor: Color(0xFF10138A), // ROS Blue
+        elevation: 4,     
         actions: [
           PopupMenuButton<String>(
-            icon: const Icon(Icons.menu), // Menu icon on top-right
+            icon: Icon(Icons.menu, // Menu icon on top-right
+            color: Colors.white,),
             onSelected: (value) {
               if (value == 'logout') {
                 _logout();
@@ -200,9 +219,10 @@ class _MemberDashboardState extends State<MemberDashboard> {
               // ---------- greeting ----------
               Text(
                 'Welcome, $username!',
-                style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ),
               ),
               const SizedBox(height: 20),
 
@@ -215,9 +235,10 @@ class _MemberDashboardState extends State<MemberDashboard> {
               const SizedBox(height: 10),
               Text(
                 'Upcoming Games:',
-                style: Theme.of(
-                  context,
-                ).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ),
               ),
               const SizedBox(height: 10),
 
@@ -270,9 +291,9 @@ class _MemberDashboardState extends State<MemberDashboard> {
               children: [
                 Text(
                   "Today's Game",
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
+                  style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ),
                 ),
                 const SizedBox(height: 6),
                 Text(
@@ -281,8 +302,19 @@ class _MemberDashboardState extends State<MemberDashboard> {
                 ),
                 const SizedBox(height: 15),
                 OutlinedButton.icon(
-                  icon: const Icon(Icons.play_circle),
-                  label: const Text('View Game In Progress'),
+                  icon: Icon(Icons.play_circle,       
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white
+                      : const Color(0xFF10138A),
+                  ),
+                  label: Text('View Game In Progress',
+                  style: TextStyle(
+                      fontWeight: FontWeight.w600, // Optional: adds clarity
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white
+                          : const Color(0xFF10138A),
+                    ),
+                  ),
                   onPressed:
                       () => Navigator.push(
                         context,
@@ -297,8 +329,28 @@ class _MemberDashboardState extends State<MemberDashboard> {
                 ),
                 const SizedBox(height: 10),
                 OutlinedButton.icon(
-                  icon: const Icon(Icons.leaderboard),
-                  label: const Text('View Leaderboard'),
+                  icon: Icon(
+                  Icons.leaderboard,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white
+                      : const Color(0xFF10138A),
+                  ),
+                  label: Text(
+                    'View Leaderboard',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600, // Optional: adds clarity
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white
+                          : const Color(0xFF10138A),
+                    ),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white
+                          : const Color(0xFF10138A),
+                    ),
+                    ),
                   onPressed:
                       () => Navigator.push(
                         context,
@@ -328,10 +380,10 @@ class _MemberDashboardState extends State<MemberDashboard> {
           children: [
             Text(
               'No Game Today',
-              style: Theme.of(
-                context,
-              ).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
-            ),
+              style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ),
+              ),
             const SizedBox(height: 6),
             Text(
               "No game scheduled for today or you haven't RSVP'd.",
@@ -339,8 +391,31 @@ class _MemberDashboardState extends State<MemberDashboard> {
             ),
             const SizedBox(height: 15),
             OutlinedButton.icon(
-              icon: const Icon(Icons.leaderboard),
-              label: const Text('View Leaderboard'),
+              icon: Icon(
+                Icons.leaderboard,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white
+                    : const Color(0xFF10138A),
+              ),
+              label: Text(
+                'View Leaderboard',
+                style: TextStyle(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white
+                      : const Color(0xFF10138A),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+               style: OutlinedButton.styleFrom(
+                foregroundColor: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white
+                    : const Color(0xFF10138A),
+                side: BorderSide(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white
+                      : const Color(0xFF10138A),
+                ),
+              ),
               onPressed:
                   () => Navigator.push(
                     context,
@@ -386,7 +461,7 @@ class _MemberDashboardState extends State<MemberDashboard> {
                     children: [
                       Text(
                         '${game.format} • $dateStr',
-                        style: Theme.of(context).textTheme.titleMedium,
+                        style: Theme.of(context).textTheme.bodyLarge,
                       ),
                       const SizedBox(height: 4),
                       Text(
@@ -406,7 +481,7 @@ class _MemberDashboardState extends State<MemberDashboard> {
                   ),
                   onPressed:
                       hasRsvped ? () => _unsign(game) : () => _rsvp(game),
-                  child: Text(hasRsvped ? 'Un-RSVP' : 'RSVP'),
+                  child: Text(hasRsvped ? 'Cancel' : 'Register'),
                 ),
               ],
             ),

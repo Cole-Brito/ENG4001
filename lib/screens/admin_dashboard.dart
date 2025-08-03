@@ -2,6 +2,7 @@
 *
 * Author: Cole Brito
 * UI Author : Bivin Job
+* Edited by: Jean Luc
 * Admin dashboard
 *
 */
@@ -9,7 +10,6 @@
 // lib/screens/admin_dashboard.dart
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
 import 'user_profile_screen.dart';
 import 'create_game_screen.dart';
 import 'login_screen.dart';
@@ -17,7 +17,6 @@ import 'leaderboard_screen.dart';
 import 'create_season_screen.dart';
 import '../../data/mock_game_store.dart';
 import '../../models/game.dart';
-import '../../models/user.dart';
 
 class AdminDashboard extends StatefulWidget {
   final User user;
@@ -123,12 +122,12 @@ class _AdminDashboardState extends State<AdminDashboard> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Admin Dashboard',
-          style: TextStyle(fontWeight: FontWeight.bold),
+        title: Text(
+          'Welcome, ${user.username}!', // Merged: Jean Luc version
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
-        backgroundColor: Colors.indigo.shade600,
-        foregroundColor: Colors.indigo.shade50,
+        centerTitle: true,
+        backgroundColor: const Color(0xFF10138A), // ROS Blue
         elevation: 4,
         actions: [
           PopupMenuButton<String>(
@@ -258,13 +257,6 @@ class _AdminDashboardState extends State<AdminDashboard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text(
-              'Welcome, Admin!',
-              style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
-            ),
             const SizedBox(height: 32),
             GridView.count(
               shrinkWrap: true,
@@ -435,32 +427,35 @@ class _AdminDashboardActionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 6,
+      elevation: 3,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Icon(
-                icon,
-                size: 50,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              const SizedBox(height: 12),
-              Text(
-                title,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.onSurface,
+        borderRadius: BorderRadius.circular(12),
+        child: SizedBox(
+          height: 100,
+          width: 100,
+          child: Padding(
+            padding: const EdgeInsets.all(8),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Icon(
+                  icon,
+                  size: 28,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
-              ),
-            ],
+                const SizedBox(height: 6),
+                Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

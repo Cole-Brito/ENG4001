@@ -28,7 +28,7 @@ class UserProfileScreen extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: 50,
-                    backgroundColor: Colors.indigo.shade300,
+                    backgroundColor: Theme.of(context).colorScheme.primary, // ROS Blue
                     child: Text(
                       user.username.substring(0, 1).toUpperCase(),
                       style: const TextStyle(fontSize: 40, color: Colors.white),
@@ -38,7 +38,6 @@ class UserProfileScreen extends StatelessWidget {
                   Text(
                     user.username,
                     style: theme.textTheme.headlineSmall!.copyWith(
-                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ],

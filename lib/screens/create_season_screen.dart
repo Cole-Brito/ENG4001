@@ -116,7 +116,8 @@ class _CreateSeasonScreenState extends State<CreateSeasonScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('📆 Create Season'),
+        title: Text('📆 Create Season', style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold, color: Colors.white,),
+),
         elevation: 3,
         backgroundColor: theme.colorScheme.primary,
         foregroundColor: theme.colorScheme.onPrimary,
@@ -138,20 +139,27 @@ class _CreateSeasonScreenState extends State<CreateSeasonScreen> {
                     children: [
                       DropdownButtonFormField<String>(
                         value: _selectedFormat,
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           labelText: 'Game Format',
+                          labelStyle: TextStyle(
+                              color: Theme.of(context).brightness == Brightness.dark
+                                  ? Colors.white
+                                  : Colors.black,
+                            ),
                           prefixIcon: Icon(Icons.sports_esports_outlined),
                           border: OutlineInputBorder(),
                         ),
-                        items:
-                            ['Badminton', 'Tennis', 'Table Tennis']
-                                .map(
-                                  (format) => DropdownMenuItem(
-                                    value: format,
-                                    child: Text(format),
-                                  ),
-                                )
-                                .toList(),
+                       items: ['Badminton', 'Tennis', 'Table Tennis']
+                          .map(
+                            (format) => DropdownMenuItem(
+                              value: format,
+                              child: Text(
+                                format,
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            ),
+                          )
+                          .toList(),
                         onChanged: (value) {
                           setState(() {
                             _selectedFormat = value!;
@@ -161,8 +169,13 @@ class _CreateSeasonScreenState extends State<CreateSeasonScreen> {
                       const SizedBox(height: 16),
                       TextFormField(
                         controller: _courtsController,
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           labelText: 'Courts Available',
+                          labelStyle: TextStyle(
+                              color: Theme.of(context).brightness == Brightness.dark
+                                  ? Colors.white
+                                  : Colors.black,
+                            ),
                           prefixIcon: Icon(Icons.sports_tennis),
                           border: OutlineInputBorder(),
                         ),
@@ -177,8 +190,13 @@ class _CreateSeasonScreenState extends State<CreateSeasonScreen> {
                       const SizedBox(height: 16),
                       TextFormField(
                         controller: _playersController,
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           labelText: 'Players Scheduled',
+                          labelStyle: TextStyle(
+                              color: Theme.of(context).brightness == Brightness.dark
+                                  ? Colors.white
+                                  : Colors.black,
+                            ),
                           prefixIcon: Icon(Icons.group),
                           border: OutlineInputBorder(),
                         ),
@@ -214,13 +232,16 @@ class _CreateSeasonScreenState extends State<CreateSeasonScreen> {
                     child: ElevatedButton.icon(
                       icon: const Icon(Icons.check),
                       label: const Text('Create Season'),
-                      onPressed: _createSeason,
                       style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        textStyle: const TextStyle(fontSize: 16),
-                        backgroundColor: theme.colorScheme.primary,
-                        foregroundColor: theme.colorScheme.onPrimary,
-                      ),
+                        backgroundColor:
+                                Theme.of(context).colorScheme.primary,
+                            foregroundColor:
+                                Theme.of(context).colorScheme.onPrimary,
+                            elevation: 5,
+                             textStyle: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                            ),
+                            ),
+                      onPressed: _createSeason,
                     ),
                   ),
                   const SizedBox(width: 12),
