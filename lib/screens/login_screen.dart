@@ -38,13 +38,18 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (userMap.isNotEmpty) {
       final String role = userMap['role'] as String;
-      //final int gamesPlayed = userMap['gamesPlayed'] as int; ← delete this if unused
+      //final int gamesPlayed = userMap['gamesPlayed'] as int;  delete this if unused
 
       if (role == 'admin') {
+        final User user = User(
+          username: userMap['username'] as String,
+          isAdmin: (userMap['role'] as String) == 'admin',
+        );
+
         Navigator.pushReplacement(
           context,
           MaterialPageRoute<void>(
-            builder: (BuildContext context) => const AdminDashboard(),
+            builder: (BuildContext context) => AdminDashboard(user: user),
           ),
         );
       } else if (role == 'member') {

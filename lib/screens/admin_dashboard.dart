@@ -10,15 +10,18 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import 'user_profile_screen.dart';
 import 'create_game_screen.dart';
 import 'login_screen.dart';
 import 'leaderboard_screen.dart';
 import 'create_season_screen.dart';
 import '../../data/mock_game_store.dart';
 import '../../models/game.dart';
+import '../../models/user.dart';
 
 class AdminDashboard extends StatefulWidget {
-  const AdminDashboard({super.key});
+  final User user;
+  const AdminDashboard({super.key, required this.user});
 
   @override
   State<AdminDashboard> createState() => _AdminDashboardState();
@@ -33,6 +36,18 @@ class _AdminDashboardState extends State<AdminDashboard> {
       ),
       (Route<dynamic> route) => false,
     );
+  }
+
+  String _imageForFormat(String format) {
+    switch (format.toLowerCase()) {
+      case 'tennis':
+        return 'assets/images/Tennis Court.png';
+      case 'table tennis':
+        return 'assets/images/Table Tennis.png';
+      case 'badminton':
+      default:
+        return 'assets/images/Badminton Court.png';
+    }
   }
 
   void _showEditDialog(BuildContext context, Game game) {
@@ -115,11 +130,126 @@ class _AdminDashboardState extends State<AdminDashboard> {
         backgroundColor: Colors.indigo.shade600,
         foregroundColor: Colors.indigo.shade50,
         elevation: 4,
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () => _logout(context),
-            tooltip: 'Logout',
+        actions: [
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.menu),
+            onSelected: (value) {
+              switch (value) {
+                case 'profile':
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => UserProfileScreen(user: widget.user),
+                    ),
+                  );
+                  break;
+                case 'notifications':
+                  // Add Functionality here when bivin pushes
+                  break;
+                case 'createGame':
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const CreateGameScreen()),
+                  );
+                  break;
+                case 'leaderboard':
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const LeaderboardScreen(),
+                    ),
+                  );
+                  break;
+                case 'season':
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const CreateSeasonScreen(),
+                    ),
+                  );
+                  break;
+                case 'settings':
+                  // Add Functionality here when bivin pushes
+                  break;
+                case 'logout':
+                  _logout(context);
+                  break;
+              }
+            },
+            itemBuilder:
+                (BuildContext context) => [
+                  PopupMenuItem<String>(
+                    value: 'profile',
+                    child: Row(
+                      children: const [
+                        Icon(Icons.person, color: Colors.grey),
+                        SizedBox(width: 10),
+                        Text('Profile'),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem<String>(
+                    value: 'notifications',
+                    child: Row(
+                      children: const [
+                        Icon(Icons.notifications, color: Colors.grey),
+                        SizedBox(width: 10),
+                        Text('Notifications'),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem<String>(
+                    value: 'createGame',
+                    child: Row(
+                      children: const [
+                        Icon(Icons.add_box, color: Colors.grey),
+                        SizedBox(width: 10),
+                        Text('Create Game'),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem<String>(
+                    value: 'leaderboard',
+                    child: Row(
+                      children: const [
+                        Icon(Icons.leaderboard, color: Colors.grey),
+                        SizedBox(width: 10),
+                        Text('Leaderboard'),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem<String>(
+                    value: 'season',
+                    child: Row(
+                      children: const [
+                        Icon(Icons.edit_calendar, color: Colors.grey),
+                        SizedBox(width: 10),
+                        Text('Create Season'),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem<String>(
+                    value: 'settings',
+                    child: Row(
+                      children: const [
+                        Icon(Icons.settings, color: Colors.grey),
+                        SizedBox(width: 10),
+                        Text('Settings'),
+                      ],
+                    ),
+                  ),
+                  const PopupMenuDivider(),
+                  PopupMenuItem<String>(
+                    value: 'logout',
+                    child: Row(
+                      children: const [
+                        Icon(Icons.logout, color: Colors.redAccent),
+                        SizedBox(width: 10),
+                        Text('Logout'),
+                      ],
+                    ),
+                  ),
+                ],
           ),
         ],
       ),
@@ -202,21 +332,83 @@ class _AdminDashboardState extends State<AdminDashboard> {
                         itemCount: games.length,
                         itemBuilder: (context, index) {
                           final game = games[index];
-                          return ListTile(
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
+                          final dateStr = DateFormat(
+                            'EEE, MMM d, yyyy',
+                          ).format(game.date);
+
+                          return Card(
+                            elevation: 2,
+                            margin: const EdgeInsets.symmetric(vertical: 8),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
                             ),
-                            leading: const Icon(Icons.sports),
-                            title: Text(
-                              '${game.format} on ${DateFormat.yMMMd().format(game.date)}',
-                            ),
-                            subtitle: Text(
-                              'Courts: ${game.courts}, Players: ${game.players}',
-                            ),
-                            trailing: IconButton(
-                              icon: const Icon(Icons.edit),
-                              onPressed: () => _showEditDialog(context, game),
+                            child: Column(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: const BorderRadius.vertical(
+                                    top: Radius.circular(12),
+                                  ),
+                                  child: Image.asset(
+                                    _imageForFormat(game.format),
+                                    height: 120,
+                                    width: double.infinity,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(16),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              '${game.format} • $dateStr',
+                                              style:
+                                                  Theme.of(
+                                                    context,
+                                                  ).textTheme.titleMedium,
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              'Courts: ${game.courts} | Players: ${game.players}',
+                                              style:
+                                                  Theme.of(
+                                                    context,
+                                                  ).textTheme.bodySmall,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Column(
+                                        children: [
+                                          ElevatedButton.icon(
+                                            icon: const Icon(
+                                              Icons.edit,
+                                              size: 16,
+                                            ),
+                                            label: const Text('Edit'),
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor:
+                                                  Colors.grey.shade700,
+                                              foregroundColor: Colors.white,
+                                            ),
+                                            onPressed:
+                                                () => _showEditDialog(
+                                                  context,
+                                                  game,
+                                                ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
                           );
                         },
