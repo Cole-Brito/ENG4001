@@ -13,7 +13,7 @@ import 'package:cloud_firestore/cloud_firestore.dart'; // Jean Luc
 import 'admin_dashboard.dart';
 import 'member_dashboard.dart';
 import 'register_screen.dart';
-import 'scheduled_games_screen.dart';
+import 'guest_screen.dart';
 import '../models/user.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -70,7 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
     Navigator.push(
       context,
       MaterialPageRoute<void>(
-        builder: (BuildContext context) => const ScheduledGamesScreen(),
+        builder: (BuildContext context) => const GuestScreen(),
       ),
     );
   }
