@@ -1,3 +1,10 @@
+/*
+* ROSS Game Management Project
+* Author: Cole Brito
+* Contributors: Bivin, Jean Luc, Cole Brito
+* Main Class for the ROS Game Management App
+*/
+
 import 'package:flutter/material.dart';
 // Added by Jean Luc: Firebase initialization
 import 'package:firebase_core/firebase_core.dart';
