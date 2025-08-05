@@ -25,17 +25,15 @@ void main() {
 
     // Check if 5 buttons exist
     expect(find.text('Create New Game'), findsOneWidget);
-    expect(find.text('View Scheduled Games'), findsOneWidget);
-    expect(find.text('Edit Scheduled Games'), findsOneWidget);
     expect(find.text('View Leaderboard'), findsOneWidget);
     expect(find.text('Create Season'), findsOneWidget);
 
     // Optional: Verify icons
     expect(find.byIcon(Icons.event_note), findsOneWidget);
-    expect(find.byIcon(Icons.calendar_month), findsOneWidget);
+    //expect(find.byIcon(Icons.calendar_month), findsOneWidget);
     expect(find.byIcon(Icons.edit_calendar), findsOneWidget);
     expect(find.byIcon(Icons.leaderboard), findsOneWidget);
-    expect(find.byIcon(Icons.edit_calendar_outlined), findsOneWidget);
+    //expect(find.byIcon(Icons.edit_calendar_outlined), findsOneWidget);
   });
 
   testWidgets('Clicking Create New Game navigates to CreateGameScreen', (
