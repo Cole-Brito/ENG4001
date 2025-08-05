@@ -2,99 +2,46 @@
 * ROSS Game Management Project
 * Author: Cole Brito
 * Contributors: Bivin, Jean Luc, Cole Brito
-* Main Class for the ROS Game Management App
+* Main entry point for the ROS Racket Sports Management App
 */
 
 import 'package:flutter/material.dart';
-// Added by Jean Luc: Firebase initialization
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'screens/login_screen.dart';
+import 'theme/app_theme.dart';
 
+/// Main function - Entry point of the application
+/// Initializes Firebase and starts the Flutter app
 void main() async {
-  // Ensure that Flutter is initialized before using Firebase
+  // Initialize Flutter framework before Firebase
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Firebase with platform-specific configuration
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(const MyApp());
+
+  // Start the Flutter application
+  runApp(const ROSGameApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+/// Main application widget for ROS Racket Sports Management
+class ROSGameApp extends StatelessWidget {
+  const ROSGameApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Game Manager',
+      // App configuration
+      title: 'ROS Racket Sports Manager',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-        brightness: Brightness.light,
-        scaffoldBackgroundColor: Colors.white,
-        fontFamily: 'GlacialIndifference',
-        textTheme: const TextTheme(
-          headlineSmall: TextStyle(
-            fontFamily: 'BebasNeue',
-            fontSize: 22,
-            color: Colors.black,
-          ),
-          titleLarge: TextStyle(
-            fontFamily: 'bebasneuecyrillic',
-            fontSize: 24,
-            color: Colors.black,
-          ),
-          titleMedium: TextStyle(
-            fontFamily: 'bebasneuecyrillic',
-            fontSize: 20,
-            color: Colors.black,
-          ),
-          bodyLarge: TextStyle(
-            fontFamily: 'GlacialIndifference',
-            fontSize: 16,
-            color: Colors.black,
-          ),
-          bodySmall: TextStyle(
-            fontFamily: 'GlacialIndifference',
-            fontSize: 14,
-            color: Colors.black,
-          ),
-        ),
-        colorScheme: const ColorScheme.light(
-          primary: Color(0xFF10138A), // ROS Blue
-          onPrimary: Colors.white,
-          onSurface: Colors.black,
-          onSurfaceVariant: Colors.black87,
-          secondary: Color(0xFF10138A),
-          tertiary: Colors.black,
-        ),
 
-        // Uncomment the following lines to enable dark theme
+      // Theme configuration (imported from theme files)
+      theme: AppTheme.light, // Light theme with gradients
 
-        //    darkTheme: ThemeData(
-        //     useMaterial3: true,
-        //     brightness: Brightness.dark,
-        //     scaffoldBackgroundColor: Colors.black,
-        //     fontFamily: 'GlacialIndifference',
-        //     textTheme: const TextTheme(
-        //       headlineSmall: TextStyle(fontFamily: 'BebasNeue', fontSize: 22, color: Colors.white),
-        //       titleLarge: TextStyle(fontFamily: 'bebasneuecyrillic', fontSize: 24, color: Colors.white),
-        //       titleMedium: TextStyle(fontFamily: 'bebasneuecyrillic', fontSize: 20, color: Colors.white),
-        //       bodyLarge: TextStyle(fontFamily: 'GlacialIndifference', fontSize: 16, color: Colors.white),
-        //       bodySmall: TextStyle(fontFamily: 'GlacialIndifference', fontSize: 14, color: Colors.white),
-        //     ),
-        //     colorScheme: ColorScheme.dark(
-        //       primary: Color(0xFF10138A), // ROS Blue
-        //       onPrimary: Colors.white,
-        //       onSurface: Colors.white,
-        //       onSurfaceVariant: Colors.white70,
-        //       secondary: Color(0xFF10138A),
-        //       tertiary: Colors.white,
-        //     ),
-        //     appBarTheme: const AppBarTheme(centerTitle: true),
-        //   ),
-
-        // themeMode: ThemeMode.system,
-        appBarTheme: const AppBarTheme(centerTitle: true),
-      ),
+      //uncomment the following line for dark theme
+      //darkTheme: AppTheme.dark, // Dark theme (gradient-safe)
+      themeMode: ThemeMode.system, // Auto-switch based on device
+      // Start with login screen
       home: const LoginScreen(),
     );
   }
