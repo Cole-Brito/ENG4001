@@ -84,21 +84,46 @@ class _AdminDashboardState extends State<AdminDashboard> {
               onPressed: () => Navigator.pop(context),
               child: const Text('Cancel'),
             ),
-            ElevatedButton(
-              onPressed: () {
-                final newCourts = int.tryParse(courtsController.text);
-                final newPlayers = int.tryParse(playersController.text);
-                if (newCourts != null && newPlayers != null) {
-                  final updatedGame = game.copyWith(
-                    courts: newCourts,
-                    players: newPlayers,
-                  );
-                  MockGameStore.updateGame(game, updatedGame);
-                  setState(() {});
-                  Navigator.pop(context);
-                }
-              },
-              child: const Text('Save'),
+            Container(
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF10138A), Color(0xFF3B82F6)],
+                ),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: ElevatedButton(
+                onPressed: () {
+                  final newCourts = int.tryParse(courtsController.text);
+                  final newPlayers = int.tryParse(playersController.text);
+                  if (newCourts != null && newPlayers != null) {
+                    final updatedGame = game.copyWith(
+                      courts: newCourts,
+                      players: newPlayers,
+                    );
+                    MockGameStore.updateGame(game, updatedGame);
+                    setState(() {});
+                    Navigator.pop(context);
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.transparent,
+                  shadowColor: Colors.transparent,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 12,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: const Text(
+                  'Save',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
             ),
           ],
         );
@@ -150,8 +175,14 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                   color: Colors.green,
                                 ),
                                 onPressed: () {
+                                  // Add mock/guest users with fake email to distinguish from database users
                                   game.queue.add(
-                                    User(username: guest, isAdmin: false),
+                                    User(
+                                      username: guest,
+                                      isAdmin: false,
+                                      email:
+                                          '$guest@mock.com', // Fake email for mock users
+                                    ),
                                   );
                                   game.pendingRequests?.remove(guest);
                                   setState(() {});
@@ -202,9 +233,25 @@ class _AdminDashboardState extends State<AdminDashboard> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Welcome, ${widget.user.username}!'),
-        backgroundColor: const Color(0xFF10138A),
+        title: Text(
+          'Welcome, ${widget.user.username}!',
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFF10138A), Color(0xFF1E3A8A), Color(0xFF3B82F6)],
+            ),
+          ),
+        ),
+        foregroundColor: Colors.white,
         centerTitle: true,
+        elevation: 8,
         actions: [
           PopupMenuButton<String>(
             icon: const Icon(Icons.menu),
@@ -325,123 +372,250 @@ class _AdminDashboardState extends State<AdminDashboard> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            GridView.count(
-              shrinkWrap: true,
-              physics:
-                  const NeverScrollableScrollPhysics(), // disable its own scroll
-              crossAxisCount: MediaQuery.of(context).size.width > 600 ? 3 : 2,
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 16,
-              childAspectRatio: 1.2,
-              children: [
-                _AdminDashboardActionCard(
-                  icon: Icons.event_note,
-                  title: 'Create New Game',
-                  onTap:
-                      () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const CreateGameScreen(),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFFF8FAFF), Color(0xFFE8F4FD)],
+          ),
+        ),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              GridView.count(
+                shrinkWrap: true,
+                physics:
+                    const NeverScrollableScrollPhysics(), // disable its own scroll
+                crossAxisCount: MediaQuery.of(context).size.width > 600 ? 3 : 2,
+                crossAxisSpacing: 20,
+                mainAxisSpacing: 20,
+                childAspectRatio: 1.2,
+                children: [
+                  _AdminDashboardActionCard(
+                    icon: Icons.event_note,
+                    title: 'Create New Game',
+                    onTap:
+                        () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const CreateGameScreen(),
+                          ),
                         ),
-                      ),
-                ),
-                _AdminDashboardActionCard(
-                  icon: Icons.leaderboard,
-                  title: 'View Leaderboard',
-                  onTap:
-                      () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const LeaderboardScreen(),
+                  ),
+                  _AdminDashboardActionCard(
+                    icon: Icons.leaderboard,
+                    title: 'View Leaderboard',
+                    onTap:
+                        () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const LeaderboardScreen(),
+                          ),
                         ),
-                      ),
-                ),
-                _AdminDashboardActionCard(
-                  icon: Icons.edit_calendar,
-                  title: 'Create Season',
-                  onTap:
-                      () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const CreateSeasonScreen(),
+                  ),
+                  _AdminDashboardActionCard(
+                    icon: Icons.edit_calendar,
+                    title: 'Create Season',
+                    onTap:
+                        () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const CreateSeasonScreen(),
+                          ),
                         ),
-                      ),
-                ),
-                _AdminDashboardActionCard(
-                  icon: Icons.group_add,
-                  title: 'Guest Requests ($totalGuestRequests)',
-                  onTap: () => _showGuestRequests(context),
-                ),
-              ],
-            ),
-            const SizedBox(height: 32),
-            Text(
-              'Scheduled Games',
-              style: Theme.of(
-                context,
-              ).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
-            ...games.map((game) {
-              final dateStr = DateFormat('EEE, MMM d, yyyy').format(game.date);
-              return Card(
-                elevation: 2,
-                margin: const EdgeInsets.symmetric(vertical: 8),
-                shape: RoundedRectangleBorder(
+                  ),
+                  _AdminDashboardActionCard(
+                    icon: Icons.group_add,
+                    title: 'Guest Requests ($totalGuestRequests)',
+                    onTap: () => _showGuestRequests(context),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 32),
+              Container(
+                margin: const EdgeInsets.only(bottom: 16),
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                    colors: [Color(0xFF10138A), Color(0xFF1E3A8A)],
+                  ),
                   borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      spreadRadius: 1,
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
                 ),
-                child: Column(
+                child: Row(
                   children: [
-                    ClipRRect(
-                      borderRadius: const BorderRadius.vertical(
-                        top: Radius.circular(12),
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      child: Image.asset(
-                        _imageForFormat(game.format),
-                        height: 120,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
+                      child: const Icon(
+                        Icons.event_note,
+                        color: Colors.white,
+                        size: 24,
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('${game.format} • $dateStr'),
-                                const SizedBox(height: 4),
-                                Text(
-                                  'Courts: ${game.courts} | Players: ${game.players}',
-                                ),
-                              ],
-                            ),
-                          ),
-                          ElevatedButton.icon(
-                            icon: const Icon(Icons.edit, size: 16),
-                            label: const Text('Edit'),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.grey.shade700,
-                              foregroundColor: Colors.white,
-                            ),
-                            onPressed: () => _showEditDialog(context, game),
-                          ),
-                        ],
+                    const SizedBox(width: 12),
+                    const Text(
+                      'Scheduled Games',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ],
                 ),
-              );
-            }).toList(),
-          ],
+              ),
+              ...games.map((game) {
+                final dateStr = DateFormat(
+                  'EEE, MMM d, yyyy',
+                ).format(game.date);
+                return Container(
+                  margin: const EdgeInsets.symmetric(vertical: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.08),
+                        spreadRadius: 1,
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      ClipRRect(
+                        borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(16),
+                        ),
+                        child: Image.asset(
+                          _imageForFormat(game.format),
+                          height: 120,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.all(20),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 8,
+                                          vertical: 4,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          gradient: const LinearGradient(
+                                            colors: [
+                                              Color(0xFF10138A),
+                                              Color(0xFF3B82F6),
+                                            ],
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          game.format.toUpperCase(),
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    dateStr,
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xFF1E3A8A),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'Courts: ${game.courts} | Players: ${game.players}',
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Container(
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    Color(0xFF10138A),
+                                    Color(0xFF3B82F6),
+                                  ],
+                                ),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: ElevatedButton.icon(
+                                icon: const Icon(
+                                  Icons.edit,
+                                  size: 16,
+                                  color: Colors.white,
+                                ),
+                                label: const Text(
+                                  'Edit',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.transparent,
+                                  shadowColor: Colors.transparent,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 8,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                onPressed: () => _showEditDialog(context, game),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }).toList(),
+            ],
+          ),
         ),
       ),
     );
@@ -461,33 +635,52 @@ class _AdminDashboardActionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 3,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: SizedBox(
-          height: 100,
-          width: 100,
-          child: Padding(
-            padding: const EdgeInsets.all(8),
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            spreadRadius: 1,
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(16),
+          child: Container(
+            height: 100,
+            width: 100,
+            padding: const EdgeInsets.all(20),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  icon,
-                  size: 28,
-                  color: Theme.of(context).colorScheme.primary,
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF10138A), Color(0xFF3B82F6)],
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(icon, size: 28, color: Colors.white),
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 12),
                 Text(
                   title,
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface,
+                  style: const TextStyle(
+                    color: Color(0xFF1E3A8A),
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
                   ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
