@@ -7,6 +7,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_application_2/services/notification_service.dart';
 import 'firebase_options.dart';
 import 'screens/login_screen.dart';
 import 'theme/app_theme.dart';
@@ -20,6 +21,10 @@ void main() async {
   // Initialize Firebase with platform-specific configuration
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
+  // Initialize comprehensive notification service
+  final notificationService = NotificationService();
+  await notificationService.initialize();
+
   // Start the Flutter application
   runApp(const ROSGameApp());
 }
@@ -32,12 +37,11 @@ class ROSGameApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       // App configuration
-      title: 'ROS Racket Sports Manager',
+      title: 'ROS Racket Sports',
       debugShowCheckedModeBanner: false,
 
       // Theme configuration (imported from theme files)
       theme: AppTheme.light, // Light theme with gradients
-
       //uncomment the following line for dark theme
       //darkTheme: AppTheme.dark, // Dark theme (gradient-safe)
       themeMode: ThemeMode.system, // Auto-switch based on device
