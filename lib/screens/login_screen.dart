@@ -29,13 +29,38 @@ class _LoginScreenState extends State<LoginScreen> {
 
   // Jean Luc - Login using Firebase Authentication and route based on Firestore role
   void _login() async {
-    final String email = _usernameController.text.trim();
+    final String usernameOrEmail = _usernameController.text.trim();
     final String password = _passwordController.text.trim();
 
     try {
-      // Jean Luc - Authenticate with Firebase Auth
+      String emailToUse = usernameOrEmail;
+
+      // Check if input is a username (not an email format)
+      if (!usernameOrEmail.contains('@')) {
+        // Search for user by username in Firestore to get their email
+        final usernameQuery =
+            await FirebaseFirestore.instance
+                .collection('users')
+                .where('username', isEqualTo: usernameOrEmail)
+                .limit(1)
+                .get();
+
+        if (usernameQuery.docs.isEmpty) {
+          _showError('Username not found');
+          return;
+        }
+
+        // Get the email from the user document
+        emailToUse = usernameQuery.docs.first.data()['email'] ?? '';
+        if (emailToUse.isEmpty) {
+          _showError('No email associated with this username');
+          return;
+        }
+      }
+
+      // Jean Luc - Authenticate with Firebase Auth using email
       final credential = await fb_auth.FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: password);
+          .signInWithEmailAndPassword(email: emailToUse, password: password);
 
       // Jean Luc - Fetch the user role from Firestore based on UID
       final userDoc =
@@ -45,11 +70,14 @@ class _LoginScreenState extends State<LoginScreen> {
               .get();
 
       final isAdmin = userDoc.data()?['isAdmin'] ?? false;
+      final username =
+          userDoc.data()?['username'] ?? credential.user!.email ?? 'Unknown';
 
       // Jean Luc - Create app-level User object with role info
       final User user = User(
-        username: credential.user!.email ?? 'Unknown',
+        username: username, // Use custom username from Firestore
         isAdmin: isAdmin,
+        email: credential.user!.email, // Set email field for database users
       );
 
       // Jean Luc - Redirect user based on role
@@ -107,7 +135,19 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
           Positioned.fill(
-            child: Container(color: Colors.black.withOpacity(0.3)),
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.black.withOpacity(0.1),
+                    Colors.black.withOpacity(0.5),
+                    const Color(0xFF10138A).withOpacity(0.3),
+                  ],
+                ),
+              ),
+            ),
           ),
           Center(
             child: SingleChildScrollView(
@@ -120,169 +160,207 @@ class _LoginScreenState extends State<LoginScreen> {
                   maxWidth: isSmallScreen ? double.infinity : 450,
                 ),
                 child: Card(
-                  elevation: 8,
+                  elevation: 12,
+                  shadowColor: const Color(0xFF10138A).withOpacity(0.3),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(24),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(28.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        Image.asset(
-                          'assets/icons/ROS_Logo-new.png',
-                          height: isSmallScreen ? 60 : 100,
-                          fit: BoxFit.contain,
-                        ),
-                        const SizedBox(height: 40),
-                        Text(
-                          'Welcome Back!',
-                          textAlign: TextAlign.center,
-                          style: Theme.of(
-                            context,
-                          ).textTheme.titleLarge!.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).colorScheme.onSurface,
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.surface.withOpacity(0.95),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(24),
+                      border: Border.all(
+                        color: const Color(0xFF10138A).withOpacity(0.1),
+                        width: 1,
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(28.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          Image.asset(
+                            'assets/icons/ROS_Logo-new.png',
+                            height: isSmallScreen ? 60 : 100,
+                            fit: BoxFit.contain,
                           ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Sign in to continue',
-                          textAlign: TextAlign.center,
-                          style: Theme.of(
-                            context,
-                          ).textTheme.bodyLarge!.copyWith(
-                            color:
-                                Theme.of(context).colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                        const SizedBox(height: 48),
-                        TextField(
-                          controller: _usernameController,
-                          decoration: InputDecoration(
-                            labelText: 'Email',
-                            hintText: 'Enter your email',
-                            prefixIcon: const Icon(Icons.person_outline),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide.none,
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.outline.withOpacity(0.6),
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(
-                                color: Theme.of(context).colorScheme.primary,
-                                width: 2,
-                              ),
-                            ),
-                            filled: true,
-                            fillColor: Theme.of(context)
-                                .colorScheme
-                                .surfaceContainerHighest
-                                .withOpacity(0.2),
-                          ),
-                          keyboardType: TextInputType.emailAddress,
-                          textInputAction: TextInputAction.next,
-                        ),
-                        const SizedBox(height: 16),
-                        TextField(
-                          controller: _passwordController,
-                          decoration: InputDecoration(
-                            labelText: 'Password',
-                            hintText: 'Enter your password',
-                            prefixIcon: const Icon(Icons.lock_outline),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide.none,
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.outline.withOpacity(0.6),
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(
-                                color: Theme.of(context).colorScheme.primary,
-                                width: 2,
-                              ),
-                            ),
-                            filled: true,
-                            fillColor: Theme.of(context)
-                                .colorScheme
-                                .surfaceContainerHighest
-                                .withOpacity(0.2),
-                          ),
-                          obscureText: true,
-                          textInputAction: TextInputAction.done,
-                          onSubmitted: (_) => _login(),
-                        ),
-                        const SizedBox(height: 24),
-                        ElevatedButton(
-                          onPressed: _login,
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: const Size(double.infinity, 54),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14),
-                            ),
-                            backgroundColor:
-                                Theme.of(context).colorScheme.primary,
-                            foregroundColor:
-                                Theme.of(context).colorScheme.onPrimary,
-                          ),
-                          child: const Text('Login'),
-                        ),
-                        const SizedBox(height: 16),
-                        OutlinedButton(
-                          onPressed: _guestLogin,
-                          style: OutlinedButton.styleFrom(
-                            minimumSize: const Size(double.infinity, 54),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14),
-                            ),
-                            side: BorderSide(
-                              color:
-                                  Theme.of(context).brightness ==
-                                          Brightness.dark
-                                      ? Colors.white
-                                      : const Color(0xFF10138A),
-                            ),
-                            foregroundColor:
-                                Theme.of(context).brightness == Brightness.dark
-                                    ? Colors.white
-                                    : const Color(0xFF10138A),
-                          ),
-                          child: const Text('Continue as Guest'),
-                        ),
-                        const SizedBox(height: 24),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.push(
+                          const SizedBox(height: 40),
+                          Text(
+                            'Welcome Back!',
+                            textAlign: TextAlign.center,
+                            style: Theme.of(
                               context,
-                              MaterialPageRoute(
-                                builder: (context) => const RegisterScreen(),
-                              ),
-                            );
-                          },
-                          style: TextButton.styleFrom(
-                            foregroundColor:
-                                Theme.of(context).colorScheme.tertiary,
-                            textStyle: Theme.of(context).textTheme.bodyLarge!
-                                .copyWith(decoration: TextDecoration.underline),
+                            ).textTheme.titleLarge!.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).colorScheme.onSurface,
+                            ),
                           ),
-                          child: const Text("Don't have an account? Sign Up"),
-                        ),
-                      ],
+                          const SizedBox(height: 8),
+                          Text(
+                            'Sign in to continue',
+                            textAlign: TextAlign.center,
+                            style: Theme.of(
+                              context,
+                            ).textTheme.bodyLarge!.copyWith(
+                              color:
+                                  Theme.of(
+                                    context,
+                                  ).colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                          const SizedBox(height: 48),
+                          TextField(
+                            controller: _usernameController,
+                            decoration: InputDecoration(
+                              labelText: 'Username or Email',
+                              hintText: 'Enter your username or email',
+                              prefixIcon: Icon(
+                                Icons.person_outline,
+                                color: const Color(0xFF10138A).withOpacity(0.7),
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                borderSide: BorderSide.none,
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                borderSide: BorderSide(
+                                  color: const Color(
+                                    0xFF10138A,
+                                  ).withOpacity(0.2),
+                                  width: 1.5,
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                borderSide: const BorderSide(
+                                  color: Color(0xFF10138A),
+                                  width: 2.5,
+                                ),
+                              ),
+                              filled: true,
+                              fillColor: const Color(
+                                0xFF10138A,
+                              ).withOpacity(0.05),
+                              labelStyle: TextStyle(
+                                color: const Color(0xFF10138A).withOpacity(0.8),
+                              ),
+                            ),
+                            keyboardType: TextInputType.text,
+                            textInputAction: TextInputAction.next,
+                          ),
+                          const SizedBox(height: 16),
+                          TextField(
+                            controller: _passwordController,
+                            decoration: InputDecoration(
+                              labelText: 'Password',
+                              hintText: 'Enter your password',
+                              prefixIcon: Icon(
+                                Icons.lock_outline,
+                                color: const Color(0xFF10138A).withOpacity(0.7),
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                borderSide: BorderSide.none,
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                borderSide: BorderSide(
+                                  color: const Color(
+                                    0xFF10138A,
+                                  ).withOpacity(0.2),
+                                  width: 1.5,
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                borderSide: const BorderSide(
+                                  color: Color(0xFF10138A),
+                                  width: 2.5,
+                                ),
+                              ),
+                              filled: true,
+                              fillColor: const Color(
+                                0xFF10138A,
+                              ).withOpacity(0.05),
+                              labelStyle: TextStyle(
+                                color: const Color(0xFF10138A).withOpacity(0.8),
+                              ),
+                            ),
+                            obscureText: true,
+                            textInputAction: TextInputAction.done,
+                            onSubmitted: (_) => _login(),
+                          ),
+                          const SizedBox(height: 24),
+                          ElevatedButton(
+                            onPressed: _login,
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: const Size(double.infinity, 56),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              backgroundColor: const Color(0xFF10138A),
+                              foregroundColor: Colors.white,
+                              elevation: 4,
+                              shadowColor: const Color(
+                                0xFF10138A,
+                              ).withOpacity(0.4),
+                            ),
+                            child: const Text(
+                              'Login',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          OutlinedButton(
+                            onPressed: _guestLogin,
+                            style: OutlinedButton.styleFrom(
+                              minimumSize: const Size(double.infinity, 56),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              side: const BorderSide(
+                                color: Color(0xFF10138A),
+                                width: 2,
+                              ),
+                              foregroundColor: const Color(0xFF10138A),
+                              backgroundColor: Colors.transparent,
+                            ),
+                            child: const Text(
+                              'Continue as Guest',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 24),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const RegisterScreen(),
+                                ),
+                              );
+                            },
+                            style: TextButton.styleFrom(
+                              foregroundColor: const Color(0xFF10138A),
+                              textStyle: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                            child: const Text("Don't have an account? Sign Up"),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

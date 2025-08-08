@@ -58,3 +58,7 @@ lib/
 │
 └── main.dart              # App entry point
 
+```
+## 📣 Notifications Setup
+
+To learn how to configure push notifications, see [NOTIFICATIONS_SETUP.md](NOTIFICATIONS_SETUP.md).
