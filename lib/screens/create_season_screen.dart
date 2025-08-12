@@ -10,6 +10,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../models/game.dart';
 import '../data/mock_game_store.dart';
+import '../theme/app_colors.dart';
+import '../theme/app_text_styles.dart';
+import '../widgets/custom_button.dart';
 
 class CreateSeasonScreen extends StatefulWidget {
   const CreateSeasonScreen({super.key});
@@ -104,11 +107,8 @@ class _CreateSeasonScreenState extends State<CreateSeasonScreen> {
     );
   }
 
-  // ----------------- UI -----------------
-
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final formattedRange =
         (_startDate != null && _endDate != null)
             ? '${DateFormat('MMM d').format(_startDate!)} - ${DateFormat('MMM d, yyyy').format(_endDate!)}'
@@ -116,143 +116,357 @@ class _CreateSeasonScreenState extends State<CreateSeasonScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('📆 Create Season', style: Theme.of(context).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.bold, color: Colors.white,),
-),
-        elevation: 3,
-        backgroundColor: theme.colorScheme.primary,
-        foregroundColor: theme.colorScheme.onPrimary,
+        title: Text(
+          '📆 Create Season',
+          style: AppTextStyles.titleLarge.copyWith(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFF10138A), Color(0xFF1E3A8A), Color(0xFF3B82F6)],
+            ),
+          ),
+        ),
+        foregroundColor: Colors.white,
+        elevation: 8,
+        shadowColor: AppColors.primary.withOpacity(0.3),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              Card(
-                elevation: 3,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFFF8FAFF), Color(0xFFE8F4FD)],
+          ),
+        ),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Header section
+                Container(
+                  margin: const EdgeInsets.only(bottom: 24),
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    gradient: AppColors.primaryGradient,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.primary.withOpacity(0.3),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Row(
                     children: [
-                      DropdownButtonFormField<String>(
-                        value: _selectedFormat,
-                        decoration: InputDecoration(
-                          labelText: 'Game Format',
-                          labelStyle: TextStyle(
-                              color: Theme.of(context).brightness == Brightness.dark
-                                  ? Colors.white
-                                  : Colors.black,
-                            ),
-                          prefixIcon: Icon(Icons.sports_esports_outlined),
-                          border: OutlineInputBorder(),
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                       items: ['Badminton', 'Tennis', 'Table Tennis']
-                          .map(
-                            (format) => DropdownMenuItem(
-                              value: format,
-                              child: Text(
-                                format,
-                                style: Theme.of(context).textTheme.bodySmall,
+                        child: const Icon(
+                          Icons.event_repeat,
+                          color: Colors.white,
+                          size: 28,
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Create Season',
+                              style: AppTextStyles.titleMedium.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                          )
-                          .toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedFormat = value!;
-                          });
-                        },
-                      ),
-                      const SizedBox(height: 16),
-                      TextFormField(
-                        controller: _courtsController,
-                        decoration: InputDecoration(
-                          labelText: 'Courts Available',
-                          labelStyle: TextStyle(
-                              color: Theme.of(context).brightness == Brightness.dark
-                                  ? Colors.white
-                                  : Colors.black,
+                            const SizedBox(height: 4),
+                            Text(
+                              'Set up multiple games for the entire season',
+                              style: AppTextStyles.bodyMedium.copyWith(
+                                color: Colors.white.withOpacity(0.9),
+                              ),
                             ),
-                          prefixIcon: Icon(Icons.sports_tennis),
-                          border: OutlineInputBorder(),
+                          ],
                         ),
-                        keyboardType: TextInputType.number,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter number of courts';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 16),
-                      TextFormField(
-                        controller: _playersController,
-                        decoration: InputDecoration(
-                          labelText: 'Players Scheduled',
-                          labelStyle: TextStyle(
-                              color: Theme.of(context).brightness == Brightness.dark
-                                  ? Colors.white
-                                  : Colors.black,
-                            ),
-                          prefixIcon: Icon(Icons.group),
-                          border: OutlineInputBorder(),
-                        ),
-                        keyboardType: TextInputType.number,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter number of players';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 16),
-                      ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        leading: const Icon(Icons.date_range),
-                        title: const Text('Season Range'),
-                        subtitle: Text(
-                          formattedRange,
-                          style: TextStyle(
-                            color: theme.colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                        onTap: _pickDateRange,
                       ),
                     ],
                   ),
                 ),
-              ),
-              const SizedBox(height: 24),
-              Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      icon: const Icon(Icons.check),
-                      label: const Text('Create Season'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                                Theme.of(context).colorScheme.primary,
-                            foregroundColor:
-                                Theme.of(context).colorScheme.onPrimary,
-                            elevation: 5,
-                             textStyle: Theme.of(context).textTheme.headlineSmall!.copyWith(
+
+                // Form card
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.08),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Season Details',
+                          style: AppTextStyles.titleSmall.copyWith(
+                            color: AppColors.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+
+                        // Game Format Dropdown
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(color: AppColors.border),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: DropdownButtonFormField<String>(
+                            value: _selectedFormat,
+                            decoration: InputDecoration(
+                              labelText: 'Game Format',
+                              labelStyle: AppTextStyles.labelLarge.copyWith(
+                                color: AppColors.primary,
+                              ),
+                              prefixIcon: Container(
+                                margin: const EdgeInsets.all(8),
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  gradient: AppColors.primaryGradient,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: const Icon(
+                                  Icons.sports_esports_outlined,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                              ),
+                              border: InputBorder.none,
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 16,
+                              ),
                             ),
+                            items:
+                                ['Badminton', 'Tennis', 'Table Tennis']
+                                    .map(
+                                      (format) => DropdownMenuItem(
+                                        value: format,
+                                        child: Text(
+                                          format,
+                                          style: AppTextStyles.bodyMedium,
+                                        ),
+                                      ),
+                                    )
+                                    .toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedFormat = value!;
+                              });
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+
+                        // Courts Field
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(color: AppColors.border),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: TextFormField(
+                            controller: _courtsController,
+                            decoration: InputDecoration(
+                              labelText: 'Courts Available',
+                              labelStyle: AppTextStyles.labelMedium.copyWith(
+                                color: AppColors.primary,
+                              ),
+                              prefixIcon: Container(
+                                margin: const EdgeInsets.all(8),
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  gradient: AppColors.primaryGradient,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: const Icon(
+                                  Icons.sports_tennis,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                              ),
+                              border: InputBorder.none,
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 16,
+                              ),
                             ),
-                      onPressed: _createSeason,
+                            keyboardType: TextInputType.number,
+                            style: AppTextStyles.bodyMedium,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter number of courts';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+
+                        // Players Field
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(color: AppColors.border),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: TextFormField(
+                            controller: _playersController,
+                            decoration: InputDecoration(
+                              labelText: 'Players Scheduled',
+                              labelStyle: AppTextStyles.labelMedium.copyWith(
+                                color: AppColors.primary,
+                              ),
+                              prefixIcon: Container(
+                                margin: const EdgeInsets.all(8),
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  gradient: AppColors.primaryGradient,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: const Icon(
+                                  Icons.group,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                              ),
+                              border: InputBorder.none,
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 16,
+                              ),
+                            ),
+                            keyboardType: TextInputType.number,
+                            style: AppTextStyles.bodyMedium,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter number of players';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+
+                        // Date Range Picker
+                        InkWell(
+                          onTap: _pickDateRange,
+                          borderRadius: BorderRadius.circular(16),
+                          child: Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: AppColors.border),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.only(right: 16),
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    gradient: AppColors.primaryGradient,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: const Icon(
+                                    Icons.date_range,
+                                    color: Colors.white,
+                                    size: 20,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Season Range',
+                                        style: AppTextStyles.labelMedium
+                                            .copyWith(color: AppColors.primary),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        formattedRange,
+                                        style: AppTextStyles.bodyMedium
+                                            .copyWith(
+                                              color:
+                                                  _startDate != null &&
+                                                          _endDate != null
+                                                      ? AppColors.textLight
+                                                      : AppColors
+                                                          .textTertiaryLight,
+                                            ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.chevron_right,
+                                  color: AppColors.textTertiaryLight,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  IconButton(
-                    onPressed: _clearForm,
-                    icon: const Icon(Icons.clear),
-                    tooltip: 'Clear Form',
-                  ),
-                ],
-              ),
-            ],
+                ),
+
+                const SizedBox(height: 32),
+
+                // Action buttons
+                Row(
+                  children: [
+                    Expanded(
+                      child: CustomButton(
+                        label: 'Create Season',
+                        icon: Icons.check,
+                        onPressed: _createSeason,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: AppColors.border),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: IconButton(
+                        onPressed: _clearForm,
+                        icon: Icon(Icons.clear, color: AppColors.primary),
+                        tooltip: 'Clear Form',
+                        padding: const EdgeInsets.all(12),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

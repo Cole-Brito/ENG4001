@@ -17,6 +17,7 @@ class Game {
   final List<List<User>> matches;
   final List<List<User>> waitingGroups;
   final Map<int, Match> activeMatches;
+  List<String>? pendingRequests;
 
   Game({
     required this.format,
@@ -28,11 +29,13 @@ class Game {
     List<List<User>>? matches,
     List<List<User>>? waitingGroups,
     Map<int, Match>? activeMatches,
+    List<String>? pendingRequests,
   }) : rsvps = rsvps ?? [],
        queue = queue ?? [],
        matches = matches ?? [],
        waitingGroups = waitingGroups ?? [],
-       activeMatches = activeMatches ?? {};
+       activeMatches = activeMatches ?? {},
+       pendingRequests = pendingRequests ?? [];
   Game copyWith({
     String? format,
     DateTime? date,
@@ -43,6 +46,7 @@ class Game {
     List<List<User>>? matches,
     List<List<User>>? waitingGroups,
     Map<int, Match>? activeMatches,
+    List<String>? pendingRequests,
   }) {
     return Game(
       format: format ?? this.format,
@@ -54,6 +58,7 @@ class Game {
       matches: matches ?? this.matches,
       waitingGroups: waitingGroups ?? this.waitingGroups,
       activeMatches: activeMatches ?? this.activeMatches,
+      pendingRequests: pendingRequests ?? this.pendingRequests,
     );
   }
 
