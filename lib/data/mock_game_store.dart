@@ -21,6 +21,7 @@ class MockGameStore {
     (i) => User(
       username: 'player${i + 1}',
       isAdmin: false,
+      email: 'player${i + 1}@fake.com', // Add fake email for test users
       gamesPlayed: (i + 1), // Just to simulate leaderboard points
     ),
   );

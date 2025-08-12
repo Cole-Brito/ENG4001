@@ -3,6 +3,8 @@ import 'game.dart';
 class User {
   final String username;
   final bool isAdmin;
+  final String?
+  email; // Added email field to distinguish database users from mock users
 
   // RSVP list of full Game objects
   final List<Game> rsvps;
@@ -13,6 +15,7 @@ class User {
   User({
     required this.username,
     required this.isAdmin,
+    this.email, // Optional email parameter
     List<Game>? rsvps,
     this.gamesPlayed = 0, // Default value
   }) : rsvps = rsvps ?? [];
