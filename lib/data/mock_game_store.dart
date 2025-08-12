@@ -10,6 +10,11 @@ class MockGameStore {
     }
   }
 
+  // A method to delete games
+  static void deleteGame(Game game) {
+    _games.remove(game);
+  }
+
   // A list of fake users for testing
   static final List<User> testUsers = List.generate(
     11,

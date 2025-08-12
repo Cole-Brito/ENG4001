@@ -88,6 +88,42 @@ class _AdminDashboardState extends State<AdminDashboard> {
             ],
           ),
           actions: [
+            // Delete button
+            TextButton(
+              style: TextButton.styleFrom(foregroundColor: Colors.red),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder:
+                      (ctx) => AlertDialog(
+                        title: const Text('Delete Game'),
+                        content: const Text(
+                          'Are you sure you want to delete this game? This action cannot be undone.',
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(ctx),
+                            child: const Text('Cancel'),
+                          ),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red,
+                              foregroundColor: Colors.white,
+                            ),
+                            onPressed: () {
+                              MockGameStore.deleteGame(game);
+                              setState(() {});
+                              Navigator.pop(ctx); // close confirm
+                              Navigator.pop(context); // close edit
+                            },
+                            child: const Text('Delete'),
+                          ),
+                        ],
+                      ),
+                );
+              },
+              child: const Text('Delete'),
+            ),
             TextButton(
               onPressed: () => Navigator.pop(context),
               child: const Text('Cancel'),
