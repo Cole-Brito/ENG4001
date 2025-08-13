@@ -10,6 +10,7 @@ class Match {
 class Game {
   final String format;
   final DateTime date;
+  final DateTime startTime; // Time constraint for when the game starts
   final int courts;
   final int players;
   final List<User> rsvps;
@@ -22,6 +23,7 @@ class Game {
   Game({
     required this.format,
     required this.date,
+    required this.startTime,
     required this.courts,
     required this.players,
     List<User>? rsvps,
@@ -36,9 +38,11 @@ class Game {
        waitingGroups = waitingGroups ?? [],
        activeMatches = activeMatches ?? {},
        pendingRequests = pendingRequests ?? [];
+
   Game copyWith({
     String? format,
     DateTime? date,
+    DateTime? startTime,
     int? courts,
     int? players,
     List<User>? rsvps,
@@ -51,6 +55,7 @@ class Game {
     return Game(
       format: format ?? this.format,
       date: date ?? this.date,
+      startTime: startTime ?? this.startTime,
       courts: courts ?? this.courts,
       players: players ?? this.players,
       rsvps: rsvps ?? this.rsvps,

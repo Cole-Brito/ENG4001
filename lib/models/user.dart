@@ -3,21 +3,18 @@ import 'game.dart';
 class User {
   final String username;
   final bool isAdmin;
-  final String?
-  email; // Added email field to distinguish database users from mock users
-
-  // RSVP list of full Game objects
+  final bool isGuest;
+  final String? email;
   final List<Game> rsvps;
-
-  // Leaderboard scoring field
   int gamesPlayed;
 
   User({
     required this.username,
     required this.isAdmin,
-    this.email, // Optional email parameter
+    this.isGuest = false,
+    this.email,
     List<Game>? rsvps,
-    this.gamesPlayed = 0, // Default value
+    this.gamesPlayed = 0,
   }) : rsvps = rsvps ?? [];
 
   void addRsvp(Game game) {
@@ -55,29 +52,4 @@ class User {
         )
         .toList();
   }
-
-  // The following code will be used when we add the leader board feature and user profile screen
-  // Currently I cant be bothered to make it work
-  // - Cole :)
-
-  // get totalGamesPlayed(int games) {
-  //   this.gamesPlayed = games;
-  //   return gamesPlayed;
-  // }
-
-  // get totalGamesWon(int games) {
-  //   this.gamesWon = games;
-  //   if (games < 0) {
-  //     throw ArgumentError('Total games won cannot be negative');
-  //   }
-  //   return gamesWon;
-  // }
-
-  // set totalGamesPlayed(int value) {
-  //   // This setter is not used in the current implementation
-  // }
-
-  // set totalGamesWon(int value) {
-  //   // This setter is not used in the current implementation
-  // }
 }

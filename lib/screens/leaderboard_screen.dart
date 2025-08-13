@@ -94,11 +94,11 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                     Container(
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.8),
+                        color: const Color.fromRGBO(255, 255, 255, 0.8),
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
+                            color: const Color.fromRGBO(0, 0, 0, 0.1),
                             spreadRadius: 2,
                             blurRadius: 10,
                             offset: const Offset(0, 4),
@@ -158,7 +158,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
+                        color: const Color.fromRGBO(0, 0, 0, 0.1),
                         spreadRadius: 2,
                         blurRadius: 10,
                         offset: const Offset(0, 4),
@@ -170,7 +170,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                       Container(
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
+                          color: const Color.fromRGBO(255, 255, 255, 0.2),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: const Icon(
@@ -253,7 +253,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                           borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.08),
+                              color: const Color.fromRGBO(0, 0, 0, 0.08),
                               spreadRadius: 1,
                               blurRadius: 10,
                               offset: const Offset(0, 4),
@@ -262,7 +262,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                           border:
                               rank <= 3
                                   ? Border.all(
-                                    color: iconColor.withOpacity(0.3),
+                                    color: iconColor.withAlpha(77),
                                     width: 2,
                                   )
                                   : null,
@@ -279,7 +279,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                                     colors:
                                         rank <= 3
                                             ? [
-                                              iconColor.withOpacity(0.8),
+                                              iconColor.withAlpha(204),
                                               iconColor,
                                             ]
                                             : [
@@ -290,7 +290,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                                   borderRadius: BorderRadius.circular(25),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: iconColor.withOpacity(0.3),
+                                      color: iconColor.withAlpha(77),
                                       spreadRadius: 1,
                                       blurRadius: 8,
                                       offset: const Offset(0, 2),
@@ -320,7 +320,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                                         fontWeight: FontWeight.bold,
                                         color:
                                             rank <= 3
-                                                ? iconColor.withOpacity(0.8)
+                                                ? iconColor.withAlpha(204)
                                                 : Color(0xFF1E3A8A),
                                       ),
                                     ),
@@ -341,7 +341,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                                             vertical: 4,
                                           ),
                                           decoration: BoxDecoration(
-                                            color: iconColor.withOpacity(0.1),
+                                            color: iconColor.withAlpha(25),
                                             borderRadius: BorderRadius.circular(
                                               12,
                                             ),
@@ -362,7 +362,12 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                                             vertical: 4,
                                           ),
                                           decoration: BoxDecoration(
-                                            color: Colors.blue.withOpacity(0.1),
+                                            color: const Color.fromRGBO(
+                                              33,
+                                              150,
+                                              243,
+                                              0.1,
+                                            ),
                                             borderRadius: BorderRadius.circular(
                                               12,
                                             ),

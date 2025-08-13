@@ -127,7 +127,13 @@ class UserProfileScreen extends StatelessWidget {
                     ListTile(
                       leading: const Icon(Icons.person_outline),
                       title: const Text('Role'),
-                      subtitle: Text(user.isAdmin ? 'Admin' : 'Member'),
+                      subtitle: Text(
+                        user.isAdmin
+                            ? 'Admin'
+                            : user.isGuest
+                            ? 'Guest'
+                            : 'Member',
+                      ),
                     ),
                     const Divider(height: 1),
                     ListTile(

@@ -10,10 +10,10 @@ class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
   @override
-  _RegisterScreenState createState() => _RegisterScreenState();
+  RegisterScreenState createState() => RegisterScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class RegisterScreenState extends State<RegisterScreen> {
   // Controllers for all input fields
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -61,11 +61,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
             'createdAt': FieldValue.serverTimestamp(),
           });
 
+      if (!mounted) return;
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('Registration successful!')));
       Navigator.pop(context);
     } catch (e) {
+      if (!mounted) return;
       _showError('Registration failed: ${e.toString().split(']').last}');
     }
   }
@@ -111,7 +113,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ),
         foregroundColor: Colors.white,
         elevation: 8,
-        shadowColor: AppColors.primary.withOpacity(0.3),
+        shadowColor: AppColors.primary.withAlpha((0.3 * 255).toInt()),
       ),
       body: Container(
         decoration: const BoxDecoration(
@@ -140,7 +142,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           borderRadius: BorderRadius.circular(60),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.primary.withOpacity(0.3),
+                              color: AppColors.primary.withAlpha(
+                                (0.3 * 255).toInt(),
+                              ),
                               blurRadius: 20,
                               offset: const Offset(0, 10),
                             ),
@@ -180,7 +184,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.08),
+                        color: const Color.fromRGBO(0, 0, 0, 0.08),
                         blurRadius: 20,
                         offset: const Offset(0, 8),
                       ),

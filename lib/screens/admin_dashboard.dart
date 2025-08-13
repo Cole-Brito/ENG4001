@@ -1,3 +1,5 @@
+import '../services/guest_firestore_service.dart';
+import 'game_play_screen.dart';
 /*
 *
 * Author: Cole Brito
@@ -16,6 +18,9 @@ import 'create_game_screen.dart';
 import 'login_screen.dart';
 import 'leaderboard_screen.dart';
 import 'create_season_screen.dart';
+import 'settings_screen.dart';
+import 'about_screen.dart';
+import 'notifications_screen.dart';
 import '../../data/mock_game_store.dart';
 import '../../models/game.dart';
 
@@ -28,6 +33,14 @@ class AdminDashboard extends StatefulWidget {
 }
 
 class _AdminDashboardState extends State<AdminDashboard> {
+  late String _adminUsername;
+
+  @override
+  void initState() {
+    super.initState();
+    _adminUsername = widget.user.username;
+  }
+
   void _logout(BuildContext context) {
     Navigator.pushAndRemoveUntil(
       context,
@@ -55,113 +68,157 @@ class _AdminDashboardState extends State<AdminDashboard> {
     final playersController = TextEditingController(
       text: game.players.toString(),
     );
+    TimeOfDay selectedTime = TimeOfDay.fromDateTime(game.startTime);
 
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: Text('Edit ${game.format} Game'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('Scheduled for ${DateFormat.yMMMd().format(game.date)}'),
-              const SizedBox(height: 12),
-              TextField(
-                controller: courtsController,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(labelText: 'Courts'),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: playersController,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(labelText: 'Players'),
-              ),
-            ],
-          ),
-          actions: [
-            // Delete button
-            TextButton(
-              style: TextButton.styleFrom(foregroundColor: Colors.red),
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder:
-                      (ctx) => AlertDialog(
-                        title: const Text('Delete Game'),
-                        content: const Text(
-                          'Are you sure you want to delete this game? This action cannot be undone.',
-                        ),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(ctx),
-                            child: const Text('Cancel'),
-                          ),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.red,
-                              foregroundColor: Colors.white,
-                            ),
-                            onPressed: () {
-                              MockGameStore.deleteGame(game);
-                              setState(() {});
-                              Navigator.pop(ctx); // close confirm
-                              Navigator.pop(context); // close edit
-                            },
-                            child: const Text('Delete'),
-                          ),
-                        ],
-                      ),
-                );
-              },
-              child: const Text('Delete'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Color(0xFF10138A), Color(0xFF3B82F6)],
-                ),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: ElevatedButton(
-                onPressed: () {
-                  final newCourts = int.tryParse(courtsController.text);
-                  final newPlayers = int.tryParse(playersController.text);
-                  if (newCourts != null && newPlayers != null) {
-                    final updatedGame = game.copyWith(
-                      courts: newCourts,
-                      players: newPlayers,
-                    );
-                    MockGameStore.updateGame(game, updatedGame);
-                    setState(() {});
-                    Navigator.pop(context);
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.transparent,
-                  shadowColor: Colors.transparent,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 12,
+        return StatefulBuilder(
+          builder: (context, setStateDialog) {
+            return AlertDialog(
+              title: Text('Edit ${game.format} Game'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('Scheduled for ${DateFormat.yMMMd().format(game.date)}'),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: courtsController,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(labelText: 'Courts'),
                   ),
-                  shape: RoundedRectangleBorder(
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: playersController,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(labelText: 'Players'),
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      const Text('Start Time:'),
+                      const SizedBox(width: 12),
+                      Text(selectedTime.format(context)),
+                      const SizedBox(width: 8),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
+                          backgroundColor: const Color(0xFF10138A),
+                          foregroundColor: Colors.white,
+                        ),
+                        onPressed: () async {
+                          final picked = await showTimePicker(
+                            context: context,
+                            initialTime: selectedTime,
+                          );
+                          if (picked != null) {
+                            setStateDialog(() {
+                              selectedTime = picked;
+                            });
+                          }
+                        },
+                        child: const Text('Edit'),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              actions: [
+                // Delete button
+                TextButton(
+                  style: TextButton.styleFrom(foregroundColor: Colors.red),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder:
+                          (ctx) => AlertDialog(
+                            title: const Text('Delete Game'),
+                            content: const Text(
+                              'Are you sure you want to delete this game? This action cannot be undone.',
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(ctx),
+                                child: const Text('Cancel'),
+                              ),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.red,
+                                  foregroundColor: Colors.white,
+                                ),
+                                onPressed: () {
+                                  MockGameStore.deleteGame(game);
+                                  setState(() {});
+                                  Navigator.pop(ctx); // close confirm
+                                  Navigator.pop(context); // close edit
+                                },
+                                child: const Text('Delete'),
+                              ),
+                            ],
+                          ),
+                    );
+                  },
+                  child: const Text('Delete'),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Cancel'),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF10138A), Color(0xFF3B82F6)],
+                    ),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                ),
-                child: const Text(
-                  'Save',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      final newCourts = int.tryParse(courtsController.text);
+                      final newPlayers = int.tryParse(playersController.text);
+                      if (newCourts != null && newPlayers != null) {
+                        final newStartTime = DateTime(
+                          game.startTime.year,
+                          game.startTime.month,
+                          game.startTime.day,
+                          selectedTime.hour,
+                          selectedTime.minute,
+                        );
+                        final updatedGame = game.copyWith(
+                          courts: newCourts,
+                          players: newPlayers,
+                          startTime: newStartTime,
+                        );
+                        MockGameStore.updateGame(game, updatedGame);
+                        setState(() {});
+                        Navigator.pop(context);
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      shadowColor: Colors.transparent,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 12,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: const Text(
+                      'Save',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-          ],
+              ],
+            );
+          },
         );
       },
     );
@@ -171,92 +228,139 @@ class _AdminDashboardState extends State<AdminDashboard> {
     final games = MockGameStore.games;
     final guestRequests = <Map<String, dynamic>>[];
 
-    for (final game in games) {
-      for (final guest in game.pendingRequests ?? []) {
-        guestRequests.add({'guest': guest, 'game': game});
+    // Fetch guest requests from Firestore and merge into games' pendingRequests
+    GuestFirestoreService().fetchAllGuestRequests().then((firestoreRequests) {
+      // Clear all pendingRequests in memory
+      for (final game in games) {
+        game.pendingRequests?.clear();
       }
-    }
+      // Add requests from Firestore to the correct game's pendingRequests
+      for (final req in firestoreRequests) {
+        final String gameId = req['gameId'] ?? '';
+        final String username = req['username'] ?? '';
+        final String email = req['email'] ?? '';
+        for (final game in games) {
+          final localGameId =
+              '${game.format}_${game.date.toIso8601String()}_${game.startTime.toIso8601String()}';
+          if (gameId == localGameId) {
+            if (!game.pendingRequests!.contains('$username ($email)')) {
+              game.pendingRequests!.add('$username ($email)');
+            }
+          }
+        }
+      }
+      // Now build the guestRequests list for UI
+      for (final game in games) {
+        for (final guest in game.pendingRequests ?? []) {
+          guestRequests.add({'guest': guest, 'game': game});
+        }
+      }
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Guest Join Requests'),
+            content:
+                guestRequests.isEmpty
+                    ? const Text('No guest join requests at the moment.')
+                    : SizedBox(
+                      width: double.maxFinite,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: guestRequests.length,
+                        itemBuilder: (context, index) {
+                          final request = guestRequests[index];
+                          final Game game = request['game'];
+                          final String guest = request['guest'];
 
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Guest Join Requests'),
-          content:
-              guestRequests.isEmpty
-                  ? const Text('No guest join requests at the moment.')
-                  : SizedBox(
-                    width: double.maxFinite,
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: guestRequests.length,
-                      itemBuilder: (context, index) {
-                        final request = guestRequests[index];
-                        final Game game = request['game'];
-                        final String guest = request['guest'];
+                          // Try to parse guest info if in format 'username (email)'
+                          String guestName = guest;
+                          String? guestEmail;
+                          final match = RegExp(
+                            r'^(.*) \((.*)\) ?$',
+                          ).firstMatch(guest);
+                          if (match != null) {
+                            guestName = match.group(1) ?? guest;
+                            guestEmail = match.group(2);
+                          }
 
-                        return ListTile(
-                          title: Text(
-                            '$guest requested to join ${game.format}',
-                          ),
-                          subtitle: Text(
-                            'Date: ${DateFormat.yMMMd().format(game.date)}',
-                          ),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                icon: const Icon(
-                                  Icons.check,
-                                  color: Colors.green,
+                          return ListTile(
+                            title: Text(
+                              '$guest requested to join ${game.format}',
+                            ),
+                            subtitle: Text(
+                              'Date: ${DateFormat.yMMMd().format(game.date)}',
+                            ),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.check,
+                                    color: Colors.green,
+                                  ),
+                                  onPressed: () async {
+                                    // Add guest user to the queue with correct info
+                                    game.queue.add(
+                                      User(
+                                        username: guestName,
+                                        isAdmin: false,
+                                        isGuest: true,
+                                        email: guestEmail ?? '',
+                                      ),
+                                    );
+                                    game.pendingRequests?.remove(guest);
+                                    // Remove from Firestore
+                                    await GuestFirestoreService().cancelJoinRequest(
+                                      email: guestEmail ?? '',
+                                      gameId:
+                                          '${game.format}_${game.date.toIso8601String()}_${game.startTime.toIso8601String()}',
+                                    );
+                                    if (!mounted) return;
+                                    setState(() {});
+                                    Navigator.pop(context);
+                                    _showGuestRequests(
+                                      context,
+                                    ); // reopen to refresh
+                                  },
                                 ),
-                                onPressed: () {
-                                  // Add mock/guest users with fake email to distinguish from database users
-                                  game.queue.add(
-                                    User(
-                                      username: guest,
-                                      isAdmin: false,
-                                      email:
-                                          '$guest@mock.com', // Fake email for mock users
-                                    ),
-                                  );
-                                  game.pendingRequests?.remove(guest);
-                                  setState(() {});
-                                  Navigator.pop(context);
-                                  _showGuestRequests(
-                                    context,
-                                  ); // reopen to refresh
-                                },
-                              ),
-                              IconButton(
-                                icon: const Icon(
-                                  Icons.close,
-                                  color: Colors.red,
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.close,
+                                    color: Colors.red,
+                                  ),
+                                  onPressed: () async {
+                                    game.pendingRequests?.remove(guest);
+                                    // Remove from Firestore
+                                    await GuestFirestoreService().cancelJoinRequest(
+                                      email: guestEmail ?? '',
+                                      gameId:
+                                          '${game.format}_${game.date.toIso8601String()}_${game.startTime.toIso8601String()}',
+                                    );
+                                    if (!mounted) return;
+                                    setState(() {});
+                                    Navigator.pop(context);
+                                    _showGuestRequests(
+                                      context,
+                                    ); // reopen to refresh
+                                  },
                                 ),
-                                onPressed: () {
-                                  game.pendingRequests?.remove(guest);
-                                  setState(() {});
-                                  Navigator.pop(context);
-                                  _showGuestRequests(
-                                    context,
-                                  ); // reopen to refresh
-                                },
-                              ),
-                            ],
-                          ),
-                        );
-                      },
+                              ],
+                            ),
+                          );
+                        },
+                      ),
                     ),
-                  ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Close'),
-            ),
-          ],
-        );
-      },
-    );
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Close'),
+              ),
+            ],
+          );
+        },
+      );
+    });
   }
 
   @override
@@ -292,43 +396,63 @@ class _AdminDashboardState extends State<AdminDashboard> {
           PopupMenuButton<String>(
             icon: const Icon(Icons.menu),
             onSelected: (value) {
-              switch (value) {
-                case 'profile':
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => UserProfileScreen(user: widget.user),
-                    ),
-                  );
-                  break;
-                case 'guestRequests':
-                  _showGuestRequests(context);
-                  break;
-                case 'createGame':
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const CreateGameScreen()),
-                  );
-                  break;
-                case 'leaderboard':
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const LeaderboardScreen(),
-                    ),
-                  );
-                  break;
-                case 'season':
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const CreateSeasonScreen(),
-                    ),
-                  );
-                  break;
-                case 'logout':
-                  _logout(context);
-                  break;
+              if (value == 'profile') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => UserProfileScreen(user: widget.user),
+                  ),
+                );
+              } else if (value == 'guestRequests') {
+                _showGuestRequests(context);
+              } else if (value == 'createGame') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const CreateGameScreen()),
+                );
+              } else if (value == 'leaderboard') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const LeaderboardScreen()),
+                );
+              } else if (value == 'season') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const CreateSeasonScreen()),
+                );
+              } else if (value == 'settings') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder:
+                        (_) => SettingsScreen(
+                          username: _adminUsername,
+                          notificationsEnabled: true,
+                          onUsernameChanged: (newUsername) {
+                            setState(() {
+                              _adminUsername = newUsername;
+                            });
+                          },
+                          onNotificationsChanged: (enabled) {
+                            // Implement notification toggle logic if needed
+                          },
+                        ),
+                  ),
+                );
+              } else if (value == 'notifications') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const NotificationsScreen(),
+                  ),
+                );
+              } else if (value == 'about') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const AboutScreen()),
+                );
+              } else if (value == 'logout') {
+                _logout(context);
               }
             },
             itemBuilder:
@@ -344,6 +468,16 @@ class _AdminDashboardState extends State<AdminDashboard> {
                     ),
                   ),
                   PopupMenuItem<String>(
+                    value: 'settings',
+                    child: Row(
+                      children: const [
+                        Icon(Icons.settings, color: Colors.grey),
+                        SizedBox(width: 10),
+                        Text('Settings'),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem<String>(
                     value: 'notifications',
                     child: Row(
                       children: const [
@@ -354,42 +488,12 @@ class _AdminDashboardState extends State<AdminDashboard> {
                     ),
                   ),
                   PopupMenuItem<String>(
-                    value: 'createGame',
+                    value: 'about',
                     child: Row(
                       children: const [
-                        Icon(Icons.add_box, color: Colors.grey),
+                        Icon(Icons.info_outline, color: Colors.grey),
                         SizedBox(width: 10),
-                        Text('Create Game'),
-                      ],
-                    ),
-                  ),
-                  PopupMenuItem<String>(
-                    value: 'leaderboard',
-                    child: Row(
-                      children: const [
-                        Icon(Icons.leaderboard, color: Colors.grey),
-                        SizedBox(width: 10),
-                        Text('Leaderboard'),
-                      ],
-                    ),
-                  ),
-                  PopupMenuItem<String>(
-                    value: 'season',
-                    child: Row(
-                      children: const [
-                        Icon(Icons.edit_calendar, color: Colors.grey),
-                        SizedBox(width: 10),
-                        Text('Create Season'),
-                      ],
-                    ),
-                  ),
-                  PopupMenuItem<String>(
-                    value: 'settings',
-                    child: Row(
-                      children: const [
-                        Icon(Icons.settings, color: Colors.grey),
-                        SizedBox(width: 10),
-                        Text('Settings'),
+                        Text('About'),
                       ],
                     ),
                   ),
@@ -483,7 +587,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
+                      color: const Color.fromRGBO(0, 0, 0, 0.1),
                       spreadRadius: 1,
                       blurRadius: 8,
                       offset: const Offset(0, 2),
@@ -495,7 +599,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
+                        color: const Color.fromRGBO(255, 255, 255, 0.2),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: const Icon(
@@ -520,133 +624,149 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 final dateStr = DateFormat(
                   'EEE, MMM d, yyyy',
                 ).format(game.date);
-                return Container(
-                  margin: const EdgeInsets.symmetric(vertical: 12),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.08),
-                        spreadRadius: 1,
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    children: [
-                      ClipRRect(
-                        borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(16),
-                        ),
-                        child: Image.asset(
-                          _imageForFormat(game.format),
-                          height: 120,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(20),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 8,
-                                          vertical: 4,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          gradient: const LinearGradient(
-                                            colors: [
-                                              Color(0xFF10138A),
-                                              Color(0xFF3B82F6),
-                                            ],
-                                          ),
-                                          borderRadius: BorderRadius.circular(
-                                            8,
-                                          ),
-                                        ),
-                                        child: Text(
-                                          game.format.toUpperCase(),
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    dateStr,
-                                    style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xFF1E3A8A),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    'Courts: ${game.courts} | Players: ${game.players}',
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                final timeStr = DateFormat('h:mm a').format(game.startTime);
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (_) => GamePlayScreen(
+                              game: game,
+                              currentUser: widget.user,
                             ),
-                            const SizedBox(width: 12),
-                            Container(
-                              decoration: BoxDecoration(
-                                gradient: const LinearGradient(
-                                  colors: [
-                                    Color(0xFF10138A),
-                                    Color(0xFF3B82F6),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(vertical: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color.fromRGBO(0, 0, 0, 0.08),
+                          spreadRadius: 1,
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        ClipRRect(
+                          borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(16),
+                          ),
+                          child: Image.asset(
+                            _imageForFormat(game.format),
+                            height: 120,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.all(20),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 8,
+                                            vertical: 4,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            gradient: const LinearGradient(
+                                              colors: [
+                                                Color(0xFF10138A),
+                                                Color(0xFF3B82F6),
+                                              ],
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
+                                          ),
+                                          child: Text(
+                                            game.format.toUpperCase(),
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      '$dateStr  |  $timeStr',
+                                      style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color(0xFF1E3A8A),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      'Courts: ${game.courts} | Players: ${game.players}',
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
                                   ],
                                 ),
-                                borderRadius: BorderRadius.circular(8),
                               ),
-                              child: ElevatedButton.icon(
-                                icon: const Icon(
-                                  Icons.edit,
-                                  size: 16,
-                                  color: Colors.white,
+                              const SizedBox(width: 12),
+                              Container(
+                                decoration: BoxDecoration(
+                                  gradient: const LinearGradient(
+                                    colors: [
+                                      Color(0xFF10138A),
+                                      Color(0xFF3B82F6),
+                                    ],
+                                  ),
+                                  borderRadius: BorderRadius.circular(8),
                                 ),
-                                label: const Text(
-                                  'Edit',
-                                  style: TextStyle(
+                                child: ElevatedButton.icon(
+                                  icon: const Icon(
+                                    Icons.edit,
+                                    size: 16,
                                     color: Colors.white,
-                                    fontWeight: FontWeight.w600,
                                   ),
+                                  label: const Text(
+                                    'Edit',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.transparent,
+                                    shadowColor: Colors.transparent,
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                      vertical: 8,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
+                                  onPressed:
+                                      () => _showEditDialog(context, game),
                                 ),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.transparent,
-                                  shadowColor: Colors.transparent,
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                    vertical: 8,
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
-                                onPressed: () => _showEditDialog(context, game),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 );
               }).toList(),
@@ -677,7 +797,7 @@ class _AdminDashboardActionCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+            color: const Color.fromRGBO(0, 0, 0, 0.08),
             spreadRadius: 1,
             blurRadius: 10,
             offset: const Offset(0, 4),

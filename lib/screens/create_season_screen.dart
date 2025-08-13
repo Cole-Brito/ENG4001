@@ -27,6 +27,7 @@ class _CreateSeasonScreenState extends State<CreateSeasonScreen> {
   final _playersController = TextEditingController();
   DateTime? _startDate;
   DateTime? _endDate;
+  TimeOfDay? _selectedTime;
   final _formKey = GlobalKey<FormState>();
 
   void _pickDateRange() async {
@@ -44,12 +45,24 @@ class _CreateSeasonScreenState extends State<CreateSeasonScreen> {
     }
   }
 
+  void _pickTime() async {
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+      helpText: 'Select Game Start Time',
+    );
+    if (picked != null) {
+      setState(() => _selectedTime = picked);
+    }
+  }
+
   void _clearForm() {
     setState(() {
       _courtsController.clear();
       _playersController.clear();
       _startDate = null;
       _endDate = null;
+      _selectedTime = null;
     });
   }
 
@@ -62,6 +75,10 @@ class _CreateSeasonScreenState extends State<CreateSeasonScreen> {
 
     if (_startDate == null || _endDate == null) {
       _showSnackBar('Please select a date range for the season.', true);
+      return;
+    }
+    if (_selectedTime == null) {
+      _showSnackBar('Please select a start time for the games.', true);
       return;
     }
 
@@ -78,17 +95,25 @@ class _CreateSeasonScreenState extends State<CreateSeasonScreen> {
     }
 
     for (final date in gameDates) {
+      final startTime = DateTime(
+        date.year,
+        date.month,
+        date.day,
+        _selectedTime!.hour,
+        _selectedTime!.minute,
+      );
       final newGame = Game(
         format: _selectedFormat,
         courts: courts,
         players: players,
         date: date,
+        startTime: startTime,
       );
       MockGameStore.addGame(newGame);
     }
 
     _showSnackBar(
-      '✅ Season created with ${gameDates.length} games from '
+      '\u2705 Season created with ${gameDates.length} games from '
       '${DateFormat.yMMMd().format(_startDate!)} to '
       '${DateFormat.yMMMd().format(_endDate!)}.',
       false,
@@ -113,6 +138,10 @@ class _CreateSeasonScreenState extends State<CreateSeasonScreen> {
         (_startDate != null && _endDate != null)
             ? '${DateFormat('MMM d').format(_startDate!)} - ${DateFormat('MMM d, yyyy').format(_endDate!)}'
             : 'Select date range';
+    final formattedTime =
+        _selectedTime != null
+            ? _selectedTime!.format(context)
+            : 'Select a time';
 
     return Scaffold(
       appBar: AppBar(
@@ -417,6 +446,65 @@ class _CreateSeasonScreenState extends State<CreateSeasonScreen> {
                                               color:
                                                   _startDate != null &&
                                                           _endDate != null
+                                                      ? AppColors.textLight
+                                                      : AppColors
+                                                          .textTertiaryLight,
+                                            ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.chevron_right,
+                                  color: AppColors.textTertiaryLight,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        // Time Picker
+                        InkWell(
+                          onTap: _pickTime,
+                          borderRadius: BorderRadius.circular(16),
+                          child: Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: AppColors.border),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.only(right: 16),
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    gradient: AppColors.primaryGradient,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: const Icon(
+                                    Icons.access_time,
+                                    color: Colors.white,
+                                    size: 20,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Game Start Time',
+                                        style: AppTextStyles.labelMedium
+                                            .copyWith(color: AppColors.primary),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        formattedTime,
+                                        style: AppTextStyles.bodyMedium
+                                            .copyWith(
+                                              color:
+                                                  _selectedTime != null
                                                       ? AppColors.textLight
                                                       : AppColors
                                                           .textTertiaryLight,
