@@ -1,46 +1,55 @@
-// lib/models/user.dart
+import 'game.dart';
+
 class User {
   final String username;
   final bool isAdmin;
-  final List<DateTime> rsvps;
-  final int gamesWon = 0;
-  final int gamesPlayed = 0;
+  final bool isGuest;
+  final String? email;
+  final List<Game> rsvps;
+  int gamesPlayed;
 
-  User({required this.username, required this.isAdmin, List<DateTime>? rsvps})
-    : rsvps = rsvps ?? [];
+  User({
+    required this.username,
+    required this.isAdmin,
+    this.isGuest = false,
+    this.email,
+    List<Game>? rsvps,
+    this.gamesPlayed = 0,
+  }) : rsvps = rsvps ?? [];
 
-  void addRsvp(DateTime gameDate) {
-    if (!rsvps.contains(gameDate)) {
-      rsvps.add(gameDate);
+  void addRsvp(Game game) {
+    if (!rsvps.contains(game)) {
+      rsvps.add(game);
     }
   }
 
-  bool hasRsvped(DateTime gameDate) {
-    return rsvps.contains(gameDate);
+  void removeRsvp(Game game) {
+    rsvps.remove(game);
   }
 
-  // The following code will be used when we add the leader board feature and user profile screen
-  // Currently I cant be bothered to make it work
-  // - Cole :)
+  bool hasRsvped(Game game) {
+    return rsvps.contains(game);
+  }
 
-  // get totalGamesPlayed(int games) {
-  //   this.gamesPlayed = games;
-  //   return gamesPlayed;
-  // }
+  // Check if RSVP exists by date
+  bool hasRsvpedOnDate(DateTime date) {
+    return rsvps.any(
+      (g) =>
+          g.date.year == date.year &&
+          g.date.month == date.month &&
+          g.date.day == date.day,
+    );
+  }
 
-  // get totalGamesWon(int games) {
-  //   this.gamesWon = games;
-  //   if (games < 0) {
-  //     throw ArgumentError('Total games won cannot be negative');
-  //   }
-  //   return gamesWon;
-  // }
-
-  // set totalGamesPlayed(int value) {
-  //   // This setter is not used in the current implementation
-  // }
-
-  // set totalGamesWon(int value) {
-  //   // This setter is not used in the current implementation
-  // }
+  // Get all games RSVP’d on a specific date
+  List<Game> rsvpedGamesOnDate(DateTime date) {
+    return rsvps
+        .where(
+          (g) =>
+              g.date.year == date.year &&
+              g.date.month == date.month &&
+              g.date.day == date.day,
+        )
+        .toList();
+  }
 }
