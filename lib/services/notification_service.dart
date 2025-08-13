@@ -4,13 +4,14 @@ import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
 import 'dart:convert';
 import 'dart:io' show Platform;
+import 'package:flutter/foundation.dart';
 
 // Background message handler - must be top-level function
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  print('Handling a background message: ${message.messageId}');
-  print('Message data: ${message.data}');
-  print('Message notification: ${message.notification?.title}');
+  debugPrint('Handling a background message: ${message.messageId}');
+  debugPrint('Message data: ${message.data}');
+  debugPrint('Message notification: ${message.notification?.title}');
 
   // You can process the message data here and show local notification if needed
   if (message.notification != null) {
@@ -63,9 +64,9 @@ class NotificationService {
       // Initialize Local Notifications
       await initLocalNotifications();
 
-      print('✅ Notification service initialized successfully');
+      debugPrint('✅ Notification service initialized successfully');
     } catch (e) {
-      print('❌ Error initializing notification service: $e');
+      debugPrint('❌ Error initializing notification service: $e');
     }
   }
 
@@ -86,22 +87,22 @@ class NotificationService {
           );
 
       if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-        print('✅ FCM: User granted permission');
+        debugPrint('✅ FCM: User granted permission');
       } else if (settings.authorizationStatus ==
           AuthorizationStatus.provisional) {
-        print('⚠️ FCM: User granted provisional permission');
+        debugPrint('⚠️ FCM: User granted provisional permission');
       } else {
-        print('❌ FCM: User declined or has not accepted permission');
+        debugPrint('❌ FCM: User declined or has not accepted permission');
         return;
       }
 
       // Get the FCM token
       final fcmToken = await _firebaseMessaging.getToken();
       if (fcmToken != null) {
-        print('✅ FCM Token: $fcmToken');
+        debugPrint('✅ FCM Token: $fcmToken');
         // TODO: Send this token to your server
       } else {
-        print('❌ Failed to get FCM token');
+        debugPrint('❌ Failed to get FCM token');
       }
 
       // Configure foreground notification presentation options for iOS
@@ -113,7 +114,7 @@ class NotificationService {
 
       // Handle when app is opened from a notification
       FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-        print(
+        debugPrint(
           '📱 App opened from notification: ${message.notification?.title}',
         );
         _handleNotificationTap(message);
@@ -121,7 +122,9 @@ class NotificationService {
 
       // Handle foreground messages
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-        print('📱 Received foreground message: ${message.notification?.title}');
+        debugPrint(
+          '📱 Received foreground message: ${message.notification?.title}',
+        );
         _handleForegroundMessage(message);
       });
 
@@ -129,15 +132,15 @@ class NotificationService {
       RemoteMessage? initialMessage =
           await _firebaseMessaging.getInitialMessage();
       if (initialMessage != null) {
-        print(
+        debugPrint(
           '📱 App launched from notification: ${initialMessage.notification?.title}',
         );
         _handleNotificationTap(initialMessage);
       }
 
-      print('✅ FCM initialized successfully');
+      debugPrint('✅ FCM initialized successfully');
     } catch (e) {
-      print('❌ Error initializing FCM: $e');
+      debugPrint('❌ Error initializing FCM: $e');
     }
   }
 
@@ -207,15 +210,15 @@ class NotificationService {
             ?.requestPermissions(alert: true, badge: true, sound: true);
       }
 
-      print('✅ Local notifications initialized successfully');
+      debugPrint('✅ Local notifications initialized successfully');
     } catch (e) {
-      print('❌ Error initializing local notifications: $e');
+      debugPrint('❌ Error initializing local notifications: $e');
     }
   }
 
   // Handle foreground Firebase messages
   void _handleForegroundMessage(RemoteMessage message) {
-    print('Handling foreground message: ${message.notification?.title}');
+    debugPrint('Handling foreground message: ${message.notification?.title}');
 
     // Show local notification for foreground messages
     if (message.notification != null) {
@@ -229,21 +232,21 @@ class NotificationService {
 
   // Handle notification tap from Firebase
   void _handleNotificationTap(RemoteMessage message) {
-    print('Notification tapped: ${message.data}');
+    debugPrint('Notification tapped: ${message.data}');
     // TODO: Navigate to specific screen based on message data
     // Example: if (message.data['type'] == 'game_update') { navigate to game screen }
   }
 
   // Handle local notification tap
   void _handleLocalNotificationTap(NotificationResponse response) {
-    print('Local notification tapped: ${response.payload}');
+    debugPrint('Local notification tapped: ${response.payload}');
     if (response.payload != null) {
       try {
         Map<String, dynamic> data = jsonDecode(response.payload!);
         // TODO: Handle navigation based on payload data
-        print('Payload data: $data');
+        debugPrint('Payload data: $data');
       } catch (e) {
-        print('Error parsing notification payload: $e');
+        debugPrint('Error parsing notification payload: $e');
       }
     }
   }
@@ -289,9 +292,9 @@ class NotificationService {
         payload: payload,
       );
 
-      print('✅ Local notification shown: $title');
+      debugPrint('✅ Local notification shown: $title');
     } catch (e) {
-      print('❌ Error showing local notification: $e');
+      debugPrint('❌ Error showing local notification: $e');
     }
   }
 
@@ -335,7 +338,7 @@ class NotificationService {
         payload: payload,
       );
     } catch (e) {
-      print('❌ Error showing background local notification: $e');
+      debugPrint('❌ Error showing background local notification: $e');
     }
   }
 
@@ -384,9 +387,9 @@ class NotificationService {
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       );
 
-      print('✅ Notification scheduled for: $scheduledDate');
+      debugPrint('✅ Notification scheduled for: $scheduledDate');
     } catch (e) {
-      print('❌ Error scheduling notification: $e');
+      debugPrint('❌ Error scheduling notification: $e');
     }
   }
 
@@ -439,13 +442,13 @@ class NotificationService {
   // Cancel a scheduled notification
   Future<void> cancelNotification(int id) async {
     await _localNotifications.cancel(id);
-    print('✅ Notification $id cancelled');
+    debugPrint('✅ Notification $id cancelled');
   }
 
   // Cancel all notifications
   Future<void> cancelAllNotifications() async {
     await _localNotifications.cancelAll();
-    print('✅ All notifications cancelled');
+    debugPrint('✅ All notifications cancelled');
   }
 
   // Get pending notifications
@@ -458,7 +461,7 @@ class NotificationService {
     try {
       return await _firebaseMessaging.getToken();
     } catch (e) {
-      print('❌ Error getting FCM token: $e');
+      debugPrint('❌ Error getting FCM token: $e');
       return null;
     }
   }
@@ -467,9 +470,9 @@ class NotificationService {
   Future<void> subscribeToTopic(String topic) async {
     try {
       await _firebaseMessaging.subscribeToTopic(topic);
-      print('✅ Subscribed to topic: $topic');
+      debugPrint('✅ Subscribed to topic: $topic');
     } catch (e) {
-      print('❌ Error subscribing to topic $topic: $e');
+      debugPrint('❌ Error subscribing to topic $topic: $e');
     }
   }
 
@@ -477,9 +480,9 @@ class NotificationService {
   Future<void> unsubscribeFromTopic(String topic) async {
     try {
       await _firebaseMessaging.unsubscribeFromTopic(topic);
-      print('✅ Unsubscribed from topic: $topic');
+      debugPrint('✅ Unsubscribed from topic: $topic');
     } catch (e) {
-      print('❌ Error unsubscribing from topic $topic: $e');
+      debugPrint('❌ Error unsubscribing from topic $topic: $e');
     }
   }
 }
