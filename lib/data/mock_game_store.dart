@@ -30,6 +30,9 @@ class MockGameStore {
     Game(
       format: 'Badminton',
       date: DateTime.now(),
+      startTime: DateTime.now().add(
+        const Duration(hours: 2),
+      ), // Game starts 2 hours from now
       courts: 2,
       players: 12,
       rsvps: List.from(testUsers),
@@ -38,6 +41,9 @@ class MockGameStore {
     Game(
       format: 'Tennis',
       date: DateTime.now(),
+      startTime: DateTime.now().add(
+        const Duration(hours: 4),
+      ), // Game starts 4 hours from now
       courts: 2,
       players: 12,
       rsvps: List.from(testUsers),
@@ -46,6 +52,9 @@ class MockGameStore {
     Game(
       format: 'Table Tennis',
       date: DateTime.now(),
+      startTime: DateTime.now().add(
+        const Duration(hours: 6),
+      ), // Game starts 6 hours from now
       courts: 1,
       players: 4,
       rsvps: List.from(testUsers),
