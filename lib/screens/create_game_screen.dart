@@ -3,16 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // Used for formatting dates
 import '../../models/game.dart';
 import '../../data/mock_game_store.dart'; // Mock data store for demo
+import 'package:firebase_auth/firebase_auth.dart' as fb_auth;
+import '../services/game_firestore_service.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
 import '../widgets/custom_button.dart';
-
-/*
-TODO: we need to implement a restful API to interface with our DB
-at some point, this is fine for our demo (probably)
-
--Cole
-*/
 
 /*
 Most of this class will become automated later down the line when we can have 
@@ -25,14 +20,17 @@ class CreateGameScreen extends StatefulWidget {
   const CreateGameScreen({super.key});
 
   @override
-  _CreateGameScreenState createState() => _CreateGameScreenState();
+  @override
+  CreateGameScreenState createState() => CreateGameScreenState();
 }
 
-class _CreateGameScreenState extends State<CreateGameScreen> {
+class CreateGameScreenState extends State<CreateGameScreen> {
+  final GameFirestoreService _gameFirestoreService = GameFirestoreService();
   String _selectedFormat = 'Badminton'; // Default game format
   final _courtsController = TextEditingController();
   final _playersController = TextEditingController();
   DateTime? _selectedDate;
+  TimeOfDay? _selectedTime;
   String _message = '';
 
   // Supported game formats for dropdown
@@ -46,7 +44,7 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
   };
 
   // Date picker for selecting a game day
-  // TODO: Also allow selecting a time of day in the future
+  // Placeholder: Also allow selecting a time of day in the future
   void _pickDate() async {
     final picked = await showDatePicker(
       context: context,
@@ -55,9 +53,22 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
       lastDate: DateTime.now().add(const Duration(days: 365)),
       helpText: 'Select Game Day',
     );
-
     if (picked != null) {
-      setState(() => _selectedDate = picked);
+      setState(() {
+        _selectedDate = picked;
+        _selectedTime = null; // Reset time when date changes
+      });
+    }
+  }
+
+  void _pickTime() async {
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+      helpText: 'Select Game Start Time',
+    );
+    if (picked != null) {
+      setState(() => _selectedTime = picked);
     }
   }
 
@@ -70,6 +81,18 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
       setState(() => _message = '⚠️ Please select a date for the game.');
       return;
     }
+    if (_selectedTime == null) {
+      setState(() => _message = '⚠️ Please select a start time for the game.');
+      return;
+    }
+
+    final startTime = DateTime(
+      _selectedDate!.year,
+      _selectedDate!.month,
+      _selectedDate!.day,
+      _selectedTime!.hour,
+      _selectedTime!.minute,
+    );
 
     // Get required resources for selected format
     final requiredCourts = formatRules[_selectedFormat]!['courts']!;
@@ -82,18 +105,29 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
         courts: courts,
         players: players,
         date: _selectedDate!,
+        startTime: startTime,
       );
 
-      // Add new game to the mock store
+      // Add new game to the mock store (for demo)
       MockGameStore.addGame(newGame);
 
+      // Save new game to Firestore in the top-level 'games' collection
+      final user = fb_auth.FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        _gameFirestoreService.addGame(game: newGame, createdBy: user.uid);
+      } else {
+        _gameFirestoreService.addGame(game: newGame);
+      }
+
       final formattedDate = DateFormat('yyyy-MM-dd').format(_selectedDate!);
+      final formattedTime = _selectedTime!.format(context);
       setState(() {
         _message =
-            '✅ $_selectedFormat game created for $formattedDate\nCourts: $courts | Players: $players';
+            '✅ $_selectedFormat game created for $formattedDate at $formattedTime\nCourts: $courts | Players: $players';
         _courtsController.clear();
         _playersController.clear();
         _selectedDate = null;
+        _selectedTime = null;
       });
     } else {
       setState(() {
@@ -110,6 +144,10 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
         _selectedDate != null
             ? DateFormat('EEE, MMM d, yyyy').format(_selectedDate!)
             : 'Select a date';
+    final formattedTime =
+        _selectedTime != null
+            ? _selectedTime!.format(context)
+            : 'Select a time';
 
     return Scaffold(
       appBar: AppBar(
@@ -131,7 +169,7 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
         ),
         foregroundColor: Colors.white,
         elevation: 8,
-        shadowColor: AppColors.primary.withOpacity(0.3),
+        shadowColor: AppColors.primary.withAlpha(77),
       ),
       body: Container(
         decoration: const BoxDecoration(
@@ -155,7 +193,7 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.primary.withOpacity(0.3),
+                      color: AppColors.primary.withAlpha(77),
                       blurRadius: 12,
                       offset: const Offset(0, 4),
                     ),
@@ -166,7 +204,7 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
+                        color: const Color.fromRGBO(255, 255, 255, 0.2),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: const Icon(
@@ -191,7 +229,7 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
                           Text(
                             'Schedule a new game session for players',
                             style: AppTextStyles.bodyMedium.copyWith(
-                              color: Colors.white.withOpacity(0.9),
+                              color: const Color.fromRGBO(255, 255, 255, 0.9),
                             ),
                           ),
                         ],
@@ -208,7 +246,7 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.08),
+                      color: const Color.fromRGBO(0, 0, 0, 0.08),
                       blurRadius: 12,
                       offset: const Offset(0, 4),
                     ),
@@ -337,6 +375,64 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
                       ),
                       const SizedBox(height: 20),
 
+                      // Time picker
+                      InkWell(
+                        onTap: _selectedDate != null ? _pickTime : null,
+                        borderRadius: BorderRadius.circular(16),
+                        child: Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: AppColors.border),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                margin: const EdgeInsets.only(right: 16),
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  gradient: AppColors.primaryGradient,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: const Icon(
+                                  Icons.access_time,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                              ),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Start Time',
+                                      style: AppTextStyles.labelMedium.copyWith(
+                                        color: AppColors.primary,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      formattedTime,
+                                      style: AppTextStyles.bodyMedium.copyWith(
+                                        color:
+                                            _selectedTime != null
+                                                ? AppColors.textLight
+                                                : AppColors.textTertiaryLight,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Icon(
+                                Icons.chevron_right,
+                                color: AppColors.textTertiaryLight,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+
                       // Courts Field
                       Container(
                         decoration: BoxDecoration(
@@ -428,8 +524,8 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
                           decoration: BoxDecoration(
                             color:
                                 _message.contains('✅')
-                                    ? AppColors.success.withOpacity(0.1)
-                                    : AppColors.warning.withOpacity(0.1),
+                                    ? AppColors.success.withAlpha(25)
+                                    : AppColors.warning.withAlpha(25),
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
                               color:

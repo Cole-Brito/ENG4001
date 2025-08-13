@@ -9,7 +9,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fb_auth; // Jean Luc
 import 'package:cloud_firestore/cloud_firestore.dart'; // Jean Luc
-
 import 'admin_dashboard.dart';
 import 'member_dashboard.dart';
 import 'register_screen.dart';
@@ -20,10 +19,11 @@ class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  @override
+  LoginScreenState createState() => LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class LoginScreenState extends State<LoginScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -85,6 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
       final Widget dashboard =
           isAdmin ? AdminDashboard(user: user) : MemberDashboard(user: user);
 
+      if (!mounted) return;
       Navigator.pushReplacement(
         context,
         MaterialPageRoute<void>(builder: (BuildContext context) => dashboard),
@@ -141,9 +142,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Colors.black.withOpacity(0.1),
-                    Colors.black.withOpacity(0.5),
-                    const Color(0xFF10138A).withOpacity(0.3),
+                    const Color.fromRGBO(0, 0, 0, 0.1),
+                    const Color.fromRGBO(0, 0, 0, 0.5),
+                    const Color.fromRGBO(16, 19, 138, 0.3),
                   ],
                 ),
               ),
@@ -161,18 +162,18 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 child: Card(
                   elevation: 12,
-                  shadowColor: const Color(0xFF10138A).withOpacity(0.3),
+                  shadowColor: const Color.fromRGBO(16, 19, 138, 0.3),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(24),
                   ),
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.surface.withOpacity(0.95),
+                  color: Theme.of(context).colorScheme.surface.withOpacity(
+                    0.95,
+                  ), // Not a Color, keep as is
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(24),
                       border: Border.all(
-                        color: const Color(0xFF10138A).withOpacity(0.1),
+                        color: const Color.fromRGBO(16, 19, 138, 0.1),
                         width: 1,
                       ),
                     ),
@@ -218,7 +219,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               hintText: 'Enter your username or email',
                               prefixIcon: Icon(
                                 Icons.person_outline,
-                                color: const Color(0xFF10138A).withOpacity(0.7),
+                                color: const Color.fromRGBO(16, 19, 138, 0.7),
                               ),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(16),
@@ -229,7 +230,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 borderSide: BorderSide(
                                   color: const Color(
                                     0xFF10138A,
-                                  ).withOpacity(0.2),
+                                  ).withOpacity(0.2), // Not a Color, keep as is
                                   width: 1.5,
                                 ),
                               ),
@@ -243,9 +244,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               filled: true,
                               fillColor: const Color(
                                 0xFF10138A,
-                              ).withOpacity(0.05),
+                              ).withOpacity(0.05), // Not a Color, keep as is
                               labelStyle: TextStyle(
-                                color: const Color(0xFF10138A).withOpacity(0.8),
+                                color: const Color.fromRGBO(16, 19, 138, 0.8),
                               ),
                             ),
                             keyboardType: TextInputType.text,
@@ -259,7 +260,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               hintText: 'Enter your password',
                               prefixIcon: Icon(
                                 Icons.lock_outline,
-                                color: const Color(0xFF10138A).withOpacity(0.7),
+                                color: const Color.fromRGBO(16, 19, 138, 0.7),
                               ),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(16),
@@ -270,7 +271,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 borderSide: BorderSide(
                                   color: const Color(
                                     0xFF10138A,
-                                  ).withOpacity(0.2),
+                                  ).withOpacity(0.2), // Not a Color, keep as is
                                   width: 1.5,
                                 ),
                               ),
@@ -284,9 +285,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               filled: true,
                               fillColor: const Color(
                                 0xFF10138A,
-                              ).withOpacity(0.05),
+                              ).withOpacity(0.05), // Not a Color, keep as is
                               labelStyle: TextStyle(
-                                color: const Color(0xFF10138A).withOpacity(0.8),
+                                color: const Color.fromRGBO(16, 19, 138, 0.8),
                               ),
                             ),
                             obscureText: true,
@@ -306,7 +307,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               elevation: 4,
                               shadowColor: const Color(
                                 0xFF10138A,
-                              ).withOpacity(0.4),
+                              ).withOpacity(0.4), // Not a Color, keep as is
                             ),
                             child: const Text(
                               'Login',

@@ -14,6 +14,9 @@ import 'login_screen.dart';
 import 'game_play_screen.dart';
 import 'user_profile_screen.dart';
 import 'leaderboard_screen.dart';
+import 'about_screen.dart';
+import 'settings_screen.dart';
+import 'notifications_screen.dart';
 
 class MemberDashboard extends StatefulWidget {
   final User user;
@@ -167,7 +170,7 @@ class _MemberDashboardState extends State<MemberDashboard> {
             margin: const EdgeInsets.only(right: 8),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Colors.white.withOpacity(0.1),
+              color: const Color.fromRGBO(255, 255, 255, 0.1),
             ),
             child: IconButton(
               icon: const Icon(Icons.notifications),
@@ -196,7 +199,7 @@ class _MemberDashboardState extends State<MemberDashboard> {
             margin: const EdgeInsets.only(right: 12),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Colors.white.withOpacity(0.1),
+              color: const Color.fromRGBO(255, 255, 255, 0.1),
             ),
             child: PopupMenuButton<String>(
               icon: const Icon(Icons.menu, color: Colors.white),
@@ -204,10 +207,40 @@ class _MemberDashboardState extends State<MemberDashboard> {
                 if (value == 'logout') {
                   _logout();
                 } else if (value == 'profile') {
+                  if (!mounted) return;
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (_) => UserProfileScreen(user: widget.user),
+                    ),
+                  );
+                } else if (value == 'about') {
+                  if (!mounted) return;
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const AboutScreen()),
+                  );
+                } else if (value == 'settings') {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (_) => SettingsScreen(
+                            username: widget.user.username,
+                            notificationsEnabled:
+                                true, // Placeholder: wire up real value
+                            onUsernameChanged:
+                                (val) {}, // Placeholder: implement
+                            onNotificationsChanged:
+                                (val) {}, // Placeholder: implement
+                          ),
+                    ),
+                  );
+                } else if (value == 'notifications') {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const NotificationsScreen(),
                     ),
                   );
                 }
@@ -256,6 +289,22 @@ class _MemberDashboardState extends State<MemberDashboard> {
                             SizedBox(width: 10),
                             Text(
                               'Settings',
+                              style: TextStyle(fontWeight: FontWeight.w500),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    PopupMenuItem<String>(
+                      value: 'about',
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        child: const Row(
+                          children: [
+                            Icon(Icons.info_outline, color: Color(0xFF10138A)),
+                            SizedBox(width: 10),
+                            Text(
+                              'About',
                               style: TextStyle(fontWeight: FontWeight.w500),
                             ),
                           ],
@@ -316,7 +365,7 @@ class _MemberDashboardState extends State<MemberDashboard> {
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
+                        color: const Color.fromRGBO(0, 0, 0, 0.1),
                         blurRadius: 8,
                         offset: const Offset(0, 4),
                       ),
@@ -328,7 +377,7 @@ class _MemberDashboardState extends State<MemberDashboard> {
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Colors.white.withOpacity(0.2),
+                          color: const Color.fromRGBO(255, 255, 255, 0.2),
                         ),
                         child: const Icon(
                           Icons.person,
@@ -386,8 +435,8 @@ class _MemberDashboardState extends State<MemberDashboard> {
                       begin: Alignment.centerLeft,
                       end: Alignment.centerRight,
                       colors: [
-                        const Color(0xFF10138A).withOpacity(0.1),
-                        const Color(0xFF3B82F6).withOpacity(0.1),
+                        Color.fromRGBO(16, 19, 138, 0.1),
+                        Color.fromRGBO(59, 130, 246, 0.1),
                       ],
                     ),
                   ),
@@ -440,6 +489,9 @@ class _MemberDashboardState extends State<MemberDashboard> {
   // ---------- Card for each game happening today ----------
   Widget _todayGameCard(Game game) {
     final dateFormatted = DateFormat('EEE, MMM d').format(game.date);
+    final timeFormatted = TimeOfDay.fromDateTime(
+      game.startTime,
+    ).format(context);
     return Card(
       elevation: 8,
       margin: const EdgeInsets.only(bottom: 20),
@@ -516,7 +568,7 @@ class _MemberDashboardState extends State<MemberDashboard> {
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    'You have RSVP’d for $dateFormatted • ${game.format}',
+                    'You have RSVP\u2019d for $dateFormatted at $timeFormatted \u2022 ${game.format}',
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
                   const SizedBox(height: 15),
@@ -695,6 +747,9 @@ class _MemberDashboardState extends State<MemberDashboard> {
   Widget _upcomingGameCard(Game game) {
     final bool hasRsvped = widget.user.hasRsvped(game);
     final String dateStr = DateFormat('EEE, MMM d, yyyy').format(game.date);
+    final String timeStr = TimeOfDay.fromDateTime(
+      game.startTime,
+    ).format(context);
 
     return Card(
       elevation: 4,
@@ -739,7 +794,7 @@ class _MemberDashboardState extends State<MemberDashboard> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '${game.format} • $dateStr',
+                          '${game.format} \u2022 $dateStr at $timeStr',
                           style: Theme.of(context).textTheme.bodyLarge,
                         ),
                         const SizedBox(height: 4),

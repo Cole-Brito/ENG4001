@@ -3,6 +3,8 @@
 import 'package:flutter/material.dart';
 
 class InGameScreen extends StatelessWidget {
+  const InGameScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
