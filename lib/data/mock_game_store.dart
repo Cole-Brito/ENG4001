@@ -10,12 +10,18 @@ class MockGameStore {
     }
   }
 
+  // A method to delete games
+  static void deleteGame(Game game) {
+    _games.remove(game);
+  }
+
   // A list of fake users for testing
   static final List<User> testUsers = List.generate(
     11,
     (i) => User(
       username: 'player${i + 1}',
       isAdmin: false,
+      email: 'player${i + 1}@fake.com', // Add fake email for test users
       gamesPlayed: (i + 1), // Just to simulate leaderboard points
     ),
   );
@@ -24,6 +30,9 @@ class MockGameStore {
     Game(
       format: 'Badminton',
       date: DateTime.now(),
+      startTime: DateTime.now().add(
+        const Duration(hours: 2),
+      ), // Game starts 2 hours from now
       courts: 2,
       players: 12,
       rsvps: List.from(testUsers),
@@ -32,6 +41,9 @@ class MockGameStore {
     Game(
       format: 'Tennis',
       date: DateTime.now(),
+      startTime: DateTime.now().add(
+        const Duration(hours: 4),
+      ), // Game starts 4 hours from now
       courts: 2,
       players: 12,
       rsvps: List.from(testUsers),
@@ -40,6 +52,9 @@ class MockGameStore {
     Game(
       format: 'Table Tennis',
       date: DateTime.now(),
+      startTime: DateTime.now().add(
+        const Duration(hours: 6),
+      ), // Game starts 6 hours from now
       courts: 1,
       players: 4,
       rsvps: List.from(testUsers),

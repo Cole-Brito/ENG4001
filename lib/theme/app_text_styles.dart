@@ -1,106 +1,184 @@
 import 'package:flutter/material.dart';
 import 'app_colors.dart';
 
-/// Re-usable text styles.
-/// Prefer these over hard-coding font sizes in widgets.
+/// Comprehensive text styles for the ROS Racket Sports Management App
+/// Uses custom fonts: BebasNeue, bebasneuecyrillic, GlacialIndifference
 class AppTextStyles {
-  static const headline = TextStyle(
-    fontSize: 22,
+  // === HEADLINES (BebasNeue for Impact) ===
+  static const TextStyle headlineLarge = TextStyle(
+    fontFamily: 'BebasNeue',
+    fontSize: 28,
     fontWeight: FontWeight.bold,
-    color: AppColors.text,
-  );
-  static const headlineLight = TextStyle(
-    fontSize: 22,
-    fontWeight: FontWeight.w300,
-    color: AppColors.text,
+    color: AppColors.textLight,
   );
 
-  static const subhead = TextStyle(
-    fontSize: 16,
+  static const TextStyle headlineMedium = TextStyle(
+    fontFamily: 'BebasNeue',
+    fontSize: 24,
+    fontWeight: FontWeight.bold,
+    color: AppColors.textLight,
+  );
+
+  static const TextStyle headlineSmall = TextStyle(
+    fontFamily: 'BebasNeue',
+    fontSize: 22,
+    fontWeight: FontWeight.bold,
+    color: AppColors.textLight,
+  );
+
+  // === TITLES (BebasNeue Cyrillic for Variety) ===
+  static const TextStyle titleLarge = TextStyle(
+    fontFamily: 'bebasneuecyrillic',
+    fontSize: 24,
     fontWeight: FontWeight.w600,
-    color: AppColors.text,
+    color: AppColors.textLight,
   );
-  static const subheadLight = TextStyle(
+
+  static const TextStyle titleMedium = TextStyle(
+    fontFamily: 'bebasneuecyrillic',
+    fontSize: 20,
+    fontWeight: FontWeight.w500,
+    color: AppColors.textLight,
+  );
+
+  static const TextStyle titleSmall = TextStyle(
+    fontFamily: 'bebasneuecyrillic',
+    fontSize: 18,
+    fontWeight: FontWeight.w500,
+    color: AppColors.textSecondaryLight,
+  );
+
+  // === BODY TEXT (GlacialIndifference for Readability) ===
+  static const TextStyle bodyLarge = TextStyle(
+    fontFamily: 'GlacialIndifference',
     fontSize: 16,
-    fontWeight: FontWeight.w300,
-    color: AppColors.text,
+    color: AppColors.textLight,
   );
 
-  static const body = TextStyle(fontSize: 14, color: AppColors.text);
-
-  static const bodyLight = TextStyle(
+  static const TextStyle bodyMedium = TextStyle(
+    fontFamily: 'GlacialIndifference',
     fontSize: 14,
-    fontWeight: FontWeight.w300,
-    color: AppColors.text,
+    color: AppColors.textSecondaryLight,
   );
 
-  static const bodyBold = TextStyle(
+  static const TextStyle bodySmall = TextStyle(
+    fontFamily: 'GlacialIndifference',
+    fontSize: 12,
+    color: AppColors.textTertiaryLight,
+  );
+
+  // === LABELS AND UI ELEMENTS ===
+  static const TextStyle labelLarge = TextStyle(
+    fontFamily: 'GlacialIndifference',
     fontSize: 14,
-    fontWeight: FontWeight.bold,
-    color: AppColors.text,
+    fontWeight: FontWeight.w500,
+    color: AppColors.textLight,
   );
 
-  static const bodyItalic = TextStyle(
-    fontSize: 14,
-    fontStyle: FontStyle.italic,
-    color: AppColors.text,
+  static const TextStyle labelMedium = TextStyle(
+    fontFamily: 'GlacialIndifference',
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    color: AppColors.textSecondaryLight,
   );
 
-  static const button = TextStyle(
+  static const TextStyle labelSmall = TextStyle(
+    fontFamily: 'GlacialIndifference',
+    fontSize: 10,
+    fontWeight: FontWeight.w500,
+    color: AppColors.textTertiaryLight,
+  );
+
+  // === BUTTONS ===
+  static const TextStyle button = TextStyle(
+    fontFamily: 'GlacialIndifference',
     fontSize: 16,
     fontWeight: FontWeight.w600,
     color: Colors.white,
   );
-  static const label = TextStyle(fontSize: 14, color: AppColors.text);
 
-  static const labelBold = TextStyle(
+  static const TextStyle buttonSmall = TextStyle(
+    fontFamily: 'GlacialIndifference',
     fontSize: 14,
-    fontWeight: FontWeight.bold,
-    color: AppColors.text,
-  );
-  static const labelLight = TextStyle(
-    fontSize: 14,
-    fontWeight: FontWeight.w300,
-    color: AppColors.text,
+    fontWeight: FontWeight.w500,
+    color: Colors.white,
   );
 
-  static const captionLight = TextStyle(
+  // === SPECIAL STYLES ===
+  static const TextStyle caption = TextStyle(
+    fontFamily: 'GlacialIndifference',
     fontSize: 12,
-    fontWeight: FontWeight.w300,
-    color: Colors.grey,
+    color: AppColors.textTertiaryLight,
   );
 
-  static const captionBold = TextStyle(
-    fontSize: 12,
-    fontWeight: FontWeight.bold,
-    color: Colors.grey,
+  static const TextStyle overline = TextStyle(
+    fontFamily: 'GlacialIndifference',
+    fontSize: 10,
+    fontWeight: FontWeight.w500,
+    letterSpacing: 1.5,
+    color: AppColors.textTertiaryLight,
   );
 
-  static const caption = TextStyle(fontSize: 12, color: Colors.grey);
-
-  static const error = TextStyle(fontSize: 14, color: AppColors.error);
-
-  static const errorLight = TextStyle(
+  // === STATUS STYLES ===
+  static const TextStyle error = TextStyle(
+    fontFamily: 'GlacialIndifference',
     fontSize: 14,
     color: AppColors.error,
-    fontWeight: FontWeight.w300,
-  );
-  static const errorBold = TextStyle(
-    fontSize: 14,
-    color: AppColors.error,
-    fontWeight: FontWeight.bold,
   );
 
-  static const linkBold = TextStyle(
+  static const TextStyle success = TextStyle(
+    fontFamily: 'GlacialIndifference',
     fontSize: 14,
-    color: AppColors.accent,
-    fontWeight: FontWeight.bold,
-    decoration: TextDecoration.underline,
+    color: AppColors.success,
   );
 
-  static const link = TextStyle(
+  static const TextStyle warning = TextStyle(
+    fontFamily: 'GlacialIndifference',
     fontSize: 14,
-    color: AppColors.accent,
-    decoration: TextDecoration.underline,
+    color: AppColors.warning,
+  );
+
+  // === DARK THEME VARIANTS ===
+  static TextStyle headlineLargeDark = headlineLarge.copyWith(
+    color: AppColors.textDark,
+  );
+  static TextStyle headlineMediumDark = headlineMedium.copyWith(
+    color: AppColors.textDark,
+  );
+  static TextStyle headlineSmallDark = headlineSmall.copyWith(
+    color: AppColors.textDark,
+  );
+  static TextStyle titleLargeDark = titleLarge.copyWith(
+    color: AppColors.textDark,
+  );
+  static TextStyle titleMediumDark = titleMedium.copyWith(
+    color: AppColors.textDark,
+  );
+  static TextStyle titleSmallDark = titleSmall.copyWith(
+    color: AppColors.textSecondaryDark,
+  );
+  static TextStyle bodyLargeDark = bodyLarge.copyWith(
+    color: AppColors.textDark,
+  );
+  static TextStyle bodyMediumDark = bodyMedium.copyWith(
+    color: AppColors.textSecondaryDark,
+  );
+  static TextStyle bodySmallDark = bodySmall.copyWith(
+    color: AppColors.textTertiaryDark,
+  );
+  static TextStyle labelLargeDark = labelLarge.copyWith(
+    color: AppColors.textDark,
+  );
+  static TextStyle labelMediumDark = labelMedium.copyWith(
+    color: AppColors.textSecondaryDark,
+  );
+  static TextStyle labelSmallDark = labelSmall.copyWith(
+    color: AppColors.textTertiaryDark,
+  );
+  static TextStyle captionDark = caption.copyWith(
+    color: AppColors.textTertiaryDark,
+  );
+  static TextStyle overlineDark = overline.copyWith(
+    color: AppColors.textTertiaryDark,
   );
 }

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1024478374733",
+    "project_id": "ros-app-eng4001",
+    "storage_bucket": "ros-app-eng4001.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1024478374733:android:76aad8526a2cdbcce2e504",
+        "android_client_info": {
+          "package_name": "com.example.flutter_application_2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBu5BEY3qbPZ2sweuhT5vr-obGfNSrjUhA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
