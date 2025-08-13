@@ -5,7 +5,7 @@ class AboutScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const String appVersion = '1.51';
+    const String appVersion = '1.73';
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -89,7 +89,7 @@ class AboutScreen extends StatelessWidget {
                       showAboutDialog(
                         context: context,
                         applicationName: 'ROS Racket Sports',
-                        applicationVersion: '1.51',
+                        applicationVersion: '1.73',
                         applicationLegalese: '© 2025 ROS',
                       );
                     },
