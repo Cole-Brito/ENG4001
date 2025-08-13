@@ -62,17 +62,8 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     // Combine lists with real users first (database users prioritized)
     final orderedQueue = [...realUsers, ...mockUsers];
 
-    // Debug: Print queue order (remove this in production)
-    print('Queue Debug:');
-    print(
-      'Real users (${realUsers.length}): ${realUsers.map((u) => '${u.username}(${u.email ?? "no email"})').join(', ')}',
-    );
-    print(
-      'Mock users (${mockUsers.length}): ${mockUsers.map((u) => '${u.username}(${u.email ?? "no email"})').join(', ')}',
-    );
-    print(
-      'Final ordered queue: ${orderedQueue.map((u) => u.username).join(', ')}',
-    );
+    // Debug: Print queue order (removed for production)
+    // Use a logging framework or remove for production
 
     final bool isTurn =
         orderedQueue.isNotEmpty &&
@@ -101,6 +92,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
       if (!game.activeMatches.containsKey(courtNumber)) return;
 
       final finishedGroup = game.activeMatches.remove(courtNumber)!.players;
+      bool firestoreError = false;
 
       final winners = await showDialog<List<User>>(
         context: context,
@@ -290,19 +282,24 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                 });
               }
             } catch (e) {
-              print('Error updating user score in Firebase: $e');
-              // Continue without breaking the flow
+              firestoreError = true;
+              // Use a logging framework in production
+              debugPrint('Error updating user score in Firebase: $e');
             }
           }
         }
 
-        // Optional: feedback message
+        // Feedback message
+        if (!context.mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              '🏆 ${winners.map((u) => u.username).join(', ')} awarded 10 points!',
+              firestoreError
+                  ? '🏆 ${winners.map((u) => u.username).join(', ')} awarded 10 points! (Leaderboard may not update, Firestore error)'
+                  : '🏆 ${winners.map((u) => u.username).join(', ')} awarded 10 points!',
             ),
-            backgroundColor: Colors.green.shade600,
+            backgroundColor:
+                firestoreError ? Colors.red.shade600 : Colors.green.shade600,
           ),
         );
       }
@@ -325,7 +322,8 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
       if (game.waitingGroups.length < 2) {
         game.waitingGroups.add(group);
       } else {
-        // TODO - Show a message here
+        // Show a message here (placeholder)
+        // You can implement a user feedback message as needed
       }
 
       // Try to move to court if one is free
@@ -406,7 +404,15 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                           _iconRow(
                             Icons.date_range,
                             'Date:',
-                            '${game.date.toLocal().toString().split(' ')[0]}',
+                            game.date.toLocal().toString().split(' ')[0],
+                            isWhiteText: true,
+                          ),
+                          _iconRow(
+                            Icons.access_time,
+                            'Start Time:',
+                            TimeOfDay.fromDateTime(
+                              game.startTime,
+                            ).format(context),
                             isWhiteText: true,
                           ),
                           _iconRow(
@@ -507,10 +513,10 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                 Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
-                    color: Colors.white.withOpacity(0.9),
+                    color: const Color.fromRGBO(255, 255, 255, 0.9),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
+                        color: const Color.fromRGBO(0, 0, 0, 0.1),
                         blurRadius: 8,
                         offset: const Offset(0, 4),
                       ),
@@ -660,66 +666,71 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                                 ],
                               ),
                               trailing:
-                                  isCurrent
-                                      ? Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 8,
-                                          vertical: 4,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: Colors.green,
-                                          borderRadius: BorderRadius.circular(
-                                            12,
-                                          ),
-                                        ),
-                                        child: const Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Icon(
-                                              Icons.star,
-                                              color: Colors.white,
-                                              size: 16,
+                                  isMockUser
+                                      ? null // No remove button for test/mock users
+                                      : (currentUser.isAdmin
+                                          ? IconButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                game.queue.remove(player);
+                                              });
+                                              ScaffoldMessenger.of(
+                                                context,
+                                              ).showSnackBar(
+                                                SnackBar(
+                                                  content: Text(
+                                                    '${player.username} removed from queue',
+                                                  ),
+                                                  backgroundColor:
+                                                      Colors.red.shade600,
+                                                  duration: const Duration(
+                                                    seconds: 2,
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                            icon: const Icon(
+                                              Icons.remove_circle_outline,
+                                              color: Colors.red,
                                             ),
-                                            SizedBox(width: 4),
-                                            Text(
-                                              'Your Turn',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                      : isMockUser
-                                      ? IconButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            game.queue.remove(player);
-                                          });
-                                          ScaffoldMessenger.of(
-                                            context,
-                                          ).showSnackBar(
-                                            SnackBar(
-                                              content: Text(
-                                                '${player.username} removed from queue',
-                                              ),
-                                              backgroundColor:
-                                                  Colors.orange.shade600,
-                                              duration: const Duration(
-                                                seconds: 2,
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                        icon: const Icon(
-                                          Icons.remove_circle_outline,
-                                          color: Colors.red,
-                                        ),
-                                        tooltip: 'Remove test user',
-                                      )
-                                      : null,
+                                            tooltip:
+                                                'Remove from queue (admin only)',
+                                          )
+                                          : (isCurrent
+                                              ? Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal: 8,
+                                                      vertical: 4,
+                                                    ),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.green,
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
+                                                ),
+                                                child: const Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    Icon(
+                                                      Icons.star,
+                                                      color: Colors.white,
+                                                      size: 16,
+                                                    ),
+                                                    SizedBox(width: 4),
+                                                    Text(
+                                                      'Your Turn',
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 12,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              )
+                                              : null)),
                             ),
                           );
                         }).toList(),
@@ -859,7 +870,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                         ),
                         trailing: ElevatedButton.icon(
                           onPressed: () {
-                            setState(() => completeMatch(game, courtNum));
+                            completeMatch(game, courtNum);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.green.shade600,
@@ -893,10 +904,10 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16),
-                      color: Colors.white.withOpacity(0.9),
+                      color: const Color.fromRGBO(255, 255, 255, 0.9),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
+                          color: const Color.fromRGBO(0, 0, 0, 0.1),
                           blurRadius: 8,
                           offset: const Offset(0, 4),
                         ),
@@ -1047,8 +1058,8 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
           colors: [
-            const Color(0xFF10138A).withOpacity(0.1),
-            const Color(0xFF3B82F6).withOpacity(0.1),
+            Color.fromRGBO(16, 19, 138, 0.1),
+            Color.fromRGBO(59, 130, 246, 0.1),
           ],
         ),
       ),
