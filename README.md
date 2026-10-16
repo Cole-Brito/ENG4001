@@ -7,21 +7,21 @@ Includes features for user login, game creation, match queueing, and dashboard v
 
 ## 📱 Features
 
-- 🔐 **User Authentication** (Login/Register)
-- 🗓️ **Create & Schedule Games** with court and player limits
-- 🎮 **Live Match Queue System**
+-  **User Authentication** (Login/Register)
+-  **Create & Schedule Games** with court and player limits
+-  **Live Match Queue System**
   - Form groups of 4 players
   - Waitlist management
   - Auto court assignment
-- 🏟️ **Active Matches & Match Completion**
-- 🧑‍🤝‍🧑 **Admin & Member Dashboards**
-- 📈 **Leaderboard** showing top players (mocked for demo)
-- ☁️ **Mock backend** (can be upgraded to real API)
-- 🌗 **Dark/Light Theme Support**
+-  **Active Matches & Match Completion**
+-  **Admin & Member Dashboards**
+-  **Leaderboard** showing top players (mocked for demo)
+-  **Mock backend** (can be upgraded to real API)
+-  **Dark/Light Theme Support**
 
 ---
 
-## 🧠 Project Structure
+##  Project Structure
 
 ```bash
 lib/
